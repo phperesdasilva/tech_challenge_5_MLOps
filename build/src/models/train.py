@@ -22,7 +22,7 @@ def train_and_log(
     test_size: float = 0.2,
     random_state: int = 42,
     ) -> str:
-    
+
     """Treina modelo, loga tudo no MLflow, retorna run_id.
     Args:
     df: DataFrame com features e target.
@@ -78,3 +78,4 @@ def train_and_log(
         )
 
         return run.info.run_id
+    
