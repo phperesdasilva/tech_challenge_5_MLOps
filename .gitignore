@@ -1,3 +1,7 @@
 venv
 __pycache__
+raw
+processed
+
 *_test.py
+*.csv
