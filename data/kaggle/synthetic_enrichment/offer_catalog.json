@@ -1,0 +1,53 @@
+{
+  "catalog_version": "1.0.0",
+  "offers": [
+    {
+      "arm_id": "0",
+      "offer_name": "Conta Digital Padrão",
+      "offer_type": "baseline",
+      "description": "Abertura de conta corrente digital sem taxas.",
+      "synthetic_conversion_prior": 0.15,
+      "reward_value": 10.0,
+      "eligibility_rules": {
+        "min_age": 18,
+        "requires_housing_loan": false
+      }
+    },
+    {
+      "arm_id": "1",
+      "offer_name": "Cartão de Crédito Premium",
+      "offer_type": "credit",
+      "description": "Cartão de crédito com programa de recompensas.",
+      "synthetic_conversion_prior": 0.05,
+      "reward_value": 150.0,
+      "eligibility_rules": {
+        "min_age": 21,
+        "requires_housing_loan": false
+      }
+    },
+    {
+      "arm_id": "2",
+      "offer_name": "Refinanciamento Imobiliário",
+      "offer_type": "loan",
+      "description": "Taxas reduzidas para clientes que já possuem financiamento habitacional.",
+      "synthetic_conversion_prior": 0.08,
+      "reward_value": 300.0,
+      "eligibility_rules": {
+        "min_age": 25,
+        "requires_housing_loan": true
+      }
+    },
+    {
+      "arm_id": "3",
+      "offer_name": "Depósito a Prazo (CDB)",
+      "offer_type": "investment",
+      "description": "Investimento de renda fixa atrelado ao target original da base.",
+      "synthetic_conversion_prior": 0.12,
+      "reward_value": 80.0,
+      "eligibility_rules": {
+        "min_age": 18,
+        "requires_housing_loan": false
+      }
+    }
+  ]
+}
