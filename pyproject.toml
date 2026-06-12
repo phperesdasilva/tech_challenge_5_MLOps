@@ -36,6 +36,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pre-commit>=3.6.0",
+    "black>=24.0.0",
+    "isort>=5.13.0"
 ]
 mlops = [
     "kaggle==2.2.1",
@@ -47,6 +51,10 @@ Repository = "https://github.com/phperesdasilva/tech_challenge_5_MLOps"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
+testpaths = ["tests"]
 
 [project.scripts]
 generate-events = "event_generator.generate_synthetic_events:main"

@@ -11,16 +11,16 @@ jobs:
     # 1. Configura a matriz de sistemas operacionais
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-    
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
     # 2. Faz o runner usar a variável da matriz atual
     runs-on: ${{ matrix.os }}
-    
+
     steps:
     - name: Checkout do código
       uses: actions/checkout@v4
 
-    - name: Configurar Python 3.10
+    - name: Configurar Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.12.3"
