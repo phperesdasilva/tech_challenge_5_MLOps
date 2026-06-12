@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tech-challenge-5-mlops"
+version = "0.0.1"
+description = "MLOps challenge for bank marketing data analysis and LLM agent development"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Pedro Silva", email = "phperesdasilva@gmail.com"}
+    {name = "Camila Cuenca", email = "camilasantoscuenca9@gmail.com"}
+    {name = "Antonio Gomes", email = "agomesquadro@gmail.com"}
+    {name = "Murillo Menegaldo", email = "murillomg71@gmail.com"}
+]
+keywords = ["mlops", "machine-learning", "bank-marketing", "data-science"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+dependencies = [
+    "numpy==2.4.6",
+    "pandas==3.0.3",
+    "pyarrow==24.0.0",
+    "python-dotenv==1.2.2",
+    "kaggle==2.2.1",
+]
+
+[project.urls]
+Repository = "https://github.com/yourusername/tech-challenge-5-mlops.git"
