@@ -1,0 +1,37 @@
+name: CI Pipeline - MLOps
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    # 1. Configura a matriz de sistemas operacionais
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    
+    # 2. Faz o runner usar a variável da matriz atual
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: "pip"
+
+    - name: Instalar dependências (Produção + Dev + MLOps)
+      run: |
+        python -m pip install --upgrade pip
+        # 3. ASPAS ADICIONADAS AQUI (Crucial para o Windows)
+        pip install -e ".[dev,mlops]"
+
+    - name: Executar testes (Pytest)
+      run: |
+        pytest
