@@ -23,8 +23,8 @@ from bandit.simulator import DEFAULT_BANK_PATH, run_simulation
 # Carrega variáveis de ambiente
 load_dotenv()
 
-OUT_DIR = Path(os.getenv("OUT_DIR"))
-SEED = int(os.getenv("SEED"))
+OUT_DIR = Path(os.getenv("OUT_DIR", "data/experiments/etapa3"))
+SEED = int(os.getenv("SEED", "42"))
 
 
 def main():
