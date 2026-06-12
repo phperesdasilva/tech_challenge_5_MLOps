@@ -48,12 +48,13 @@ def main():
         summaries.append(metrics.summary(policy.name()))
         for row in metrics.history:
             all_history.append({"policy": policy.name(), **row})
-            arm_df = pd.DataFrame(
-                [
-                    {"policy": policy.name(), "arm_id": a, "count": c}
-                    for a, c in metrics.arm_counts.items()
-                ]
-            )
+
+        arm_df = pd.DataFrame(
+            [
+                {"policy": policy.name(), "arm_id": a, "count": c}
+                for a, c in metrics.arm_counts.items()
+            ]
+        )
         arm_df.to_csv(OUT_DIR / f"arm_counts_{policy.name()}.csv", index=False)
 
     pd.DataFrame(summaries).to_csv(OUT_DIR / "metrics_summary.csv", index=False)
