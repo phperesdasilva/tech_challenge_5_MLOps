@@ -34,11 +34,9 @@ from .policies import Policy
 # Carrega variáveis de ambiente
 load_dotenv()
 
-DEFAULT_BANK_PATH = Path(
-    os.getenv("DEFAULT_BANK_PATH", "data/kaggle/processed/clean_bank.parquet")
-)
-BASE_DATE = datetime.fromisoformat(os.getenv("BASE_DATE", "2026-06-01"))
-DELAY_SCALE_DAYS = float(os.getenv("DELAY_SCALE_DAYS", "2.0"))
+DEFAULT_BANK_PATH = Path(os.getenv("DEFAULT_BANK_PATH"))
+BASE_DATE = datetime.fromisoformat(os.getenv("BASE_DATE"))
+DELAY_SCALE_DAYS = float(os.getenv("DELAY_SCALE_DAYS"))
 
 
 def optimal_expected_reward(eligible_offers: list[dict]) -> float:
