@@ -7,7 +7,7 @@ name = "tech-challenge-5-mlops"
 version = "0.0.1"
 description = "MLOps challenge for bank marketing data analysis and LLM agent development"
 readme = "README.md"
-requires-python = "==3.12.3"
+requires-python = ">=3.12.3"
 authors = [
     {name = "Pedro Silva", email = "phperesdasilva@gmail.com"},
     {name = "Camila Cuenca", email = "camilasantoscuenca9@gmail.com"},
