@@ -60,7 +60,7 @@ def run_simulation(
     metrics = MetricsTracker()
     offer_by_arm = {o["arm_id"]: o for o in offers}
 
-    # fila: (conversion_time, arm_id, reward, optimal_expected)
+    # fila: (conversion_time, arm_id, reward, converted, optimal_expected)
     pending: list[tuple] = []
     sim_clock = base_date
 
