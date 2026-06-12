@@ -109,7 +109,7 @@ def simulate_mab_environment():
     print(f"Geradas {len(df_rewards[df_rewards['reward_value'] > 0])} conversões com sucesso.")
     print("Arquivos Parquet salvos em data/synthetic_enrichment/")
 
-if __name__ == "__main__":
+def main():
     # Certifique-se de que as pastas existam antes de rodar
     import os
     os.makedirs("data/synthetic_enrichment", exist_ok=True)

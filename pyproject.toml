@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tech-challenge-5-mlops"
+version = "0.0.1"
+description = "MLOps challenge for bank marketing data analysis and LLM agent development"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Pedro Silva", email = "phperesdasilva@gmail.com"},
+    {name = "Camila Cuenca", email = "camilasantoscuenca9@gmail.com"},
+    {name = "Antonio Gomes", email = "agomesquadro@gmail.com"},
+    {name = "Murillo Menegaldo", email = "murillomg71@gmail.com"}
+]
+
+#Dependências de Produção (Apenas o necessário para inferência/deploy)
+dependencies = [
+    "numpy==2.4.6",
+    "pandas==2.3.3",
+    "pyarrow==24.0.0",
+    "python-dotenv==1.2.2",
+]
+
+# 1. Instalar apenas as ferramentas de desenvolvimento (testes):
+#    pip install -e .[dev]
+#
+# 2. Instalar apenas as ferramentas do pipeline (ex: trackear métricas com MLFlow):
+#    pip install -e .[mlops]
+#
+# 3. Instalar múltiplos grupos ao mesmo tempo (Dev + MLOps):
+#    pip install -e .[dev,mlops]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+mlops = [
+    "kaggle==2.2.1",
+    "mlflow==3.13.0"
+]
+
+[project.urls]
+Repository = "https://github.com/phperesdasilva/tech_challenge_5_MLOps"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+generate-events = "event_generator.generate_synthetic_events:main"

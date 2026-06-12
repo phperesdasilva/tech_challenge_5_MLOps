@@ -3,5 +3,9 @@ __pycache__
 raw
 processed
 
+
+*.egg-info
 *_test.py
 *.csv
+*.parquet
+*.txt
