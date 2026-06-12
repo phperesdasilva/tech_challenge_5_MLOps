@@ -9,31 +9,44 @@ description = "MLOps challenge for bank marketing data analysis and LLM agent de
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    {name = "Pedro Silva", email = "phperesdasilva@gmail.com"}
-    {name = "Camila Cuenca", email = "camilasantoscuenca9@gmail.com"}
-    {name = "Antonio Gomes", email = "agomesquadro@gmail.com"}
+    {name = "Pedro Silva", email = "phperesdasilva@gmail.com"},
+    {name = "Camila Cuenca", email = "camilasantoscuenca9@gmail.com"},
+    {name = "Antonio Gomes", email = "agomesquadro@gmail.com"},
     {name = "Murillo Menegaldo", email = "murillomg71@gmail.com"}
 ]
-keywords = ["mlops", "machine-learning", "bank-marketing", "data-science"]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Topic :: Scientific/Engineering :: Information Analysis",
-]
 
+#Dependências de Produção (Apenas o necessário para inferência/deploy)
 dependencies = [
     "numpy==2.4.6",
-    "pandas==3.0.3",
+    "pandas==2.3.3",
     "pyarrow==24.0.0",
     "python-dotenv==1.2.2",
+]
+
+# 1. Instalar apenas as ferramentas de desenvolvimento (testes):
+#    pip install -e .[dev]
+#
+# 2. Instalar apenas as ferramentas do pipeline (ex: trackear métricas com MLFlow):
+#    pip install -e .[mlops]
+#
+# 3. Instalar múltiplos grupos ao mesmo tempo (Dev + MLOps):
+#    pip install -e .[dev,mlops]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+mlops = [
     "kaggle==2.2.1",
+    "mlflow==3.13.0"
 ]
 
 [project.urls]
-Repository = "https://github.com/yourusername/tech-challenge-5-mlops.git"
+Repository = "https://github.com/phperesdasilva/tech_challenge_5_MLOps"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+generate-events = "event_generator.generate_synthetic_events:main"
