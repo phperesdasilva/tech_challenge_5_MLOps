@@ -8,7 +8,12 @@ from dotenv import load_dotenv
 # Carrega variáveis de ambiente
 load_dotenv()
 
-DEFAULT_CATALOG_PATH = Path(os.getenv("DEFAULT_CATALOG_PATH"))
+DEFAULT_CATALOG_PATH = Path(
+    os.getenv(
+        "DEFAULT_CATALOG_PATH",
+        "data/kaggle/synthetic_enrichment/offer_catalog.json",
+    )
+)
 
 
 def load_catalog(path: Path = DEFAULT_CATALOG_PATH) -> list[dict[str, Any]]:
