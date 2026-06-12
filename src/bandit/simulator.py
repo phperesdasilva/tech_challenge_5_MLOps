@@ -26,7 +26,7 @@ import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
-from .catalog import expected_reward, get_eligible_offers, load_catalog
+from .catalog import expected_reward, get_eligible_offers
 from .environment import OfferEnvironment
 from .metrics import MetricsTracker
 from .policies import Policy
