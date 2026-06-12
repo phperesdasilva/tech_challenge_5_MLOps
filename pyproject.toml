@@ -7,7 +7,7 @@ name = "tech-challenge-5-mlops"
 version = "0.0.1"
 description = "MLOps challenge for bank marketing data analysis and LLM agent development"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12.3"
 authors = [
     {name = "Pedro Silva", email = "phperesdasilva@gmail.com"},
     {name = "Camila Cuenca", email = "camilasantoscuenca9@gmail.com"},
@@ -36,6 +36,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pre-commit>=3.6.0",
+    "black>=24.0.0",
+    "isort>=5.13.0"
 ]
 mlops = [
     "kaggle==2.2.1",
@@ -48,5 +52,11 @@ Repository = "https://github.com/phperesdasilva/tech_challenge_5_MLOps"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.pytest.ini_options]
+#Adotar 80% em desenvolvimento, 0% é uma medida temporária para definir a estrutura
+addopts = "--cov=src --cov-report=term-missing --cov-fail-under=0"
+testpaths = ["tests"]
+
 [project.scripts]
 generate-events = "event_generator.generate_synthetic_events:main"
+run-experiment = "run_etapa3_experiment:main"
