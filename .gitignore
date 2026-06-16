@@ -1,11 +1,21 @@
-venv
-__pycache__
-raw
-processed
+# Ambientes Virtuais
+venv/
+env/
+.env
 
+# Arquivos de Sistema e Cache do Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
 
-*.egg-info
-*_test.py
-*.csv
+# Dados e Experimentos de MLOps
+data/
+mlruns/
 *.parquet
-*.txt
+*.csv
+
+# Build do pacote
+build/
+dist/
+*.egg-info/
