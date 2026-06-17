@@ -2,14 +2,14 @@ import os
 import sys
 from pathlib import Path
 
-import dotenv
+from dotenv import load_dotenv
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
 def main():
     try:
         # Load environment variables
-        dotenv.load_dotenv()
+        load_dotenv()
 
         kaggle_user = os.getenv("KAGGLE_USERNAME")
         kaggle_key = os.getenv("KAGGLE_KEY")
