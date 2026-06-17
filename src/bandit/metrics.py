@@ -23,6 +23,14 @@ class MetricsTracker:
     self.conversions = 0
     self.arm_counts: Counter = Counter()
     self.history: list[dict] = []
+    self.recommendations: list[dict] = []
+
+  def record_recommendation(self, client_id, arm_id: str, offer_name: str):
+    self.recommendations.append({
+      "client_id": client_id,
+      "arm_id": arm_id,
+      "offer_name": offer_name,
+    })
 
   def record_impression(self, arm_id: str, optimal_expected: float, reward: float):
     self.impressions += 1

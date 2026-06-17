@@ -17,7 +17,7 @@ import pandas as pd
 from dotenv import load_dotenv
 
 from bandit.catalog import load_catalog
-from bandit.policies import BaselineFixedPolicy, ThompsonSamplingPolicy, UCB1Policy
+from bandit.policies import BaselineFixedPolicy, ThompsonSamplingPolicy
 from bandit.simulator import DEFAULT_BANK_PATH, run_simulation
 
 # Carrega variáveis de ambiente
@@ -36,7 +36,6 @@ def main():
     policies = [
         BaselineFixedPolicy(),
         ThompsonSamplingPolicy(arm_ids),
-        UCB1Policy(arm_ids),
     ]
 
     summaries = []
@@ -56,6 +55,9 @@ def main():
             ]
         )
         arm_df.to_csv(OUT_DIR / f"arm_counts_{policy.name()}.csv", index=False)
+
+        rec_df = pd.DataFrame(metrics.recommendations)
+        rec_df.to_csv(OUT_DIR / f"recommendations_{policy.name()}.csv", index=False)
 
     pd.DataFrame(summaries).to_csv(OUT_DIR / "metrics_summary.csv", index=False)
     pd.DataFrame(all_history).to_parquet(

@@ -74,6 +74,7 @@ def run_simulation(
         eligible_ids = [o["arm_id"] for o in eligible]
         arm_id = policy.select_arm(eligible_ids)
         offer = offer_by_arm[arm_id]
+        metrics.record_recommendation(client_dict["client_id"], arm_id, offer["offer_name"])
 
         impression_time = sim_clock + timedelta(
             days=int(rng.integers(0, 30)),
