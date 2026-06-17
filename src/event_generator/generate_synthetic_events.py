@@ -114,3 +114,5 @@ def main():
     import os
     os.makedirs("data/synthetic_enrichment", exist_ok=True)
     simulate_mab_environment()
+
+    #teste
