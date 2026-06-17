@@ -3,7 +3,6 @@ Define como escolher o braço e como aprender
 Policy - Tipo: ABC - Lógica: -  Interface : select_arm() + update
 BaselineFixedPolicy - Tipo: Deterministico - Lógica: Sempre arm "0" (conta digital) ;; fallback se nao elegível
 ThompsonSamplingPolicy - Tipo: Adaptativo - Lógica: Beta(α, β) por braço; amostra θ e escolhe o maior
-UCB1Policy - Tipo: Adaptativo - Lógica: Índice UCB: média + bônus de exploração
 """
 
 import os
@@ -65,31 +64,3 @@ class ThompsonSamplingPolicy(Policy):
             self.beta[arm_id] += 1
 
 
-class UCB1Policy(Policy):
-    """Referência para justificativa vs Thompson (Nilos/UCB na análise)."""
-
-    def __init__(self, arm_ids: list[str], c: float = None):
-        if c is None:
-            c = float(os.getenv("UCB1_EXPLORATION_BONUS", "2.0"))
-        self.c = c
-        self.counts = {a: 0 for a in arm_ids}
-        self.successes = {a: 0 for a in arm_ids}
-        self.total = 0
-
-    def select_arm(self, eligible_arm_ids: list[str]) -> str:
-        self.total += 1
-        # braços nunca puxados: força exploração
-        for a in eligible_arm_ids:
-            if self.counts[a] == 0:
-                return a
-        scores = {}
-        for a in eligible_arm_ids:
-            mean = self.successes[a] / self.counts[a]
-            bonus = self.c * np.sqrt(np.log(self.total) / self.counts[a])
-            scores[a] = mean + bonus
-        return max(scores, key=scores.get)
-
-    def update(self, arm_id: str, success: bool) -> None:
-        self.counts[arm_id] += 1
-        if success:
-            self.successes[arm_id] += 1
