@@ -53,16 +53,15 @@ class DataManager:
 
             dataset_info = dataset_info[2]
             print(f"✓ Dataset encontrado: {dataset_info.title}")
-            print(f"  URL: {dataset_info.url}")
 
             print("\nBaixando metadados...")
             api.dataset_metadata(dataset, path=path)
 
             metadata_file = path / "dataset-metadata.json"
             if metadata_file.exists():
-                print(f"✓ Metadados baixados com sucesso: {metadata_file}")
+                print(f"✓ Metadados baixados com sucesso.")
             else:
-                print(f"❌ Erro: Metadados não encontrados após download!")
+                print(f"❌ Erro: Metadados não encontrados após download.")
                 sys.exit(1)
 
             with open(metadata_file, "r", encoding="utf-8") as f:
@@ -78,13 +77,12 @@ class DataManager:
                 else "Não informada"
             )
 
-            print(f"Licença: {license_name}")
+            print(f"Licença: {license_name}\n")
 
             print(f"📥 Baixando dataset: {dataset}")
-            print(f"   Para: {path}")
 
             api.dataset_download_files(dataset, path=str(path), unzip=True)
-            print(f"✓ Dataset '{dataset}' baixado e descompactado com sucesso!")
+            print(f"✓ Dataset baixado e descompactado com sucesso.")
 
         except Exception as e:
             print(f"❌ Erro ao baixar dataset: {type(e).__name__}: {e}")

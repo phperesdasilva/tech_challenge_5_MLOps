@@ -2,10 +2,10 @@ from eda.DataManager import DataManager
 
 
 def main():
-    print("🚀 Iniciando processo de EDA...")
+    print("Iniciando processo de EDA...\n")
     data_manager = DataManager()
     data_manager.get_raw_data()
-    print("✅ EDA concluída com sucesso!")
+    print("\n✅ EDA concluída com sucesso!")
 
 
 if __name__ == "__main__":
