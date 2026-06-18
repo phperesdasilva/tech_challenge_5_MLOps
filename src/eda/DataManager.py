@@ -1,8 +1,12 @@
+import json
 import os
 import sys
 from pathlib import Path
+
 from dotenv import load_dotenv
 from kaggle.api.kaggle_api_extended import KaggleApi
+from pandas import api
+
 
 class DataManager:
     def __init__(self):
@@ -39,6 +43,42 @@ class DataManager:
             dataset_name = dataset.split("/")[1]
             path = project_root / "data" / "kaggle" / "raw" / dataset_name
             path.mkdir(parents=True, exist_ok=True)
+
+            print(f"Colhendo informações do dataset {dataset}...")
+            dataset_info = api.dataset_list(search=dataset)
+
+            if not dataset_info:
+                print(f"❌ Erro: Dataset '{dataset}' não encontrado no Kaggle!")
+                sys.exit(1)
+
+            dataset_info = dataset_info[2]
+            print(f"✓ Dataset encontrado: {dataset_info.title}")
+            print(f"  URL: {dataset_info.url}")
+
+            print("\nBaixando metadados...")
+            api.dataset_metadata(dataset, path=path)
+
+            metadata_file = path / "dataset-metadata.json"
+            if metadata_file.exists():
+                print(f"✓ Metadados baixados com sucesso: {metadata_file}")
+            else:
+                print(f"❌ Erro: Metadados não encontrados após download!")
+                sys.exit(1)
+
+            with open(metadata_file, "r", encoding="utf-8") as f:
+                metadata_raw = json.load(f)
+
+            metadata = metadata_raw.get("info")
+
+            # A licença fica dentro de uma lista de dicionários
+            licenses = metadata.get("licenses", [{}])
+            license_name = (
+                licenses[0].get("name", "Não informada")
+                if licenses
+                else "Não informada"
+            )
+
+            print(f"Licença: {license_name}")
 
             print(f"📥 Baixando dataset: {dataset}")
             print(f"   Para: {path}")

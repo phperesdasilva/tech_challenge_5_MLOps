@@ -60,4 +60,4 @@ testpaths = ["tests"]
 [project.scripts]
 generate-events = "event_generator.generate_synthetic_events:main"
 run-experiment = "run_etapa3_experiment:main"
-get-raw-data = "eda.eda:main"
+run-eda = "eda.run_eda:main"
