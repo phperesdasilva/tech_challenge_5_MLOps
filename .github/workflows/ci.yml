@@ -15,6 +15,9 @@ jobs:
 
     # 2. Faz o runner usar a variável da matriz atual
     runs-on: ${{ matrix.os }}
+    env:
+      KAGGLE_USERNAME: test
+      KAGGLE_KEY: test
 
     steps:
     - name: Checkout do código
