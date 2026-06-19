@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, Mock, patch
 import pandas as pd
 import pytest
 
-from src.eda.DataManager import DataManager
+from eda.DataManager import DataManager
 
 
 class TestDataManager:
