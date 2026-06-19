@@ -106,7 +106,7 @@ class DataManager:
 
         while not csv_file:
             csv_file = str(
-                input("\nDigite o nome do arquivo CSV a ser processado: ")
+                input("\n[O arquivo usado atualmente é o bank.csv]\nDigite o nome do arquivo CSV a ser processado: ")
             ).strip()
             if csv_file not in csvs:
                 print(f"❌ Arquivo '{csv_file}' não encontrado. Tente novamente.")
