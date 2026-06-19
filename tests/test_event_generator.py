@@ -71,7 +71,7 @@ class TestLoadData:
             "CLEAN_BANK_PATH": "test_bank.parquet",
         },
     )
-    @patch("src.event_generator.generate_synthetic_events.pd.read_parquet")
+    @patch("event_generator.generate_synthetic_events.pd.read_parquet")
     @patch("builtins.open", create=True)
     def test_load_data_successful(self, mock_file_open, mock_read_parquet):
         """Testa carregamento bem-sucedido de dados."""
@@ -106,12 +106,12 @@ class TestLoadData:
     @patch("builtins.open", side_effect=FileNotFoundError("Arquivo não encontrado"))
     def test_load_data_catalog_not_found(self, mock_file_open):
         """Testa quando o catálogo de ofertas não é encontrado."""
-        with patch("src.event_generator.generate_synthetic_events.pd.read_parquet"):
+        with patch("event_generator.generate_synthetic_events.pd.read_parquet"):
             with pytest.raises(FileNotFoundError):
                 load_data()
 
     @patch.dict(os.environ, {"CLEAN_BANK_PATH": "test_bank.parquet"})
-    @patch("src.event_generator.generate_synthetic_events.pd.read_parquet")
+    @patch("event_generator.generate_synthetic_events.pd.read_parquet")
     def test_load_data_bank_not_found(self, mock_read_parquet):
         """Testa quando o arquivo de banco não é encontrado."""
         mock_read_parquet.side_effect = FileNotFoundError("Arquivo não encontrado")
@@ -131,9 +131,9 @@ class TestSimulateMABEnvironment:
             "CLEAN_BANK_PATH": "test_bank.parquet",
         },
     )
-    @patch("src.event_generator.generate_synthetic_events.load_data")
-    @patch("src.event_generator.generate_synthetic_events.pd.DataFrame.to_parquet")
-    @patch("src.event_generator.generate_synthetic_events.pd.DataFrame.to_csv")
+    @patch("event_generator.generate_synthetic_events.load_data")
+    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_parquet")
+    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_csv")
     def test_simulate_mab_environment_generates_events(
         self, mock_to_csv, mock_to_parquet, mock_load_data
     ):
@@ -179,10 +179,10 @@ class TestSimulateMABEnvironment:
             "CLEAN_BANK_PATH": "test_bank.parquet",
         },
     )
-    @patch("src.event_generator.generate_synthetic_events.load_data")
-    @patch("src.event_generator.generate_synthetic_events.os.makedirs")
-    @patch("src.event_generator.generate_synthetic_events.pd.DataFrame.to_parquet")
-    @patch("src.event_generator.generate_synthetic_events.pd.DataFrame.to_csv")
+    @patch("event_generator.generate_synthetic_events.load_data")
+    @patch("event_generator.generate_synthetic_events.os.makedirs")
+    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_parquet")
+    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_csv")
     def test_simulate_mab_environment_event_structure(
         self, mock_to_csv, mock_to_parquet, mock_makedirs, mock_load_data
     ):
@@ -230,8 +230,8 @@ class TestSimulateMABEnvironment:
 class TestEventGeneratorIntegration:
     """Testes de integração para o gerador de eventos."""
 
-    @patch("src.event_generator.generate_synthetic_events.load_data")
-    @patch("src.event_generator.generate_synthetic_events.os.makedirs")
+    @patch("event_generator.generate_synthetic_events.load_data")
+    @patch("event_generator.generate_synthetic_events.os.makedirs")
     def test_event_generation_with_delayed_rewards(
         self, mock_makedirs, mock_load_data
     ):

@@ -28,7 +28,7 @@ class TestDataManager:
         """Testa a inicialização de DataManager."""
         assert data_manager.raw_data_path is None
 
-    @patch("src.eda.DataManager.os.getenv")
+    @patch("eda.DataManager.os.getenv")
     def test_get_raw_data_missing_env_variables(self, mock_getenv, data_manager):
         """Testa que o método falha quando variáveis de ambiente estão faltando."""
         mock_getenv.return_value = None
@@ -46,7 +46,7 @@ class TestDataManager:
             "DATASET": "org/dataset-name",
         },
     )
-    @patch("src.eda.DataManager.KaggleApi")
+    @patch("eda.DataManager.KaggleApi")
     @patch("pathlib.Path.mkdir")
 
     def test_get_raw_data_successful_authentication(
@@ -85,7 +85,7 @@ class TestDataManager:
             "DATASET": "org/dataset-name",
         },
     )
-    @patch("src.eda.DataManager.KaggleApi")
+    @patch("eda.DataManager.KaggleApi")
     def test_get_raw_data_dataset_not_found(self, mock_kaggle_api, data_manager):
         """Testa quando o dataset não é encontrado no Kaggle."""
         mock_api_instance = MagicMock()
@@ -130,7 +130,7 @@ class TestDataManagerIntegration:
             "DATASET": "org/dataset-name",
         },
     )
-    @patch("src.eda.DataManager.KaggleApi")
+    @patch("eda.DataManager.KaggleApi")
     def test_authentication_error_handling(self, mock_kaggle_api):
         """Testa tratamento de erros na autenticação."""
         mock_api_instance = MagicMock()
