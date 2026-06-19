@@ -2,6 +2,7 @@
 venv/
 env/
 .env
+.venv
 
 # Arquivos de Sistema e Cache do Python
 __pycache__/
@@ -19,3 +20,5 @@ mlruns/
 build/
 dist/
 *.egg-info/
+
+tests.ipynb
