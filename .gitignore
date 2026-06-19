@@ -13,6 +13,7 @@ __pycache__/
 mlruns/
 *.parquet
 *.csv
+*.json
 
 # Build do pacote
 build/
