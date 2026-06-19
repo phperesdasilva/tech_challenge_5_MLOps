@@ -3,14 +3,14 @@ import os
 import sys
 from pathlib import Path
 
+import pandas as pd
 from dotenv import load_dotenv
 from kaggle.api.kaggle_api_extended import KaggleApi
-from pandas import api
 
 
 class DataManager:
     def __init__(self):
-        pass
+        self.raw_data_path = None
 
     def get_raw_data(self):
         try:
@@ -41,8 +41,8 @@ class DataManager:
             script_dir = Path(__file__).parent  # src/eda
             project_root = script_dir.parent.parent
             dataset_name = dataset.split("/")[1]
-            path = project_root / "data" / "kaggle" / "raw" / dataset_name
-            path.mkdir(parents=True, exist_ok=True)
+            self.raw_data_path = project_root / "data" / "kaggle" / "raw" / dataset_name
+            self.raw_data_path.mkdir(parents=True, exist_ok=True)
 
             print(f"Colhendo informações do dataset {dataset}...")
             dataset_info = api.dataset_list(search=dataset)
@@ -55,9 +55,9 @@ class DataManager:
             print(f"✓ Dataset encontrado: {dataset_info.title}")
 
             print("\nBaixando metadados...")
-            api.dataset_metadata(dataset, path=path)
+            api.dataset_metadata(dataset, path=self.raw_data_path)
 
-            metadata_file = path / "dataset-metadata.json"
+            metadata_file = self.raw_data_path / "dataset-metadata.json"
             if metadata_file.exists():
                 print(f"✓ Metadados baixados com sucesso.")
             else:
@@ -81,7 +81,9 @@ class DataManager:
 
             print(f"📥 Baixando dataset: {dataset}")
 
-            api.dataset_download_files(dataset, path=str(path), unzip=True)
+            api.dataset_download_files(
+                dataset, path=str(self.raw_data_path), unzip=True
+            )
             print(f"✓ Dataset baixado e descompactado com sucesso.")
 
         except Exception as e:
@@ -90,3 +92,48 @@ class DataManager:
 
             traceback.print_exc()
             sys.exit(1)
+
+    def clean_data(self):
+
+        print("\nLimpando dados...\n")
+        csvs = os.listdir(self.raw_data_path)
+
+        print(f"Arquivos encontrados:")
+        for file in csvs:
+            print(f" - {file}")
+
+        csv_file = None
+
+        while not csv_file:
+            csv_file = str(
+                input("\nDigite o nome do arquivo CSV a ser processado: ")
+            ).strip()
+            if csv_file not in csvs:
+                print(f"❌ Arquivo '{csv_file}' não encontrado. Tente novamente.")
+                csv_file = None
+
+        df = pd.read_csv(f"{self.raw_data_path}/{csv_file}", sep=";")
+        df = df.dropna()
+
+        clean_df = df[
+            [
+                "age",
+                "job",
+                "marital",
+                "education",
+                "balance",
+                "housing",
+                "loan",
+                "pdays",
+                "previous",
+                "poutcome",
+            ]
+        ]
+
+        clean_dataset_path = str(os.getenv("CLEAN_DATASET_PATH"))
+
+        os.makedirs(clean_dataset_path, exist_ok=True)
+        clean_df.to_parquet(f"{clean_dataset_path}/clean_bank.parquet", index=False)
+
+        removed_info = df.columns.difference(clean_df.columns)
+        print(f"✓ Dados sensíveis removidos: {', '.join(removed_info)}")
