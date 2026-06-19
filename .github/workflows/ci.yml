@@ -33,5 +33,9 @@ jobs:
         pip install -e ".[dev,mlops]"
 
     - name: Executar testes (Pytest)
+      # 4. INJETANDO AS CREDENCIAIS DA API AQUI
+      env:
+        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       run: |
         pytest
