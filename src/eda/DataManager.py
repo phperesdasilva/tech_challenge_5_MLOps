@@ -137,3 +137,9 @@ class DataManager:
 
         removed_info = df.columns.difference(clean_df.columns)
         print(f"✓ Dados sensíveis removidos: {', '.join(removed_info)}")
+
+    def run_eda(self):
+        print("Iniciando processo de EDA...\n")
+        self.get_raw_data()
+        self.clean_data()
+        print("\n✅ EDA concluída com sucesso!")

@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from event_generator.generate_synthetic_events import (
+from event_generator.SyntheticEventGenerator import (
     is_eligible,
     load_data,
     simulate_mab_environment,
