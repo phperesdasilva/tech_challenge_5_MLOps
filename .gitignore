@@ -10,10 +10,10 @@ __pycache__/
 .DS_Store
 
 # Dados e Experimentos de MLOps
-data/
 mlruns/
 *.parquet
 *.csv
+*.json
 
 # Build do pacote
 build/
