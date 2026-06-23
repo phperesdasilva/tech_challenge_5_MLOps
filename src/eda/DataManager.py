@@ -130,7 +130,7 @@ class DataManager:
             ]
         ]
 
-        clean_dataset_path = str(os.getenv("CLEAN_DATASET_PATH"))
+        clean_dataset_path = str(os.getenv("DEFAULT_BANK_PATH", "data/kaggle/processed"))
 
         os.makedirs(clean_dataset_path, exist_ok=True)
         clean_df.to_parquet(f"{clean_dataset_path}/clean_bank.parquet", index=False)
