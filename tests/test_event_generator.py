@@ -1,6 +1,5 @@
 import json
 import os
-import tempfile
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, mock_open, patch
 
@@ -8,57 +7,60 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from event_generator.SyntheticEventGenerator import (
-    is_eligible,
-    load_data,
-    simulate_mab_environment,
-)
+from event_generator.SyntheticEventGenerator import SyntheticEventGenerator
+
+
+# 1. CRIAMOS UMA FIXTURE PARA INSTANCIAR A CLASSE
+@pytest.fixture
+def generator():
+    """Retorna uma instância limpa do SyntheticEventGenerator para os testes."""
+    return SyntheticEventGenerator()
 
 
 class TestIsEligible:
     """Testes para a função is_eligible."""
 
-    def test_eligible_client_meets_all_requirements(self):
+    def test_eligible_client_meets_all_requirements(self, generator):
         """Testa que um cliente elegível passa na verificação."""
         client = {"age": 30, "housing": "yes"}
         rules = {"min_age": 25, "requires_housing_loan": True}
-        assert is_eligible(client, rules) is True
+        assert generator.is_eligible(client, rules) is True
 
-    def test_ineligible_client_age_below_minimum(self):
+    def test_ineligible_client_age_below_minimum(self, generator):
         """Testa que um cliente abaixo da idade mínima não é elegível."""
         client = {"age": 20, "housing": "yes"}
         rules = {"min_age": 25, "requires_housing_loan": False}
-        assert is_eligible(client, rules) is False
+        assert generator.is_eligible(client, rules) is False
 
-    def test_ineligible_client_missing_housing_loan(self):
+    def test_ineligible_client_missing_housing_loan(self, generator):
         """Testa que um cliente sem empréstimo habitacional não é elegível se necessário."""
         client = {"age": 30, "housing": "no"}
         rules = {"min_age": 25, "requires_housing_loan": True}
-        assert is_eligible(client, rules) is False
+        assert generator.is_eligible(client, rules) is False
 
-    def test_eligible_client_no_housing_requirement(self):
+    def test_eligible_client_no_housing_requirement(self, generator):
         """Testa cliente elegível sem requisito de empréstimo habitacional."""
         client = {"age": 30, "housing": "no"}
         rules = {"min_age": 25, "requires_housing_loan": False}
-        assert is_eligible(client, rules) is True
+        assert generator.is_eligible(client, rules) is True
 
-    def test_eligible_client_with_empty_rules(self):
+    def test_eligible_client_with_empty_rules(self, generator):
         """Testa cliente elegível com regras vazias."""
         client = {"age": 30, "housing": "yes"}
         rules = {}
-        assert is_eligible(client, rules) is True
+        assert generator.is_eligible(client, rules) is True
 
-    def test_eligible_client_exact_minimum_age(self):
+    def test_eligible_client_exact_minimum_age(self, generator):
         """Testa cliente na idade mínima exata."""
         client = {"age": 25, "housing": "yes"}
         rules = {"min_age": 25}
-        assert is_eligible(client, rules) is True
+        assert generator.is_eligible(client, rules) is True
 
-    def test_eligible_client_age_one_below_minimum(self):
+    def test_eligible_client_age_one_below_minimum(self, generator):
         """Testa cliente um ano abaixo da idade mínima."""
         client = {"age": 24, "housing": "yes"}
         rules = {"min_age": 25}
-        assert is_eligible(client, rules) is False
+        assert generator.is_eligible(client, rules) is False
 
 
 class TestLoadData:
@@ -71,9 +73,9 @@ class TestLoadData:
             "CLEAN_BANK_PATH": "test_bank.parquet",
         },
     )
-    @patch("event_generator.generate_synthetic_events.pd.read_parquet")
+    @patch("event_generator.SyntheticEventGenerator.pd.read_parquet")
     @patch("builtins.open", create=True)
-    def test_load_data_successful(self, mock_file_open, mock_read_parquet):
+    def test_load_data_successful(self, mock_file_open, mock_read_parquet, generator):
         """Testa carregamento bem-sucedido de dados."""
         # Mock do dataframe de banco
         mock_df_bank = pd.DataFrame(
@@ -96,7 +98,7 @@ class TestLoadData:
             json.dumps(catalog_data)
         )
 
-        df_bank, offers = load_data()
+        df_bank, offers = generator.load_data()
 
         assert len(df_bank) == 2
         assert len(offers) == 1
@@ -104,21 +106,21 @@ class TestLoadData:
 
     @patch.dict(os.environ, {"OFFER_CATALOG_PATH": "test_catalog.json"})
     @patch("builtins.open", side_effect=FileNotFoundError("Arquivo não encontrado"))
-    def test_load_data_catalog_not_found(self, mock_file_open):
+    def test_load_data_catalog_not_found(self, mock_file_open, generator):
         """Testa quando o catálogo de ofertas não é encontrado."""
-        with patch("event_generator.generate_synthetic_events.pd.read_parquet"):
+        with patch("event_generator.SyntheticEventGenerator.pd.read_parquet"):
             with pytest.raises(FileNotFoundError):
-                load_data()
+                generator.load_data()
 
     @patch.dict(os.environ, {"CLEAN_BANK_PATH": "test_bank.parquet"})
-    @patch("event_generator.generate_synthetic_events.pd.read_parquet")
-    def test_load_data_bank_not_found(self, mock_read_parquet):
+    @patch("event_generator.SyntheticEventGenerator.pd.read_parquet")
+    def test_load_data_bank_not_found(self, mock_read_parquet, generator):
         """Testa quando o arquivo de banco não é encontrado."""
         mock_read_parquet.side_effect = FileNotFoundError("Arquivo não encontrado")
 
         with patch("builtins.open", create=True):
             with pytest.raises(FileNotFoundError):
-                load_data()
+                generator.load_data()
 
 
 class TestSimulateMABEnvironment:
@@ -131,11 +133,12 @@ class TestSimulateMABEnvironment:
             "CLEAN_BANK_PATH": "test_bank.parquet",
         },
     )
-    @patch("event_generator.generate_synthetic_events.load_data")
-    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_parquet")
-    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_csv")
+    # Quando mockamos um método da PRÓPRIA classe, usamos patch.object
+    @patch.object(SyntheticEventGenerator, "load_data")
+    @patch("event_generator.SyntheticEventGenerator.pd.DataFrame.to_parquet")
+    @patch("event_generator.SyntheticEventGenerator.pd.DataFrame.to_csv")
     def test_simulate_mab_environment_generates_events(
-        self, mock_to_csv, mock_to_parquet, mock_load_data
+        self, mock_to_csv, mock_to_parquet, mock_load_data, generator
     ):
         """Testa que a simulação gera eventos corretamente."""
         # Mock dos dados
@@ -165,8 +168,8 @@ class TestSimulateMABEnvironment:
 
         mock_load_data.return_value = (mock_df_bank, offers)
 
-        # Executar simulação
-        simulate_mab_environment()
+        # Executar simulação na instância
+        generator.simulate_mab_environment()
 
         # Verificar que os métodos foram chamados
         assert mock_to_parquet.called
@@ -179,15 +182,14 @@ class TestSimulateMABEnvironment:
             "CLEAN_BANK_PATH": "test_bank.parquet",
         },
     )
-    @patch("event_generator.generate_synthetic_events.load_data")
-    @patch("event_generator.generate_synthetic_events.os.makedirs")
-    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_parquet")
-    @patch("event_generator.generate_synthetic_events.pd.DataFrame.to_csv")
+    @patch.object(SyntheticEventGenerator, "load_data")
+    @patch("event_generator.SyntheticEventGenerator.os.makedirs")
+    @patch("event_generator.SyntheticEventGenerator.pd.DataFrame.to_parquet")
+    @patch("event_generator.SyntheticEventGenerator.pd.DataFrame.to_csv")
     def test_simulate_mab_environment_event_structure(
-        self, mock_to_csv, mock_to_parquet, mock_makedirs, mock_load_data
+        self, mock_to_csv, mock_to_parquet, mock_makedirs, mock_load_data, generator
     ):
         """Testa que os eventos gerados têm a estrutura correta."""
-        # Mock dos dados
         client_data = {
             "age": [30],
             "balance": [1000],
@@ -207,36 +209,31 @@ class TestSimulateMABEnvironment:
 
         mock_load_data.return_value = (mock_df_bank, offers)
 
-        # Capturar os DataFrames passados para to_parquet
         captured_dfs = []
 
         def capture_to_parquet(path, **kwargs):
-            captured_dfs.append(("parquet", self, path))
+            captured_dfs.append(("parquet", path))
 
         mock_to_parquet.side_effect = capture_to_parquet
 
-        simulate_mab_environment()
+        generator.simulate_mab_environment()
 
-        # Verificar que pelo menos um evento foi gerado
         assert mock_to_parquet.called
 
-    def test_simulate_mab_environment_runs_without_error(self):
+    def test_simulate_mab_environment_runs_without_error(self, generator):
         """Testa que a simulação roda sem erros com dados válidos."""
-        # Este é um teste simples que verifica se a função é chamável
-        # Testes mais complexos verificam a saída real
-        assert callable(simulate_mab_environment)
+        assert callable(generator.simulate_mab_environment)
 
 
 class TestEventGeneratorIntegration:
     """Testes de integração para o gerador de eventos."""
 
-    @patch("event_generator.generate_synthetic_events.load_data")
-    @patch("event_generator.generate_synthetic_events.os.makedirs")
+    @patch.object(SyntheticEventGenerator, "load_data")
+    @patch("event_generator.SyntheticEventGenerator.os.makedirs")
     def test_event_generation_with_delayed_rewards(
-        self, mock_makedirs, mock_load_data
+        self, mock_makedirs, mock_load_data, generator
     ):
         """Testa que eventos com recompensas atrasadas são gerados corretamente."""
-        # Dados realistas
         client_data = {
             "age": [25, 35, 45],
             "balance": [500, 1500, 3000],
@@ -263,7 +260,6 @@ class TestEventGeneratorIntegration:
 
         mock_load_data.return_value = (mock_df_bank, offers)
 
-        # Executar simulação e capturar os DataFrames
         dfs_captured = []
 
         def capture_to_parquet(path, **kwargs):
@@ -271,13 +267,12 @@ class TestEventGeneratorIntegration:
 
         with patch.object(pd.DataFrame, "to_parquet", side_effect=capture_to_parquet):
             with patch.object(pd.DataFrame, "to_csv"):
-                simulate_mab_environment()
+                generator.simulate_mab_environment()
 
-        # Verificar que os arquivos de eventos e recompensas foram criados
         paths = [p for p in dfs_captured if "offer_events" in str(p)]
         assert len(paths) >= 1
 
-    def test_eligible_offers_filtering(self):
+    def test_eligible_offers_filtering(self, generator):
         """Testa que apenas ofertas elegíveis são consideradas."""
         client = {"age": 35, "housing": "yes"}
 
@@ -290,12 +285,11 @@ class TestEventGeneratorIntegration:
 
         offers = [offer1, offer2, offer3]
 
-        # Filtrar ofertas elegíveis
+        # Usando o generator instanciado para testar
         eligible_offers = [
-            offer for offer in offers if is_eligible(client, offer["eligibility_rules"])
+            offer for offer in offers if generator.is_eligible(client, offer["eligibility_rules"])
         ]
 
-        # Deve haver 2 ofertas elegíveis
         assert len(eligible_offers) == 2
         assert eligible_offers[0]["arm_id"] == 1
         assert eligible_offers[1]["arm_id"] == 3
@@ -306,21 +300,15 @@ class TestRandomSeedConsistency:
 
     def test_numpy_seed_is_set(self):
         """Testa que o seed do numpy está configurado para reprodutibilidade."""
-        # Verificar que np.random.seed(42) foi chamado no módulo
-        # Isso garante que os resultados sejam reprodutíveis
         seed_value = 42
         np.random.seed(seed_value)
 
-        # Gerar números aleatórios
         values1 = [np.random.randint(0, 100) for _ in range(5)]
 
-        # Reset seed
         np.random.seed(seed_value)
 
-        # Gerar novamente
         values2 = [np.random.randint(0, 100) for _ in range(5)]
 
-        # Verificar que são idênticos
         assert values1 == values2
 
 
