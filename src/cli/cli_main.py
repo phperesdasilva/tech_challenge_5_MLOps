@@ -23,6 +23,13 @@ def generate_events():
     """
     cli.generate_events()
 
+@app.command(name="run-thompson-sampling")
+def run_thompson_sampling():
+    """
+    Executa a simulação do algoritmo Thompson Sampling e salva os resultados.
+    """
+    cli.run_thompson_sampling()
+
 def main():
     app(prog_name="project")
 

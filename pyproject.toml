@@ -60,6 +60,4 @@ testpaths = ["tests"]
 
 [project.scripts]
 project = "cli.cli_main:main"
-#generate-events = "event_generator.generate_synthetic_events:main"
 run-experiment = "run_etapa3_experiment:main"
-#run-eda = "eda.run_eda:main"
