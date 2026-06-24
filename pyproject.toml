@@ -42,7 +42,7 @@ dev = [
     "isort>=5.13.0"
 ]
 mlops = [
-    "kaggle==2.2.1",
+    "kaggle==2.2.2",
     "mlflow==3.13.0"
 ]
 
@@ -61,3 +61,4 @@ testpaths = ["tests"]
 generate-events = "event_generator.generate_synthetic_events:main"
 run-experiment = "run_etapa3_experiment:main"
 run-linucb = "run_linucb_experiment:main"
+run-eda = "eda.run_eda:main"

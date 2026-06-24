@@ -15,6 +15,9 @@ jobs:
 
     # 2. Faz o runner usar a variável da matriz atual
     runs-on: ${{ matrix.os }}
+    env:
+      KAGGLE_USERNAME: test
+      KAGGLE_KEY: test
 
     steps:
     - name: Checkout do código
@@ -33,5 +36,9 @@ jobs:
         pip install -e ".[dev,mlops]"
 
     - name: Executar testes (Pytest)
+      # 4. INJETANDO AS CREDENCIAIS DA API AQUI
+      env:
+        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
       run: |
         pytest
