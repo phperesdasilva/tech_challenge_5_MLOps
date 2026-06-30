@@ -26,6 +26,11 @@ def is_eligible(client: dict, rules: dict) -> bool:
         return False
     if rules.get("requires_housing_loan") and client.get("housing") == "no":
         return False
+    if rules.get("requires_no_default") and client.get("default") == "yes":
+        return False
+    min_bal = rules.get("min_balance")
+    if min_bal is not None and float(client.get("balance", 0)) < min_bal:
+        return False
     return True
 
 

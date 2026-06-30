@@ -8,8 +8,8 @@ Compara todas as quatro políticas lado a lado:
 
 Diferença em relação ao run_etapa3_experiment.py:
   1. Constrói um BankContextEncoder ajustado no dataset completo.
-  2. Passa o encoder apenas para o LinUCB; as outras políticas rodam igual à Etapa 3.
-  3. Salva resultados em data/experiments/linucb/ (separado da Etapa 3).
+  2. Passa o encoder apenas para o LinUCB;
+  3. Salva resultados em data/experiments/linucb/.
 
 Comando:
     python src/run_linucb_experiment.py

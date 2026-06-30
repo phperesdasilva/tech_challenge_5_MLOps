@@ -1,5 +1,5 @@
 {
-  "catalog_version": "1.0.0",
+  "catalog_version": "1.1.0",
   "offers": [
     {
       "arm_id": "0",
@@ -9,8 +9,7 @@
       "synthetic_conversion_prior": 0.15,
       "reward_value": 10.0,
       "eligibility_rules": {
-        "min_age": 18,
-        "requires_housing_loan": false
+        "min_age": 18
       }
     },
     {
@@ -22,7 +21,8 @@
       "reward_value": 150.0,
       "eligibility_rules": {
         "min_age": 21,
-        "requires_housing_loan": false
+        "requires_no_default": true,
+        "min_balance": 200
       }
     },
     {
@@ -34,7 +34,8 @@
       "reward_value": 300.0,
       "eligibility_rules": {
         "min_age": 25,
-        "requires_housing_loan": true
+        "requires_housing_loan": true,
+        "requires_no_default": true
       }
     },
     {
@@ -46,7 +47,7 @@
       "reward_value": 80.0,
       "eligibility_rules": {
         "min_age": 18,
-        "requires_housing_loan": false
+        "min_balance": 100
       }
     }
   ]
