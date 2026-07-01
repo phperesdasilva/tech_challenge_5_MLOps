@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
+# Load environment variables
+load_dotenv()
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
@@ -14,8 +16,6 @@ class DataManager:
 
     def get_raw_data(self):
         try:
-            # Load environment variables
-            load_dotenv()
 
             kaggle_user = os.getenv("KAGGLE_USERNAME")
             kaggle_key = os.getenv("KAGGLE_KEY")
