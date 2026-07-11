@@ -10,10 +10,14 @@ __pycache__/
 .DS_Store
 
 # Dados e Experimentos de MLOps
-data/
+data/*
 mlruns/
 *.parquet
 *.csv
+
+# Exceção: corpus sintético de políticas (base do RAG do assistente)
+!data/policies/
+!data/policies/*.md
 
 # Build do pacote
 build/
