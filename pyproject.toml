@@ -31,7 +31,7 @@ dev = [
     "isort>=5.13.0"
 ]
 mlops = [
-    "kaggle==2.2.1",
+    "kaggle==2.2.2",
     "mlflow==3.13.0"
 ]
 llm = [

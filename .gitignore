@@ -14,6 +14,7 @@ data/*
 mlruns/
 *.parquet
 *.csv
+*.json
 
 # Exceção: corpus sintético de políticas (base do RAG do assistente)
 !data/policies/
