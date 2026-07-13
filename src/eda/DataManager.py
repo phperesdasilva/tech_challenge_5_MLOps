@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
+# Load environment variables
+load_dotenv()
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
@@ -14,8 +16,6 @@ class DataManager:
 
     def get_raw_data(self):
         try:
-            # Load environment variables
-            load_dotenv()
 
             kaggle_user = os.getenv("KAGGLE_USERNAME")
             kaggle_key = os.getenv("KAGGLE_KEY")
@@ -130,10 +130,16 @@ class DataManager:
             ]
         ]
 
-        clean_dataset_path = str(os.getenv("CLEAN_DATASET_PATH"))
+        clean_dataset_path = str(os.getenv("DEFAULT_BANK_PATH", "data/kaggle/processed"))
 
         os.makedirs(clean_dataset_path, exist_ok=True)
         clean_df.to_parquet(f"{clean_dataset_path}/clean_bank.parquet", index=False)
 
         removed_info = df.columns.difference(clean_df.columns)
         print(f"✓ Dados sensíveis removidos: {', '.join(removed_info)}")
+
+    def run_eda(self):
+        print("Iniciando processo de EDA...\n")
+        self.get_raw_data()
+        self.clean_data()
+        print("\n✅ EDA concluída com sucesso!")

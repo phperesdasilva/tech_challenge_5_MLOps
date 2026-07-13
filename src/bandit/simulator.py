@@ -26,10 +26,10 @@ import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
-from .catalog import expected_reward, get_eligible_offers
-from .environment import OfferEnvironment
-from .metrics import MetricsTracker
-from .policies import Policy
+from bandit.catalog import expected_reward, get_eligible_offers
+from bandit.environment import OfferEnvironment
+from bandit.metrics import MetricsTracker
+from bandit.policies import Policy
 
 # Carrega variáveis de ambiente
 load_dotenv()
@@ -39,7 +39,6 @@ DEFAULT_BANK_PATH = Path(
 )
 BASE_DATE = datetime.fromisoformat(os.getenv("BASE_DATE", "2026-06-01"))
 DELAY_SCALE_DAYS = float(os.getenv("DELAY_SCALE_DAYS", "2.0"))
-
 
 def optimal_expected_reward(eligible_offers: list[dict]) -> float:
     if not eligible_offers:
