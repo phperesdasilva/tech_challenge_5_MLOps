@@ -8,7 +8,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-def ask_model(prompt, model="gemini-3.5-flash"):
+def ask_gemini(prompt, model="gemini-3.5-flash"):
     """
     Função para interagir com o modelo Gemini.
     """
@@ -16,4 +16,4 @@ def ask_model(prompt, model="gemini-3.5-flash"):
         model=model,
         contents=[prompt]
     )
-    return response
+    return response.text

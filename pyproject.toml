@@ -25,7 +25,8 @@ dependencies = [
     "google-genai",
     "sentence-transformers",
     "langgraph",
-    "faiss-cpu"
+    "faiss-cpu",
+    "groq"
 ]
 
 # 1. Instalar apenas as ferramentas de desenvolvimento (testes):
