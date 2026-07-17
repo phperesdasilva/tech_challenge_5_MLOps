@@ -23,7 +23,7 @@ MD_FILES = [
     os.getenv("OFFER_CATALOG_REPORT_PATH")
 ]
 
-def chunk_markdown(text, chunk_size=500, overlap=50):
+def chunk_markdown(text, chunk_size=1500):
     """
     Função simples para dividir o texto em partes (chunks) menores por parágrafos.
     Mantém o contexto do relatório legível para a busca semântica.

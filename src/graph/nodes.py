@@ -7,15 +7,33 @@ def generate_rag_prompt(state):
         "rag_prompt": build_rag_prompt(state["prompt"])
     }
 
-def generate_model_output(state):
+def generate_gemini_output(state):
     try:
         output = ask_gemini(state["rag_prompt"])
         return {
             "output": output
         }
     except Exception as e:
-        print(f"\n\nSomething wrong with Gemini.\nTrying Groq...")
+        print(f"\n{e}\nSomething wrong with Gemini.\n")
+        return {
+            "output": "Trying Groq..."
+        }
+
+def generate_groq_output(state):
+    try:
         output = ask_groq(state["rag_prompt"])
         return {
             "output": output
         }
+    except Exception as e:
+        print(f"\n{e}\nSomething wrong with Groq.\n")
+        return {
+            "output": "Error occurred while generating Groq output."
+            ""
+        }
+
+def check_gemini_output(state):
+    if "Trying Groq..." in state["output"]:
+        return "call_groq"
+    else:
+        return "finish"
