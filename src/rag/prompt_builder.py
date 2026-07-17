@@ -12,8 +12,10 @@ def build_rag_prompt(prompt):
         )
 
     return f"""
-Responda à seguinte pergunta utilizando o contexto fornecido. Se o contexto não for suficiente, responda da melhor forma possível.
-Seja cauteloso para não inventar informações. Se não souber a resposta, diga "Não sei".
+Responda ao prompt utilizando o contexto fornecido. Se o contexto não for suficiente, responda da melhor forma possível.
+Seja cauteloso para não inventar informações.
+Se a resposta não estiver documentada, diga que não tem documentos sobre isso e responda por si mesmo, sem inventar informações.
+Se a pergunta não estiver clara, peça esclarecimentos.
 O contexto relevante encontrado para a consulta é o seguinte:
 {context_str}
 """

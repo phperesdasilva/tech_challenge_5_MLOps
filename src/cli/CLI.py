@@ -10,6 +10,7 @@ from rag.doc_generator import generate_report, PROMPTS
 from rag.index_docs import index_documents
 from rag.retriever import retrieve_context
 from rag.prompt_builder import build_rag_prompt
+from llm.llm_main import run_llm
 
 load_dotenv()
 
@@ -98,3 +99,6 @@ class CLI:
         """
         rag_prompt = build_rag_prompt(prompt)
         return rag_prompt
+
+    def ask_llm(self, prompt: str = None):
+        run_llm(prompt=prompt)

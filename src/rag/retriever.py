@@ -9,9 +9,7 @@ index = faiss.read_index("data/rag/vector_store.faiss")
 
 load_dotenv()
 
-MIN_SCORE = 0.4
 METADATA_PATH = os.getenv("METADATA_PATH")
-
 
 with open(METADATA_PATH, "r", encoding="utf-8") as f:
     metadata = json.load(f)

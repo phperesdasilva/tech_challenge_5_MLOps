@@ -108,6 +108,18 @@ def build_rag_prompt(
     rag_prompt = cli.build_rag_prompt(prompt)
     typer.echo(rag_prompt)
 
+@app.command(name="ask-llm")
+def llm_run(
+    prompt: str = typer.Argument(
+        None,
+        help="Prompt a ser enviado para o modelo LLM. Se não fornecido, será solicitado interativamente."
+    )
+):
+    """
+    Executa o loop de interação com o modelo LLM.
+    """
+    cli.ask_llm(prompt=prompt)
+
 def main():
     app(prog_name="project")
 
