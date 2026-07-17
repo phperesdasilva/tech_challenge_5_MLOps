@@ -8,6 +8,7 @@ from event_generator.SyntheticEventGenerator import SyntheticEventGenerator
 from experiments.ThompsonSamplingSimulator import ThompsonSamplingSimulator
 from rag.doc_generator import generate_report, PROMPTS
 from rag.index_docs import index_documents
+from rag.retriever import retrieve_context
 
 load_dotenv()
 
@@ -64,3 +65,28 @@ class CLI:
 
     def index_documents(self):
         index_documents()
+
+    def retrieve_context(self, query: str, top_k: int = 2):
+        """
+        Método que chama a busca vetorial no FAISS e formata o resultado no terminal.
+        """
+        results = retrieve_context(query, top_k=top_k)
+
+        if not results:
+            print("\n❌ Nenhum contexto relevante foi encontrado para a consulta informada.")
+            return
+
+        print(f"\n🔍 Buscando por: '{query}'")
+        print(f"📊 Foram encontrados {len(results)} trechos mais relevantes:\n")
+        print("=" * 80)
+
+        for idx, res in enumerate(results):
+            score = res["score"]
+            origem = res["metadata"]["source"]
+            chunk_id = res["metadata"]["chunk_id"]
+            texto = res["chunk"]
+
+            print(f"📌 Resultado #{idx + 1} | Origem: {origem} (Chunk: {chunk_id}) | Distância L2: {score:.4f}")
+            print("-" * 80)
+            print(texto.strip())
+            print("=" * 80)

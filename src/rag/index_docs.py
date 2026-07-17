@@ -5,14 +5,13 @@ from dotenv import load_dotenv
 import faiss
 import numpy as np
 
-# Importa o modelo de embeddings que você já possui estruturado no seu projeto
 from rag.embeddings import embedding_model
 
 load_dotenv()
 
-VECTOR_STORE_DIR = Path("data/rag")
-VECTOR_STORE_PATH = VECTOR_STORE_DIR / "vector_store.faiss"
-METADATA_PATH = VECTOR_STORE_DIR / "vector_store_metadata.json"
+VECTOR_STORE_DIR = os.getenv("VECTOR_STORE_DIR", "data/rag")
+VECTOR_STORE_PATH = os.getenv("VECTOR_STORE_PATH")
+METADATA_PATH = os.getenv("METADATA_PATH")
 
 MD_FILES = [
     os.getenv("TS_METRICS_REPORT_PATH"),

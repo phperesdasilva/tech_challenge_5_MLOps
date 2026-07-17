@@ -78,6 +78,23 @@ def index_documents():
     typer.echo("Iniciando indexação dos documentos...")
     cli.index_documents()
 
+@app.command(name="retrieve-context")
+def retrieve_context(
+    query: str = typer.Argument(
+        ...,
+        help="A frase, pergunta ou termo que você deseja buscar no banco de dados vetorial."
+    ),
+    top_k: int = typer.Option(
+        2,
+        "--top-k", "-k",
+        help="Quantidade de trechos de documentos mais similares a serem retornados."
+    )
+):
+    """
+    Realiza uma busca semântica no banco de dados vetorial FAISS e retorna os trechos mais relevantes.
+    """
+    cli.retrieve_context(query=query, top_k=top_k)
+
 def main():
     app(prog_name="project")
 
