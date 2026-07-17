@@ -7,6 +7,7 @@ from eda.DataManager import DataManager
 from event_generator.SyntheticEventGenerator import SyntheticEventGenerator
 from experiments.ThompsonSamplingSimulator import ThompsonSamplingSimulator
 from rag.doc_generator import generate_report, PROMPTS
+from rag.index_docs import index_documents
 
 load_dotenv()
 
@@ -60,3 +61,6 @@ class CLI:
         self.generate_report_arm_counts_bl()
         time.sleep(10)
         self.generate_report_arm_counts_ts()
+
+    def index_documents(self):
+        index_documents()

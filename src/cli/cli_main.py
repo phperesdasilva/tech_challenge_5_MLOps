@@ -70,6 +70,14 @@ def generate_report(
         typer.echo("Iniciando geração do relatório do Thompson Sampling (Arm Counts)...")
         cli.generate_report_arm_counts_ts()
 
+@app.command(name="index-documents")
+def index_documents():
+    """
+    Indexa os documentos Markdown gerados para busca semântica.
+    """
+    typer.echo("Iniciando indexação dos documentos...")
+    cli.index_documents()
+
 def main():
     app(prog_name="project")
 
