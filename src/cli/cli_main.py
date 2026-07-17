@@ -95,6 +95,19 @@ def retrieve_context(
     """
     cli.retrieve_context(query=query, top_k=top_k)
 
+@app.command(name="build-rag-prompt")
+def build_rag_prompt(
+    prompt: str = typer.Argument(
+        ...,
+        help="A frase, pergunta ou termo que você deseja buscar no banco de dados vetorial."
+    )
+):
+    """
+    Constrói o prompt RAG com base na consulta do usuário e no contexto recuperado.
+    """
+    rag_prompt = cli.build_rag_prompt(prompt)
+    typer.echo(rag_prompt)
+
 def main():
     app(prog_name="project")
 

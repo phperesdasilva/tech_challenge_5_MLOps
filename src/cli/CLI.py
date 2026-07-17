@@ -9,6 +9,7 @@ from experiments.ThompsonSamplingSimulator import ThompsonSamplingSimulator
 from rag.doc_generator import generate_report, PROMPTS
 from rag.index_docs import index_documents
 from rag.retriever import retrieve_context
+from rag.prompt_builder import build_rag_prompt
 
 load_dotenv()
 
@@ -90,3 +91,10 @@ class CLI:
             print("-" * 80)
             print(texto.strip())
             print("=" * 80)
+
+    def build_rag_prompt(self, prompt: str) -> str:
+        """
+        Método que constrói o prompt RAG com base na consulta do usuário e no contexto recuperado.
+        """
+        rag_prompt = build_rag_prompt(prompt)
+        return rag_prompt
