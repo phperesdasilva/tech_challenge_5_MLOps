@@ -14,7 +14,7 @@ def generate_model_output(state):
             "output": output
         }
     except Exception as e:
-        print(f"Error generating model output --- Trying Groq...")
+        print(f"\n\nSomething wrong with Gemini.\nTrying Groq...")
         output = ask_groq(state["rag_prompt"])
         return {
             "output": output

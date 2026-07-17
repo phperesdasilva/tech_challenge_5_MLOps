@@ -6,13 +6,13 @@ load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-client = Groq(api_key=GROQ_API_KEY)
+groq_client = Groq(api_key=GROQ_API_KEY)
 
 def ask_groq(prompt, model="llama-3.3-70b-versatile"):
     """
     Função para interagir com o modelo Groq (ex: LLaMA 3).
     """
-    response = client.chat.completions.create(
+    response = groq_client.chat.completions.create(
         model=model,
         messages=[
             {

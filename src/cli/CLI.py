@@ -58,12 +58,21 @@ class CLI:
             report_path=ARM_COUNTS_REPORT_TS_PATH
         )
 
+    def generate_report_offer_catalog(self):
+        generate_report(
+            prompt=PROMPTS["prompt_offer_catalog"],
+            source_path=os.getenv("OFFER_CATALOG_PATH"),
+            report_path=os.getenv("OFFER_CATALOG_REPORT_PATH")
+        )
+
     def generate_all_reports(self):
         self.generate_report_ts_metrics()
         time.sleep(10)
         self.generate_report_arm_counts_bl()
         time.sleep(10)
         self.generate_report_arm_counts_ts()
+        time.sleep(10)
+        self.generate_report_offer_catalog()
 
     def index_documents(self):
         index_documents()

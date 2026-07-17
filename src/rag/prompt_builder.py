@@ -8,14 +8,21 @@ def build_rag_prompt(prompt):
         context_str = "Nenhum contexto relevante encontrado para a consulta."
     else:
         context_str = "\n\n".join(
-            [f"Contexto {i+1} (Score: {item['score']:.4f}):\n{item['chunk']}" for i, item in enumerate(context)]
+            [f"--- Documento {i+1} (Origem: {item['metadata']['source']}) ---\n{item['chunk']}"
+             for i, item in enumerate(context)]
         )
 
-    return f"""
-Responda ao prompt utilizando o contexto fornecido. Se o contexto não for suficiente, responda da melhor forma possível.
-Seja cauteloso para não inventar informações.
-Se a resposta não estiver documentada, diga que não tem documentos sobre isso e responda por si mesmo, sem inventar informações.
+    return f"""Você é um assistente virtual especialista no projeto.
+
+[INSTRUÇÕES]
+Responda à pergunta do usuário utilizando o contexto fornecido abaixo.
+Se o contexto não for suficiente ou a resposta não estiver documentada, diga explicitamente que não possui documentos sobre o assunto e responda da melhor forma possível com o seu conhecimento, sem inventar dados.
+Seja extremamente cauteloso para não alucinar informações.
 Se a pergunta não estiver clara, peça esclarecimentos.
-O contexto relevante encontrado para a consulta é o seguinte:
+
+[CONTEXTO DE SUPORTE]
 {context_str}
+
+[PERGUNTA DO USUÁRIO]
+{prompt}
 """

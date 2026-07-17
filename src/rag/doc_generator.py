@@ -4,7 +4,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from google.genai.errors import ClientError, ServerError
 
-from llm.gemini_model import client
+from llm.gemini_model import gemini_client
+from llm.groq_model import groq_client
 
 load_dotenv()
 
@@ -36,52 +37,86 @@ Você deve analisar os dados e escrever um relatório que descreva a contagem de
 Escreva o relatório em português e salve o resultado no arquivo {os.getenv('ARM_COUNTS_REPORT_TS_PATH')}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
 Use {os.getenv('METRICS_SUMMARY_PATH')} como referência para o resumo das métricas.
+""",
+
+"prompt_offer_catalog": f"""
+Você é um cientista de dados e engenheiro de machine learning.
+Você tem acesso ao arquivo JSON {os.getenv('OFFER_CATALOG_PATH')} que contém o catálogo de ofertas.
+Você deve analisar os dados e escrever um relatório que descreva as características e benefícios de cada oferta.
+Escreva o relatório em português e salve o resultado no arquivo {os.getenv('OFFER_CATALOG_REPORT_PATH')}.
+Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
+Use {os.getenv('METRICS_SUMMARY_PATH')} como referência para o resumo das métricas.
 """
 }
 
+def generate_report_with_groq(prompt, source_path):
+    """
+    Função interna para realizar a chamada ao Groq usando o groq_client importado.
+    Como o Groq não aceita Files API nativa para CSV/JSON locais, lemos o texto e unificamos.
+    """
+
+    print("🔄 Iniciando fallback: Gerando relatório via Groq (Llama 3)...")
+
+    try:
+        with open(source_path, "r", encoding="utf-8") as f:
+            file_content = f.read()
+    except Exception as e:
+        raise IOError(f"Falha ao ler o arquivo local {source_path}: {e}")
+
+    prompt_completo = (
+        f"{prompt}\n\n"
+        f"--- CONTEÚDO DO ARQUIVO DE ORIGEM ---\n"
+        f"{file_content}\n"
+        f"--- FIM DO ARQUIVO ---"
+    )
+
+    # Executa a requisição usando o padrão de completions do groq_client
+    chat_completion = groq_client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt_completo,
+            }
+        ]
+    )
+
+    return chat_completion.choices[0].message.content
+
+
 def generate_report(prompt, source_path, report_path):
-
     report_name = report_path.split("/")[-1]
+    mime_type = "application/json" if source_path.endswith(".json") else "text/csv"
+    resposta_texto = None
 
-    print(f"Fazendo upload de {source_path}...")
-    doc_upload = client.files.upload(file=source_path, config={"mime_type": "text/csv"})
+    try:
+        print(f"Fazendo upload de {source_path} no Gemini...")
+        doc_upload = gemini_client.files.upload(file=source_path, config={"mime_type": mime_type})
 
-    #tentativas por causa do rate limit da API do Gemini
-    tentativas = 3
-    for i in range(tentativas):
+        print(f"Gerando o relatório {report_name} via Gemini...")
+
+        # Chamada usando o gemini_client importado
+        result = gemini_client.models.generate_content(
+            model="gemini-3.5-flash",
+            contents=[prompt, doc_upload]
+        )
+        resposta_texto = result.text
+
+    except Exception as e:
+        print(f"\n⚠️ Falha ao processar com o Gemini ({type(e).__name__}): {e}")
         try:
-            print(f"Gerando o relatório {report_name}... (Tentativa {i+1}/{tentativas})")
-            result = client.models.generate_content(
-                model="gemini-3.5-flash",
-                contents=[prompt, doc_upload]
-            )
-            break
+            resposta_texto = generate_report_with_groq(prompt, source_path)
+        except Exception as groq_err:
+            print(f"❌ Erro crítico: Fallback para o Groq também falhou: {groq_err}")
+            raise groq_err
 
-        except ClientError as e:
-            # Se for erro de cota esgotada (429), espera o tempo recomendado e tenta de novo
-            if e.code == 429:
-                tempo_espera = 60
-                print(f"\n⚠️ Limite de cota atingido (429). Aguardando {tempo_espera} segundos para liberar a API...")
-                time.sleep(tempo_espera)
-            else:
-                raise e
+    if resposta_texto:
+        caminho_relatorio = Path(report_path)
+        caminho_relatorio.parent.mkdir(parents=True, exist_ok=True)
 
-        except ServerError as e:
-            # Trata instabilidade do servidor do Google (503 / Alta Demanda)
-            tempo_espera = 20 * (i + 1)  # Backoff incremental: 20s, 40s, 60s...
-            print(f"\n⚠️ Servidor sob alta demanda (503). Aguardando {tempo_espera}s antes de tentar novamente...")
-            time.sleep(tempo_espera)
+        with open(caminho_relatorio, "w", encoding="utf-8") as f:
+            f.write(resposta_texto)
 
-        except Exception as e:
-            print(f"Erro inesperado: {str(e)}")
-            raise e
+        print(f"Relatório gerado e salvo com sucesso em: {report_path}!\n")
     else:
-        raise Exception("Não foi possível gerar o relatório devido a limites persistentes da API.")
-
-    caminho_relatorio = Path(report_path)
-    caminho_relatorio.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(caminho_relatorio, "w", encoding="utf-8") as f:
-        f.write(result.text)
-
-    print(f"Relatório gerado e salvo com sucesso em: {report_path}!\n")
+        raise Exception(f"Falha de execução: Nenhum modelo gerou conteúdo para {report_name}.")

@@ -43,13 +43,16 @@ def generate_report(
     ),
     acts: bool = typer.Option(
         False, "--acts", help="Gera o relatório de contagem de execuções de braços do Thompson Sampling."
+    ),
+    oc: bool = typer.Option(
+        False, "--oc", help="Gera o relatório do catálogo de ofertas."
     )
 ):
     """
     Gera os relatórios executivos em Markdown utilizando LLM.
-    Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, ou --acts.
+    Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, --acts, --oc.
     """
-    if not (all_reports or tsmetrics or acbl or acts):
+    if not (all_reports or tsmetrics or acbl or acts or oc):
         typer.echo("[Erro] Você precisa selecionar pelo menos um relatório para gerar.")
         raise typer.Exit(code=1)
 
@@ -69,6 +72,10 @@ def generate_report(
     if acts:
         typer.echo("Iniciando geração do relatório do Thompson Sampling (Arm Counts)...")
         cli.generate_report_arm_counts_ts()
+
+    if oc:
+        typer.echo("Iniciando geração do relatório do Catálogo de Ofertas...")
+        cli.generate_report_offer_catalog()
 
 @app.command(name="index-documents")
 def index_documents():
