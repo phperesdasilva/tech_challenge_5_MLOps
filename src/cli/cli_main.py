@@ -30,6 +30,46 @@ def run_thompson_sampling():
     """
     cli.run_thompson_sampling()
 
+@app.command(name="generate-report")
+def generate_report(
+    all_reports: bool = typer.Option(
+        False, "--all", help="Gera todos os 3 relatórios disponíveis de uma vez."
+    ),
+    tsmetrics: bool = typer.Option(
+        False, "--tsmetrics", help="Gera o relatório de progressão das métricas do Thompson Sampling."
+    ),
+    acbl: bool = typer.Option(
+        False, "--acbl", help="Gera o relatório de contagem de execuções de braços da política Baseline."
+    ),
+    acts: bool = typer.Option(
+        False, "--acts", help="Gera o relatório de contagem de execuções de braços do Thompson Sampling."
+    )
+):
+    """
+    Gera os relatórios executivos em Markdown utilizando LLM.
+    Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, ou --acts.
+    """
+    if not (all_reports or tsmetrics or acbl or acts):
+        typer.echo("[Erro] Você precisa selecionar pelo menos um relatório para gerar.")
+        raise typer.Exit(code=1)
+
+    if all_reports:
+        typer.echo("Iniciando geração de todos os relatórios...")
+        cli.generate_all_reports()
+        return
+
+    if tsmetrics:
+        typer.echo("Iniciando geração do relatório de métricas do Thompson Sampling...")
+        cli.generate_report_ts_metrics()
+
+    if acbl:
+        typer.echo("Iniciando geração do relatório da Baseline...")
+        cli.generate_report_arm_counts_bl()
+
+    if acts:
+        typer.echo("Iniciando geração do relatório do Thompson Sampling (Arm Counts)...")
+        cli.generate_report_arm_counts_ts()
+
 def main():
     app(prog_name="project")
 
