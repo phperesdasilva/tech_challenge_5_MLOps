@@ -5,14 +5,12 @@ import json
 from dotenv import load_dotenv
 from rag.embeddings import embedding_model
 
-# Carrega o índice vetorial FAISS
 index = faiss.read_index("data/rag/vector_store.faiss")
 
 load_dotenv()
 
 METADATA_PATH = os.getenv("METADATA_PATH")
 
-# Carrega a lista de metadados enriquecidos
 with open(METADATA_PATH, "r", encoding="utf-8") as f:
     metadata = json.load(f)
 

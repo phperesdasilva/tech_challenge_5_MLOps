@@ -10,12 +10,10 @@ from rag.embeddings import embedding_model
 
 load_dotenv()
 
-# Definição dos caminhos das variáveis de ambiente
 VECTOR_STORE_DIR = Path(os.getenv("VECTOR_STORE_DIR", "data/rag"))
 VECTOR_STORE_PATH = os.getenv("VECTOR_STORE_PATH")
 METADATA_PATH = os.getenv("METADATA_PATH")
 
-# Lista de arquivos Markdown a serem consumidos
 MD_FILES = [
     os.getenv("TS_METRICS_REPORT_PATH"),
     os.getenv("ARM_COUNTS_REPORT_BL_PATH"),
@@ -63,17 +61,14 @@ def extract_metadata_from_chunk(chunk_text):
         "palavras_chave": []
     }
 
-    # 1. Tenta identificar se o chunk inicia com um título Markdown
-    section_match = re.search(r'^(?:#|##|###)\s+(.+)$', chunk_text, re.MULTILINE)
+    section_match = re.search(r'^(?:#|##|###)\s+(.+)$', chunk_text, re.MULTILINE) #busca titulo do md
     if section_match:
         metadata["secao_detectada"] = section_match.group(1).strip()
 
-    # 2. Busca por menções a IDs de braço (ex: "id_braco: 0", "Braço 1", "id_braco: '2'")
-    arm_match = re.search(r'(?:id_braco|id do braço|braço)\s*[:\-]?\s*\'?(\d+)\'?', chunk_text, re.IGNORECASE)
+    arm_match = re.search(r'(?:id_braco|id do braço|braço)\s*[:\-]?\s*\'?(\d+)\'?', chunk_text, re.IGNORECASE) #busca id do braço
     if arm_match:
         metadata["id_braco_mencionado"] = int(arm_match.group(1))
 
-    # 3. Mapeamento simples de palavras-chave do domínio para auxiliar filtros rápidos
     keywords_map = {
         "thompson": "Thompson Sampling",
         "baseline": "Baseline",
@@ -93,14 +88,11 @@ def index_documents():
     chunks_to_index = []
     metadata_to_index = []
 
-    # 1. Indexação exclusiva dos arquivos Markdown (.md)
     for filepath in MD_FILES:
-        if not filepath:
-            continue
+
+        VECTOR_STORE_DIR.mkdir(parents=True, exist_ok=True)
+
         path = Path(filepath)
-        if not path.exists():
-            print(f"⚠️ Aviso: Arquivo {filepath} não encontrado. Pulando...")
-            continue
 
         print(f"Lendo e dividindo o documento: {path.name}...")
         text = path.read_text(encoding="utf-8")
@@ -111,13 +103,11 @@ def index_documents():
         doc_tag = path.stem.replace("_report", "").replace("report_", "")
 
         for idx, chunk in enumerate(chunks):
-            # Extrai os metadados de dentro do próprio bloco de texto
             extracted_info = extract_metadata_from_chunk(chunk)
 
             chunks_to_index.append(chunk)
             metadata_to_index.append({
                 "source": path.name,
-                # Resolve a sobreposição de IDs: ex: "ts_metrics_chunk_0", "offer_catalog_chunk_0"
                 "chunk_id": f"{doc_tag}_chunk_{idx}",
                 "text": chunk,
                 "metadata": {
@@ -128,18 +118,12 @@ def index_documents():
                 }
             })
 
-    if not chunks_to_index:
-        print("❌ Nenhum texto encontrado nos arquivos Markdown para indexar.")
-        return
 
-    # 2. Geração e gravação dos vetores no FAISS
     print(f"Gerando embeddings para {len(chunks_to_index)} trechos...")
     embeddings = np.array(embedding_model.encode(chunks_to_index)).astype('float32')
 
     dimension = embeddings.shape[1]
 
-    # Garante que a pasta de destino exista
-    VECTOR_STORE_DIR.mkdir(parents=True, exist_ok=True)
 
     index = faiss.IndexFlatL2(dimension)
     index.add(embeddings)
@@ -147,7 +131,6 @@ def index_documents():
     print(f"Salvando o índice FAISS em: {VECTOR_STORE_PATH}")
     faiss.write_index(index, str(VECTOR_STORE_PATH))
 
-    # 3. Grava os metadados estruturados ricos
     print(f"Salvando metadados enriquecidos em: {METADATA_PATH}")
     with open(METADATA_PATH, "w", encoding="utf-8") as f:
         json.dump(metadata_to_index, f, indent=4, ensure_ascii=False)
