@@ -16,7 +16,7 @@ METADATA_PATH = os.getenv("METADATA_PATH")
 with open(METADATA_PATH, "r", encoding="utf-8") as f:
     metadata = json.load(f)
 
-def retrieve_context(prompt, top_k=2):
+def retrieve_context(prompt, top_k=4):
     # Gera o embedding para a pergunta do usuário
     prompt_vector = embedding_model.encode([prompt], convert_to_numpy=True).astype('float32')
 
