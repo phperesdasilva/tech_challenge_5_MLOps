@@ -92,7 +92,7 @@ def retrieve_context(
         help="A frase, pergunta ou termo que você deseja buscar no banco de dados vetorial."
     ),
     top_k: int = typer.Option(
-        2,
+        4,
         "--top-k", "-k",
         help="Quantidade de trechos de documentos mais similares a serem retornados."
     )
