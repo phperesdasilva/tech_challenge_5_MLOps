@@ -6,9 +6,11 @@ from dotenv import load_dotenv
 import faiss
 import numpy as np
 
+load_dotenv()
+
 from rag.embeddings import embedding_model
 
-load_dotenv()
+
 
 VECTOR_STORE_DIR = Path(os.getenv("VECTOR_STORE_DIR", "data/rag"))
 VECTOR_STORE_PATH = Path(
