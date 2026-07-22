@@ -14,10 +14,12 @@ class SyntheticEventGenerator:
         load_dotenv()  # Carrega variáveis de ambiente do arquivo .env
 
         self.offer_catalog_path = os.getenv(
-            "OFFER_CATALOG_PATH", "data/kaggle/synthetic_enrichment/offer_catalog.json"
+            "OFFER_CATALOG_PATH",
+            "data/kaggle/synthetic_enrichment/offer_catalog.json",
         )
         self.clean_bank_path = os.getenv(
-            "CLEAN_BANK_PATH", "data/kaggle/processed/clean_bank.parquet"
+            "CLEAN_BANK_PATH",
+            "data/kaggle/processed/clean_bank.parquet",
         )
 
     def load_data(self):

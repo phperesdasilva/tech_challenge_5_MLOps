@@ -1,52 +1,52 @@
 {
-  "catalog_version": "1.0.0",
-  "offers": [
+  "versao_catalogo": "1.0.0",
+  "ofertas": [
     {
-      "arm_id": "0",
-      "offer_name": "Conta Digital Padrão",
-      "offer_type": "baseline",
-      "description": "Abertura de conta corrente digital sem taxas.",
-      "synthetic_conversion_prior": 0.15,
-      "reward_value": 10.0,
-      "eligibility_rules": {
-        "min_age": 18,
-        "requires_housing_loan": false
+      "id_braco": "0",
+      "nome_oferta": "Conta Digital Padrão",
+      "tipo_oferta": "baseline",
+      "descricao": "Abertura de conta corrente digital sem taxas.",
+      "prior_conversao_sintetica": 0.15,
+      "valor_recompensa": 10.0,
+      "regras_elegibilidade": {
+        "idade_minima": 18,
+        "requer_emprestimo_habitacional": false
       }
     },
     {
-      "arm_id": "1",
-      "offer_name": "Cartão de Crédito Premium",
-      "offer_type": "credit",
-      "description": "Cartão de crédito com programa de recompensas.",
-      "synthetic_conversion_prior": 0.05,
-      "reward_value": 150.0,
-      "eligibility_rules": {
-        "min_age": 21,
-        "requires_housing_loan": false
+      "id_braco": "1",
+      "nome_oferta": "Cartão de Crédito Premium",
+      "tipo_oferta": "credit",
+      "descricao": "Cartão de crédito com programa de recompensas.",
+      "prior_conversao_sintetica": 0.05,
+      "valor_recompensa": 150.0,
+      "regras_elegibilidade": {
+        "idade_minima": 21,
+        "requer_emprestimo_habitacional": false
       }
     },
     {
-      "arm_id": "2",
-      "offer_name": "Refinanciamento Imobiliário",
-      "offer_type": "loan",
-      "description": "Taxas reduzidas para clientes que já possuem financiamento habitacional.",
-      "synthetic_conversion_prior": 0.08,
-      "reward_value": 300.0,
-      "eligibility_rules": {
-        "min_age": 25,
-        "requires_housing_loan": true
+      "id_braco": "2",
+      "nome_oferta": "Refinanciamento Imobiliário",
+      "tipo_oferta": "loan",
+      "descricao": "Taxas reduzidas para clientes que já possuem financiamento habitacional.",
+      "prior_conversao_sintetica": 0.08,
+      "valor_recompensa": 300.0,
+      "regras_elegibilidade": {
+        "idade_minima": 25,
+        "requer_emprestimo_habitacional": true
       }
     },
     {
-      "arm_id": "3",
-      "offer_name": "Depósito a Prazo (CDB)",
-      "offer_type": "investment",
-      "description": "Investimento de renda fixa atrelado ao target original da base.",
-      "synthetic_conversion_prior": 0.12,
-      "reward_value": 80.0,
-      "eligibility_rules": {
-        "min_age": 18,
-        "requires_housing_loan": false
+      "id_braco": "3",
+      "nome_oferta": "Depósito a Prazo (CDB)",
+      "tipo_oferta": "investmento",
+      "descricao": "Investimento de renda fixa atrelado ao target original da base.",
+      "prior_conversao_sintetica": 0.12,
+      "valor_recompensa": 80.0,
+      "regras_elegibilidade": {
+        "idade_minima": 18,
+        "requer_emprestimo_habitacional": false
       }
     }
   ]
