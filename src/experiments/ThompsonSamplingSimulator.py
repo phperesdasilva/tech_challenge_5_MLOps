@@ -33,7 +33,7 @@ class ThompsonSamplingSimulator:
     def run_thompson_sampling(self):
         self.out_dir.mkdir(parents=True, exist_ok=True)
         offers = load_catalog()
-        arm_ids = [o["arm_id"] for o in offers]
+        arm_ids = [o["id_braco"] for o in offers]
         df = pd.read_parquet(self.default_bank_path)
 
         policies = [

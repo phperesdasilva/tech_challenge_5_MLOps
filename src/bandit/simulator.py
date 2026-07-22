@@ -60,7 +60,7 @@ def run_simulation(
         base_date = BASE_DATE
     env = OfferEnvironment(rng, delay_scale_days=DELAY_SCALE_DAYS)
     metrics = MetricsTracker()
-    offer_by_arm = {o["arm_id"]: o for o in offers}
+    offer_by_arm = {o["id_braco"]: o for o in offers}
 
     # fila: (conversion_time, arm_id, reward, converted, optimal_expected, context)
     # O campo `context` (np.ndarray | None) foi adicionado para o LinUCB:
@@ -77,7 +77,7 @@ def run_simulation(
         if not eligible:
             continue
 
-        eligible_ids = [o["arm_id"] for o in eligible]
+        eligible_ids = [o["id_braco"] for o in eligible]
 
         # Codifica o cliente em vetor de contexto se encoder foi fornecido — usado no LinUCB
         context = encoder.encode(client_dict) if encoder is not None else None

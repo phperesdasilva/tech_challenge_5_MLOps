@@ -51,7 +51,7 @@ def _linucb_profile_analysis(
         eligible = get_eligible_offers(client_dict, offers)
         if not eligible:
             continue
-        eligible_ids = [o["arm_id"] for o in eligible]
+        eligible_ids = [o["id_braco"] for o in eligible]
         x = encoder.encode(client_dict)
         chosen = policy.select_arm(eligible_ids, context=x)
         records.append(
@@ -84,7 +84,7 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     offers = load_catalog()
-    arm_ids = [o["arm_id"] for o in offers]
+    arm_ids = [o["id_braco"] for o in offers]
     df = pd.read_parquet(DEFAULT_BANK_PATH)
 
     # Encoder ajustado no dataset completo — usado apenas pelo LinUCB
