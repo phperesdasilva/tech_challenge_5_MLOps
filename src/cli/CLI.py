@@ -27,13 +27,6 @@ class CLI:
         self.data_manager = DataManager()
         self.event_generator = SyntheticEventGenerator()
         self.thompson_sampling = ThompsonSamplingSimulator()
-        self._assistant = None
-
-    @property
-    def assistant(self):
-        if self._assistant is None:
-            self._assistant = ExperimentAssistant()
-        return self._assistant
 
     def run_eda(self):
         self.data_manager.run_eda()
