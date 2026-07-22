@@ -9,43 +9,80 @@ from llm.groq_model import groq_client
 
 load_dotenv()
 
+TS_METRICS_PATH = os.getenv(
+    "TS_METRICS_PATH",
+    "data/experiments/thompson_sampling/metrics_timeseries.csv",
+)
+TS_METRICS_REPORT_PATH = os.getenv(
+    "TS_METRICS_REPORT_PATH",
+    "data/rag/thompson_sampling/metrics_timeseries_report.md",
+)
+ARM_COUNTS_BL_PATH = os.getenv(
+    "ARM_COUNTS_BL_PATH",
+    "data/experiments/thompson_sampling/arm_counts_BaselineFixedPolicy.csv",
+)
+ARM_COUNTS_REPORT_BL_PATH = os.getenv(
+    "ARM_COUNTS_REPORT_BL_PATH",
+    "data/rag/thompson_sampling/baseline_count_report.md",
+)
+ARM_COUNTS_TS_PATH = os.getenv(
+    "ARM_COUNTS_TS_PATH",
+    "data/experiments/thompson_sampling/arm_counts_ThompsonSamplingPolicy.csv",
+)
+ARM_COUNTS_REPORT_TS_PATH = os.getenv(
+    "ARM_COUNTS_REPORT_TS_PATH",
+    "data/rag/thompson_sampling/thompson_sampling_count_report.md",
+)
+OFFER_CATALOG_PATH = os.getenv(
+    "OFFER_CATALOG_PATH",
+    "data/kaggle/synthetic_enrichment/offer_catalog.json",
+)
+OFFER_CATALOG_REPORT_PATH = os.getenv(
+    "OFFER_CATALOG_REPORT_PATH",
+    "data/rag/thompson_sampling/offer_catalog_report.md",
+)
+METRICS_SUMMARY_PATH = os.getenv(
+    "METRICS_SUMMARY_PATH",
+    "data/experiments/thompson_sampling/metrics_summary.csv",
+)
+
 PROMPTS = {
 
 "prompt_ts_metrics": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo CSV {os.getenv('TS_METRICS_PATH')} que contém métricas de experimentos de Thompson Sampling.
+Você tem acesso ao arquivo CSV {TS_METRICS_PATH} que contém métricas de experimentos de Thompson Sampling.
 Você deve analisar os dados e escrever um relatório que compare a progressão da baseline com a progressão do modelo de Thompson Sampling.
 Destacando as diferenças e insights obtidos a partir dos resultados.
-Escreva o relatório em português e salve o resultado no arquivo {os.getenv('TS_METRICS_REPORT_PATH')}.
+Escreva o relatório em português e salve o resultado no arquivo {TS_METRICS_REPORT_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {os.getenv('METRICS_SUMMARY_PATH')} como referência para o resumo das métricas.
+Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """,
 
 "prompt_arm_counts_bl": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo CSV {os.getenv('ARM_COUNTS_BL_PATH')} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling com a política BaselineFixedPolicy.
+Você tem acesso ao arquivo CSV {ARM_COUNTS_BL_PATH} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling com a política BaselineFixedPolicy.
 Você deve analisar os dados e escrever um relatório que descreva a contagem de execuções de cada braço.
-Escreva o relatório em português e salve o resultado no arquivo {os.getenv('ARM_COUNTS_REPORT_BL_PATH')}.
+Escreva o relatório em português e salve o resultado no arquivo {ARM_COUNTS_REPORT_BL_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {os.getenv('METRICS_SUMMARY_PATH')} como referência para o resumo das métricas.
+Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """,
 
 "prompt_arm_counts_ts": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo CSV {os.getenv('ARM_COUNTS_TS_PATH')} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling.
+Você tem acesso ao arquivo CSV {ARM_COUNTS_TS_PATH} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling.
 Você deve analisar os dados e escrever um relatório que descreva a contagem de execuções de cada braço.
-Escreva o relatório em português e salve o resultado no arquivo {os.getenv('ARM_COUNTS_REPORT_TS_PATH')}.
+Escreva o relatório em português e salve o resultado no arquivo {ARM_COUNTS_REPORT_TS_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {os.getenv('METRICS_SUMMARY_PATH')} como referência para o resumo das métricas.
+Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """,
 
 "prompt_offer_catalog": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo JSON {os.getenv('OFFER_CATALOG_PATH')} que contém o catálogo de ofertas.
+Você tem acesso ao arquivo JSON {OFFER_CATALOG_PATH} que contém o catálogo de ofertas.
 Você deve analisar os dados e escrever um relatório que descreva as características e benefícios de cada oferta.
-Escreva o relatório em português e salve o resultado no arquivo {os.getenv('OFFER_CATALOG_REPORT_PATH')}.
+Escreva o relatório em português e salve o resultado no arquivo {OFFER_CATALOG_REPORT_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {os.getenv('METRICS_SUMMARY_PATH')} como referência para o resumo das métricas.
+Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """
 }
 

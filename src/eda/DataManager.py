@@ -17,9 +17,9 @@ class DataManager:
     def get_raw_data(self):
         try:
 
-            kaggle_user = os.getenv("KAGGLE_USERNAME")
-            kaggle_key = os.getenv("KAGGLE_KEY")
-            dataset = os.getenv("DATASET")
+            kaggle_user = os.getenv("KAGGLE_USERNAME", "")
+            kaggle_key = os.getenv("KAGGLE_KEY", "")
+            dataset = os.getenv("DATASET", "")
 
             # Validate required environment variables
             if not kaggle_user or not kaggle_key or not dataset:

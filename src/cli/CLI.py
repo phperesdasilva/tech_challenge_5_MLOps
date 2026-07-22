@@ -14,13 +14,42 @@ from llm.llm_main import run_llm
 
 load_dotenv()
 
-TS_METRICS_PATH = os.getenv("TS_METRICS_PATH")
-TS_METRICS_REPORT_PATH = os.getenv("TS_METRICS_REPORT_PATH")
-ARM_COUNTS_BL_PATH = os.getenv("ARM_COUNTS_BL_PATH")
-ARM_COUNTS_REPORT_BL_PATH = os.getenv("ARM_COUNTS_REPORT_BL_PATH")
-ARM_COUNTS_TS_PATH = os.getenv("ARM_COUNTS_TS_PATH")
-ARM_COUNTS_REPORT_TS_PATH = os.getenv("ARM_COUNTS_REPORT_TS_PATH")
-METRICS_SUMMARY_PATH = os.getenv("METRICS_SUMMARY_PATH")
+TS_METRICS_PATH = os.getenv(
+    "TS_METRICS_PATH",
+    "data/experiments/thompson_sampling/metrics_timeseries.csv",
+)
+TS_METRICS_REPORT_PATH = os.getenv(
+    "TS_METRICS_REPORT_PATH",
+    "data/rag/thompson_sampling/metrics_timeseries_report.md",
+)
+ARM_COUNTS_BL_PATH = os.getenv(
+    "ARM_COUNTS_BL_PATH",
+    "data/experiments/thompson_sampling/arm_counts_BaselineFixedPolicy.csv",
+)
+ARM_COUNTS_REPORT_BL_PATH = os.getenv(
+    "ARM_COUNTS_REPORT_BL_PATH",
+    "data/rag/thompson_sampling/baseline_count_report.md",
+)
+ARM_COUNTS_TS_PATH = os.getenv(
+    "ARM_COUNTS_TS_PATH",
+    "data/experiments/thompson_sampling/arm_counts_ThompsonSamplingPolicy.csv",
+)
+ARM_COUNTS_REPORT_TS_PATH = os.getenv(
+    "ARM_COUNTS_REPORT_TS_PATH",
+    "data/rag/thompson_sampling/thompson_sampling_count_report.md",
+)
+METRICS_SUMMARY_PATH = os.getenv(
+    "METRICS_SUMMARY_PATH",
+    "data/experiments/thompson_sampling/metrics_summary.csv",
+)
+OFFER_CATALOG_PATH = os.getenv(
+    "OFFER_CATALOG_PATH",
+    "data/kaggle/synthetic_enrichment/offer_catalog.json",
+)
+OFFER_CATALOG_REPORT_PATH = os.getenv(
+    "OFFER_CATALOG_REPORT_PATH",
+    "data/rag/thompson_sampling/offer_catalog_report.md",
+)
 
 class CLI:
     def __init__(self):
@@ -61,8 +90,8 @@ class CLI:
     def generate_report_offer_catalog(self):
         generate_report(
             prompt=PROMPTS["prompt_offer_catalog"],
-            source_path=os.getenv("OFFER_CATALOG_PATH"),
-            report_path=os.getenv("OFFER_CATALOG_REPORT_PATH")
+            source_path=OFFER_CATALOG_PATH,
+            report_path=OFFER_CATALOG_REPORT_PATH
         )
 
     def generate_all_reports(self):

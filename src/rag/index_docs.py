@@ -11,14 +11,30 @@ from rag.embeddings import embedding_model
 load_dotenv()
 
 VECTOR_STORE_DIR = Path(os.getenv("VECTOR_STORE_DIR", "data/rag"))
-VECTOR_STORE_PATH = os.getenv("VECTOR_STORE_PATH")
-METADATA_PATH = os.getenv("METADATA_PATH")
+VECTOR_STORE_PATH = Path(
+    os.getenv("VECTOR_STORE_PATH", str(VECTOR_STORE_DIR / "vector_store.faiss"))
+)
+METADATA_PATH = Path(
+    os.getenv("METADATA_PATH", str(VECTOR_STORE_DIR / "vector_store_metadata.json"))
+)
 
 MD_FILES = [
-    os.getenv("TS_METRICS_REPORT_PATH"),
-    os.getenv("ARM_COUNTS_REPORT_BL_PATH"),
-    os.getenv("ARM_COUNTS_REPORT_TS_PATH"),
-    os.getenv("OFFER_CATALOG_REPORT_PATH")
+    os.getenv(
+        "TS_METRICS_REPORT_PATH",
+        "data/rag/thompson_sampling/metrics_timeseries_report.md",
+    ),
+    os.getenv(
+        "ARM_COUNTS_REPORT_BL_PATH",
+        "data/rag/thompson_sampling/baseline_count_report.md",
+    ),
+    os.getenv(
+        "ARM_COUNTS_REPORT_TS_PATH",
+        "data/rag/thompson_sampling/thompson_sampling_count_report.md",
+    ),
+    os.getenv(
+        "OFFER_CATALOG_REPORT_PATH",
+        "data/rag/thompson_sampling/offer_catalog_report.md",
+    ),
 ]
 
 def chunk_markdown(text, chunk_size=1500):
