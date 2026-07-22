@@ -2,7 +2,7 @@
 venv/
 env/
 .env
-.venv
+.venv/
 
 # Arquivos de Sistema e Cache do Python
 __pycache__/
@@ -11,10 +11,15 @@ __pycache__/
 .DS_Store
 
 # Dados e Experimentos de MLOps
+data/*
 mlruns/
 *.parquet
 *.csv
 *.json
+
+# Exceção: corpus sintético de políticas (base do RAG do assistente)
+!data/policies/
+!data/policies/*.md
 
 # Build do pacote
 build/

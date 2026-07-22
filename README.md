@@ -105,8 +105,8 @@ O experimento gera três artefatos principais:
 
 As seguintes variáveis podem ser definidas via `.env`:
 
-- `OUT_DIR`: diretório de saída do experimento.
-- `SEED`: semente aleatória do experimento.
+- `TS_OUT_DIR`: diretório de saída do experimento.
+- `SEED`: semente aleatória do experimento Thompson Sampling.
 - `DEFAULT_BANK_PATH`: caminho para `clean_bank.parquet`.
 - `DEFAULT_CATALOG_PATH`: caminho para o catálogo de ofertas.
 - `BASE_DATE`: data base da simulação.
