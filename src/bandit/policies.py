@@ -68,38 +68,8 @@ class ThompsonSamplingPolicy(Policy):
             self.beta[arm_id] += 1
 
 
-class UCB1Policy(Policy):
-    """Referência para justificativa vs Thompson (Nilos/UCB na análise)."""
-
-    def __init__(self, arm_ids: list[str], c: float = None):
-        if c is None:
-            c = float(os.getenv("UCB1_EXPLORATION_BONUS", "2.0"))
-        self.c = c
-        self.counts = {a: 0 for a in arm_ids}
-        self.successes = {a: 0 for a in arm_ids}
-        self.total = 0
-
-    def select_arm(self, eligible_arm_ids: list[str], **kwargs) -> str:  # **kwargs — compatibilidade LinUCB
-        self.total += 1
-        # braços nunca puxados: força exploração
-        for a in eligible_arm_ids:
-            if self.counts[a] == 0:
-                return a
-        scores = {}
-        for a in eligible_arm_ids:
-            mean = self.successes[a] / self.counts[a]
-            bonus = self.c * np.sqrt(np.log(self.total) / self.counts[a])
-            scores[a] = mean + bonus
-        return max(scores, key=scores.get)
-
-    def update(self, arm_id: str, success: bool, **kwargs) -> None:  # **kwargs — compatibilidade LinUCB
-        self.counts[arm_id] += 1
-        if success:
-            self.successes[arm_id] += 1
-
-
 # =============================================================================
-# LinUCBPolicy — NOVO (LinUCB)
+# LinUCBPolicy
 # Única política contextual do projeto: usa o vetor de features do cliente
 # para personalizar a recomendação por perfil.
 # =============================================================================
