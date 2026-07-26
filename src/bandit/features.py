@@ -2,7 +2,7 @@
 Engenharia de features para o LinUCB.
 
 Converte um dicionário de cliente em um vetor numérico fixo para ser usado
-como contexto `x` pela política LinUCB.
+como contexto pela política LinUCB.
 
 Estrutura do vetor (ordem):
     [age_z, balance_z, pdays_z, previous_z, pdays_was_contacted, housing_bin, loan_bin,

@@ -76,59 +76,83 @@ class ThompsonSamplingPolicy(Policy):
 class LinUCBPolicy(Policy):
     """LinUCB Disjoint (Li et al., 2010).
 
-    Modelo linear independente por arm. A seleção pondera as features do
-    cliente usando um bônus de incerteza que diminui conforme o arm é
-    explorado em contextos similares.
+    Modelo linear INDEPENDENTE por braço (por isso "disjoint"): cada oferta
+    tem seu próprio "aprendizado" de quais clientes respondem bem a ela.
 
-    Para cada arm `a`:
-      - A_a (d×d): acumula produtos externos dos contextos vistos → np.eye(d) no início
-      - b_a (d,):  acumula reward * contexto                       → zeros no início
-      - θ_a = A_a⁻¹ · b_a  (vetor de pesos aprendido)
-      - score = θ_a · x + alpha · √(x^T · A_a⁻¹ · x)
+    Para cada braço `a`, guardamos duas estruturas que resumem tudo que já
+    observamos sobre esse braço:
+      - contexts_seen_matrix (d×d): acumula os contextos (clientes) já vistos
+        por esse braço → começa como matriz identidade (np.eye(d))
+      - reward_weighted_context_sum (d,): acumula contexto * recompensa,
+        ou seja, "para onde os clientes que converteram apontavam" → começa em zero
 
-    O segundo termo é o bônus de exploração: grande quando o arm ainda não
-    foi explorado em contextos parecidos com o cliente atual.
+    A partir dessas duas estruturas, calculamos:
+      - learned_weights = contexts_seen_matrix⁻¹ · reward_weighted_context_sum
+        (o vetor de pesos aprendido — o quanto cada feature "pesa" na previsão)
+      - score = learned_weights · x + alpha · √(x^T · contexts_seen_matrix⁻¹ · x)
+        (previsão de recompensa + bônus de incerteza)
+
+    O segundo termo (bônus de exploração) fica grande quando o braço ainda
+    não foi testado em contextos parecidos com o cliente atual — isso empurra
+    o algoritmo a experimentar braços incertos, em vez de só repetir o que já
+    parece bom.
 
     Parâmetros
     ----------
     arm_ids : lista de IDs dos braços (igual às outras políticas)
     dim     : dimensão do vetor de contexto (vem de BankContextEncoder.dim)
     alpha   : peso do bônus de exploração — via LINUCB_ALPHA ou padrão 1.0
+              (alpha maior = explora mais; alpha menor = confia mais no que já aprendeu)
     """
 
     def __init__(self, arm_ids: list[str], dim: int, alpha: float = None) -> None:
         if alpha is None:
-            alpha = float(os.getenv("LINUCB_ALPHA", "1.0"))  # LINUCB_ALPHA — usado no LinUCB
+            alpha = float(os.getenv("LINUCB_ALPHA", "1.0"))
         self.alpha = alpha
         self.dim = dim
-        # Uma matriz A e um vetor b por arm — NOVO (LinUCB)
-        self.A: dict[str, np.ndarray] = {a: np.eye(dim) for a in arm_ids}
-        self.b: dict[str, np.ndarray] = {a: np.zeros(dim) for a in arm_ids}
 
-    def _ucb_score(self, arm_id: str, x: np.ndarray) -> float:
-        """Calcula exploitation + exploration para um arm dado o contexto x."""
-        A_inv = np.linalg.inv(self.A[arm_id])
-        theta = A_inv @ self.b[arm_id]          # pesos aprendidos
-        exploitation = theta @ x                 # recompensa esperada
-        exploration = self.alpha * np.sqrt(x @ A_inv @ x)  # bônus de incerteza
-        return exploitation + exploration
+        # Uma matriz e um vetor por braço, inicializados "do zero":
+        # identidade = ainda não vimos nenhum contexto; zeros = nenhuma recompensa acumulada.
+        self.contexts_seen_matrix: dict[str, np.ndarray] = {a: np.eye(dim) for a in arm_ids}
+        self.reward_weighted_context_sum: dict[str, np.ndarray] = {a: np.zeros(dim) for a in arm_ids}
+
+
+    def _ucb_score(self, arm_id: str, client_context: np.ndarray) -> float:
+        """Estima o quão bom é oferecer `arm_id` para o cliente descrito por `client_context`.
+
+        score = previsão de recompensa (exploitation) + incerteza (exploration)
+        """
+        inverse_contexts_matrix = np.linalg.inv(self.contexts_seen_matrix[arm_id])
+        learned_weights = inverse_contexts_matrix @ self.reward_weighted_context_sum[arm_id]
+
+        predicted_reward = learned_weights @ client_context  # "achamos que esse cliente vai responder assim"
+
+        # Quanto menos contexto parecido com este já foi visto por este braço,
+        # maior a incerteza — e maior o incentivo a explorar.
+        uncertainty_bonus = self.alpha * np.sqrt(
+            client_context @ inverse_contexts_matrix @ client_context
+        )
+
+        return predicted_reward + uncertainty_bonus
 
     def select_arm(self, eligible_arm_ids: list[str], **kwargs) -> str:
-        # context é o vetor numpy gerado pelo BankContextEncoder — NOVO (LinUCB)
-        x: np.ndarray = kwargs.get("context")
-        if x is None:
-            raise ValueError(
-                "LinUCBPolicy exige o kwarg 'context' (np.ndarray) em select_arm()."
-            )
-        return max(eligible_arm_ids, key=lambda a: self._ucb_score(a, x))
+        # O contexto é o vetor numpy gerado pelo BankContextEncoder para este cliente.
+        client_context: np.ndarray = kwargs.get("context")
+        if client_context is None:
+            raise ValueError("LinUCBPolicy exige o kwarg 'context' (np.ndarray) em select_arm().")
+        # Escolhe o braço com o maior score entre os elegíveis para este cliente.
+        return max(eligible_arm_ids, key=lambda arm_id: self._ucb_score(arm_id, client_context))
 
     def update(self, arm_id: str, success: bool, **kwargs) -> None:
-        # context deve ser o mesmo vetor usado na seleção — armazenado na fila pending — NOVO (LinUCB)
-        x: np.ndarray = kwargs.get("context")
-        if x is None:
-            raise ValueError(
-                "LinUCBPolicy exige o kwarg 'context' (np.ndarray) em update()."
-            )
+        # O contexto aqui precisa ser o MESMO vetor usado na chamada de select_arm
+        # que gerou esta interação — é assim que a política associa o resultado
+        # (sucesso ou não) ao perfil de cliente que o gerou.
+        client_context: np.ndarray = kwargs.get("context")
+        if client_context is None:
+            raise ValueError("LinUCBPolicy exige o kwarg 'context' (np.ndarray) em update().")
         reward = 1.0 if success else 0.0
-        self.A[arm_id] += np.outer(x, x)   # atualiza confiança na direção x
-        self.b[arm_id] += reward * x        # acumula sinal de recompensa
+
+        # "Vimos mais um cliente com este perfil" — reduz a incerteza nessa direção.
+        self.contexts_seen_matrix[arm_id] += np.outer(client_context, client_context)
+        # Acumula o sinal de recompensa na direção do contexto observado.
+        self.reward_weighted_context_sum[arm_id] += reward * client_context
