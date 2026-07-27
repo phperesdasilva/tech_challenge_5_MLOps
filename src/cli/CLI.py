@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from eda.DataManager import DataManager
 from event_generator.SyntheticEventGenerator import SyntheticEventGenerator
 from experiments.ThompsonSamplingSimulator import ThompsonSamplingSimulator
+from experiments.LinUCBSimulator import LinUCBSimulator
 from rag.doc_generator import generate_report, PROMPTS
 from rag.index_docs import index_documents
 from rag.retriever import retrieve_context
@@ -56,6 +57,7 @@ class CLI:
         self.data_manager = DataManager()
         self.event_generator = SyntheticEventGenerator()
         self.thompson_sampling = ThompsonSamplingSimulator()
+        self.linucb = LinUCBSimulator()
 
     def run_eda(self):
         self.data_manager.run_eda()
@@ -65,6 +67,9 @@ class CLI:
 
     def run_thompson_sampling(self):
         self.thompson_sampling.run_thompson_sampling()
+
+    def run_linucb(self):
+        self.linucb.run_linucb()
 
     def generate_report_ts_metrics(self):
         generate_report(
