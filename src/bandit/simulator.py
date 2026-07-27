@@ -110,13 +110,15 @@ def run_simulation(
         pending.sort(key=lambda x: x[0])
         while pending and pending[0][0] <= sim_clock:
             conv_time, arm, reward, converted, opt, ctx = pending.pop(0)
-            policy.update(arm, converted, context=ctx)  # ctx=None é ignorado pelas outras políticas
+            # reward=reward (valor monetário, não só se converteu) — usado pelo LinUCB
+            # para aprender o valor esperado de cada braço; as demais políticas ignoram.
+            policy.update(arm, converted, context=ctx, reward=reward)
             metrics.record_impression(arm, opt, reward)
 
     # drenar fila restante (fim da simulação)
     while pending:
         _, arm, reward, converted, opt, ctx = pending.pop(0)
-        policy.update(arm, converted, context=ctx)  # ctx=None é ignorado pelas outras políticas
+        policy.update(arm, converted, context=ctx, reward=reward)
         metrics.record_impression(arm, opt, reward)
 
     return metrics

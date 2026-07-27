@@ -150,7 +150,8 @@ class LinUCBPolicy(Policy):
         client_context: np.ndarray = kwargs.get("context")
         if client_context is None:
             raise ValueError("LinUCBPolicy exige o kwarg 'context' (np.ndarray) em update().")
-        reward = 1.0 if success else 0.0
+
+        reward: float = kwargs.get("reward", 1.0 if success else 0.0)
 
         # "Vimos mais um cliente com este perfil" — reduz a incerteza nessa direção.
         self.contexts_seen_matrix[arm_id] += np.outer(client_context, client_context)
