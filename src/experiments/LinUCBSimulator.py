@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 from bandit.catalog import get_eligible_offers, load_catalog
 from bandit.features import BankContextEncoder
-from bandit.policies import BaselineFixedPolicy, LinUCBPolicy, ThompsonSamplingPolicy
+from bandit.policies import LinUCBPolicy
 from bandit.simulator import run_simulation
 
 
@@ -132,7 +132,12 @@ class LinUCBSimulator:
         )
 
         print("\n=== LinUCB — Braço predominante por perfil de cliente ===")
-        for coluna in ("job", "education", "poutcome", "age_group"):
+
+        # Colunas pelas quais vamos agrupar os clientes, uma de cada vez,
+        # para descobrir qual braço a LinUCBPolicy recomenda mais para cada grupo.
+        colunas_de_perfil = ("job", "education", "poutcome", "age_group")
+
+        for coluna in colunas_de_perfil:
             # Conta, para cada valor da coluna (ex: cada profissão), quantas vezes
             # cada braço foi recomendado
             pivot = df_recomendacoes.groupby([coluna, "arm_id"]).size().unstack(fill_value=0)
@@ -141,8 +146,17 @@ class LinUCBSimulator:
             pivot["predominante"] = pivot.idxmax(axis=1)
             pivot["total"] = pivot.drop(columns="predominante").sum(axis=1)
 
+            # Imprime no terminal, para conferência rápida
             print(f"\n[Por {coluna}]")
             print(pivot[["predominante", "total"]].to_string())
+
+            # Salva a tabela completa em CSV, para que o LLM possa ler.
+            # O índice do pivot é o próprio valor da coluna (ex: cada profissão),
+            nome_do_arquivo = f"arm_by_{coluna}.csv"
+            caminho_do_arquivo = self.output_dir / nome_do_arquivo
+            pivot.to_csv(caminho_do_arquivo, index=True)
+
+            print(f"[LinUCB] tabela '{coluna}' salva em: {caminho_do_arquivo}")
 
 
 if __name__ == "__main__":
