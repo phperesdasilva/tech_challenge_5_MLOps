@@ -25,6 +25,10 @@ def run_thompson_sampling():
     """Executa a simulação do algoritmo Thompson Sampling e salva os resultados."""
     cli.run_thompson_sampling()
 
+@app.command(name="run-linucb")
+def run_linucb():
+    cli.run_linucb()
+
 @app.command(name="generate-report")
 def generate_report(
     all_reports: bool = typer.Option(
