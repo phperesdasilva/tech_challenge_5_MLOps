@@ -63,7 +63,7 @@ class CLI:
             report_path=paths.OFFER_CATALOG_REPORT_PATH
         )
 
-    def generate_all_reports(self):
+    def generate_all_thompson_sampling_reports(self):
         self.generate_report_ts_metrics()
         sleep(10)
         self.generate_report_arm_counts_bl()
@@ -126,6 +126,12 @@ class CLI:
         self.generate_report_arm_by_poutcome()
         sleep(10)
         self.generate_report_arm_by_age_group()
+
+    def generate_all_experiment_reports(self):
+        """Gera todos os relatórios de todos os experimentos: Thompson Sampling + LinUCB."""
+        self.generate_all_thompson_sampling_reports()
+        sleep(10)
+        self.generate_all_linucb_reports()
 
     def index_documents(self):
         index_documents()

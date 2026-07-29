@@ -32,7 +32,7 @@ def run_linucb():
 @app.command(name="generate-report")
 def generate_report(
     all_reports: bool = typer.Option(
-        False, "--all", help="Gera todos os 3 relatórios disponíveis de uma vez."
+        False, "--all", help="Gera todos os relatórios de todos os experimentos (Thompson Sampling + LinUCB)."
     ),
     tsmetrics: bool = typer.Option(
         False, "--tsmetrics", help="Gera o relatório de progressão das métricas do Thompson Sampling."
@@ -50,14 +50,15 @@ def generate_report(
     """
     Gera os relatórios executivos em Markdown utilizando LLM.
     Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, --acts, --oc.
+    Para relatórios específicos do LinUCB, use o comando "generate-linucb-report".
     """
     if not (all_reports or tsmetrics or acbl or acts or oc):
         typer.echo("[Erro] Você precisa selecionar pelo menos um relatório para gerar.")
         raise typer.Exit(code=1)
 
     if all_reports:
-        typer.echo("Iniciando geração de todos os relatórios...")
-        cli.generate_all_reports()
+        typer.echo("Iniciando geração de todos os relatórios (Thompson Sampling + LinUCB)...")
+        cli.generate_all_experiment_reports()
         return
 
     if tsmetrics:
@@ -75,6 +76,68 @@ def generate_report(
     if oc:
         typer.echo("Iniciando geração do relatório do Catálogo de Ofertas...")
         cli.generate_report_offer_catalog()
+
+@app.command(name="generate-linucb-report")
+def generate_linucb_report(
+    all_reports: bool = typer.Option(
+        False, "--all", help="Gera todos os relatórios do LinUCB de uma vez."
+    ),
+    metrics: bool = typer.Option(
+        False, "--metrics", help="Gera o relatório de métricas agregadas do LinUCB (conversão, reward, regret)."
+    ),
+    arm_counts: bool = typer.Option(
+        False, "--arm-counts", help="Gera o relatório de contagem de escolhas por braço."
+    ),
+    by_job: bool = typer.Option(
+        False, "--by-job", help="Gera o relatório de braço predominante por profissão (job)."
+    ),
+    by_education: bool = typer.Option(
+        False, "--by-education", help="Gera o relatório de braço predominante por escolaridade (education)."
+    ),
+    by_poutcome: bool = typer.Option(
+        False, "--by-poutcome", help="Gera o relatório de braço predominante por resultado da campanha anterior (poutcome)."
+    ),
+    by_age_group: bool = typer.Option(
+        False, "--by-age-group", help="Gera o relatório de braço predominante por faixa etária (age_group)."
+    )
+):
+    """
+    Gera os relatórios executivos em Markdown do experimento de LinUCB, utilizando LLM.
+    Você deve passar pelo menos uma das opções: --all, --metrics, --arm-counts, --by-job,
+    --by-education, --by-poutcome, --by-age-group.
+    """
+    if not (all_reports or metrics or arm_counts or by_job or by_education or by_poutcome or by_age_group):
+        typer.echo("[Erro] Você precisa selecionar pelo menos um relatório para gerar.")
+        raise typer.Exit(code=1)
+
+    if all_reports:
+        typer.echo("Iniciando geração de todos os relatórios do LinUCB...")
+        cli.generate_all_linucb_reports()
+        return
+
+    if metrics:
+        typer.echo("Iniciando geração do relatório de métricas do LinUCB...")
+        cli.generate_report_linucb_metrics()
+
+    if arm_counts:
+        typer.echo("Iniciando geração do relatório de contagem de braços do LinUCB...")
+        cli.generate_report_arm_counts_linucb()
+
+    if by_job:
+        typer.echo("Iniciando geração do relatório de braço predominante por profissão...")
+        cli.generate_report_arm_by_job()
+
+    if by_education:
+        typer.echo("Iniciando geração do relatório de braço predominante por escolaridade...")
+        cli.generate_report_arm_by_education()
+
+    if by_poutcome:
+        typer.echo("Iniciando geração do relatório de braço predominante por resultado da campanha anterior...")
+        cli.generate_report_arm_by_poutcome()
+
+    if by_age_group:
+        typer.echo("Iniciando geração do relatório de braço predominante por faixa etária...")
+        cli.generate_report_arm_by_age_group()
 
 @app.command(name="index-documents")
 def index_documents():
