@@ -1,4 +1,3 @@
-import os
 from time import sleep
 
 from dotenv import load_dotenv
@@ -11,46 +10,11 @@ from rag.doc_generator import generate_report, PROMPTS
 from rag.index_docs import index_documents
 from rag.retriever import retrieve_context
 from rag.prompt_builder import build_rag_prompt
+import rag.paths as paths
 from llm.llm_main import run_llm
 
 load_dotenv()
 
-TS_METRICS_PATH = os.getenv(
-    "TS_METRICS_PATH",
-    "data/experiments/thompson_sampling/metrics_timeseries.csv",
-)
-TS_METRICS_REPORT_PATH = os.getenv(
-    "TS_METRICS_REPORT_PATH",
-    "data/rag/thompson_sampling/metrics_timeseries_report.md",
-)
-ARM_COUNTS_BL_PATH = os.getenv(
-    "ARM_COUNTS_BL_PATH",
-    "data/experiments/thompson_sampling/arm_counts_BaselineFixedPolicy.csv",
-)
-ARM_COUNTS_REPORT_BL_PATH = os.getenv(
-    "ARM_COUNTS_REPORT_BL_PATH",
-    "data/rag/thompson_sampling/baseline_count_report.md",
-)
-ARM_COUNTS_TS_PATH = os.getenv(
-    "ARM_COUNTS_TS_PATH",
-    "data/experiments/thompson_sampling/arm_counts_ThompsonSamplingPolicy.csv",
-)
-ARM_COUNTS_REPORT_TS_PATH = os.getenv(
-    "ARM_COUNTS_REPORT_TS_PATH",
-    "data/rag/thompson_sampling/thompson_sampling_count_report.md",
-)
-METRICS_SUMMARY_PATH = os.getenv(
-    "METRICS_SUMMARY_PATH",
-    "data/experiments/thompson_sampling/metrics_summary.csv",
-)
-OFFER_CATALOG_PATH = os.getenv(
-    "OFFER_CATALOG_PATH",
-    "data/kaggle/synthetic_enrichment/offer_catalog.json",
-)
-OFFER_CATALOG_REPORT_PATH = os.getenv(
-    "OFFER_CATALOG_REPORT_PATH",
-    "data/rag/thompson_sampling/offer_catalog_report.md",
-)
 
 class CLI:
     def __init__(self):
@@ -74,29 +38,29 @@ class CLI:
     def generate_report_ts_metrics(self):
         generate_report(
             prompt=PROMPTS["prompt_ts_metrics"],
-            source_path=TS_METRICS_PATH,
-            report_path=TS_METRICS_REPORT_PATH
+            source_path=paths.TS_METRICS_PATH,
+            report_path=paths.TS_METRICS_REPORT_PATH
         )
 
     def generate_report_arm_counts_bl(self):
         generate_report(
             prompt=PROMPTS["prompt_arm_counts_bl"],
-            source_path=ARM_COUNTS_BL_PATH,
-            report_path=ARM_COUNTS_REPORT_BL_PATH
+            source_path=paths.ARM_COUNTS_BL_PATH,
+            report_path=paths.ARM_COUNTS_REPORT_BL_PATH
         )
 
     def generate_report_arm_counts_ts(self):
         generate_report(
             prompt=PROMPTS["prompt_arm_counts_ts"],
-            source_path=ARM_COUNTS_TS_PATH,
-            report_path=ARM_COUNTS_REPORT_TS_PATH
+            source_path=paths.ARM_COUNTS_TS_PATH,
+            report_path=paths.ARM_COUNTS_REPORT_TS_PATH
         )
 
     def generate_report_offer_catalog(self):
         generate_report(
             prompt=PROMPTS["prompt_offer_catalog"],
-            source_path=OFFER_CATALOG_PATH,
-            report_path=OFFER_CATALOG_REPORT_PATH
+            source_path=paths.OFFER_CATALOG_PATH,
+            report_path=paths.OFFER_CATALOG_REPORT_PATH
         )
 
     def generate_all_reports(self):
@@ -107,6 +71,61 @@ class CLI:
         self.generate_report_arm_counts_ts()
         sleep(10)
         self.generate_report_offer_catalog()
+
+    def generate_report_linucb_metrics(self):
+        generate_report(
+            prompt=PROMPTS["prompt_linucb_metrics"],
+            source_path=paths.LINUCB_METRICS_SUMMARY_PATH,
+            report_path=paths.LINUCB_METRICS_REPORT_PATH
+        )
+
+    def generate_report_arm_counts_linucb(self):
+        generate_report(
+            prompt=PROMPTS["prompt_arm_counts_linucb"],
+            source_path=paths.ARM_COUNTS_LINUCB_PATH,
+            report_path=paths.ARM_COUNTS_REPORT_LINUCB_PATH
+        )
+
+    def generate_report_arm_by_job(self):
+        generate_report(
+            prompt=PROMPTS["prompt_arm_by_job"],
+            source_path=paths.ARM_BY_JOB_PATH,
+            report_path=paths.ARM_BY_JOB_REPORT_PATH
+        )
+
+    def generate_report_arm_by_education(self):
+        generate_report(
+            prompt=PROMPTS["prompt_arm_by_education"],
+            source_path=paths.ARM_BY_EDUCATION_PATH,
+            report_path=paths.ARM_BY_EDUCATION_REPORT_PATH
+        )
+
+    def generate_report_arm_by_poutcome(self):
+        generate_report(
+            prompt=PROMPTS["prompt_arm_by_poutcome"],
+            source_path=paths.ARM_BY_POUTCOME_PATH,
+            report_path=paths.ARM_BY_POUTCOME_REPORT_PATH
+        )
+
+    def generate_report_arm_by_age_group(self):
+        generate_report(
+            prompt=PROMPTS["prompt_arm_by_age_group"],
+            source_path=paths.ARM_BY_AGE_GROUP_PATH,
+            report_path=paths.ARM_BY_AGE_GROUP_REPORT_PATH
+        )
+
+    def generate_all_linucb_reports(self):
+        self.generate_report_linucb_metrics()
+        sleep(10)
+        self.generate_report_arm_counts_linucb()
+        sleep(10)
+        self.generate_report_arm_by_job()
+        sleep(10)
+        self.generate_report_arm_by_education()
+        sleep(10)
+        self.generate_report_arm_by_poutcome()
+        sleep(10)
+        self.generate_report_arm_by_age_group()
 
     def index_documents(self):
         index_documents()
