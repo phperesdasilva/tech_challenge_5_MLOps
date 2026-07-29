@@ -1,5 +1,5 @@
 import os
-from time import time
+from time import sleep
 
 from dotenv import load_dotenv
 
@@ -101,11 +101,11 @@ class CLI:
 
     def generate_all_reports(self):
         self.generate_report_ts_metrics()
-        time.sleep(10)
+        sleep(10)
         self.generate_report_arm_counts_bl()
-        time.sleep(10)
+        sleep(10)
         self.generate_report_arm_counts_ts()
-        time.sleep(10)
+        sleep(10)
         self.generate_report_offer_catalog()
 
     def index_documents(self):
