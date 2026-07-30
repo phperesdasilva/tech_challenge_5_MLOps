@@ -47,30 +47,15 @@ def generate_report(
         False, "--oc", help="Gera o relatório do catálogo de ofertas."
     ),
     all_linucb_reports: bool = typer.Option(
-        False, "--all linucb", help="Gera todos os relatórios do LinUCB de uma vez."
+        False, "--linucb", help="Gera todos os relatórios do LinUCB de uma vez."
     ),
-    metrics: bool = typer.Option(
-        False, "--linucb-metrics", help="Gera o relatório de métricas agregadas do LinUCB (conversão, reward, regret)."
-    ),
-    arm_counts: bool = typer.Option(
-        False, "--linucb-arm-counts", help="Gera o relatório de contagem de escolhas por braço."
-    ),
-    by_job: bool = typer.Option(
-        False, "--linucb-by-job", help="Gera o relatório de braço predominante por profissão (job)."
-    ),
-    by_education: bool = typer.Option(
-        False, "--linucb-by-education", help="Gera o relatório de braço predominante por escolaridade (education)."
-    ),
-    by_poutcome: bool = typer.Option(
-        False, "--linucb-by-poutcome", help="Gera o relatório de braço predominante por resultado da campanha anterior (poutcome)."
-    ),
-    by_age_group: bool = typer.Option(
-        False, "--linucb-by-age-group", help="Gera o relatório de braço predominante por faixa etária (age_group)."
+    all_thompson_sampling_reports: bool = typer.Option(
+        False, "--thompson-sampling", help="Gera todos os relatórios do Thompson Sampling de uma vez."
     )
 ):
     """
     Gera os relatórios executivos em Markdown utilizando LLM.
-    Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, --acts, --oc.
+    Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, --acts, --oc, --all linucb.
     Para relatórios específicos do LinUCB, use o comando "generate-linucb-report".
     """
     if not (all_reports or tsmetrics or acbl or acts or oc):
@@ -98,38 +83,16 @@ def generate_report(
         typer.echo("Iniciando geração do relatório do Catálogo de Ofertas...")
         cli.generate_report_offer_catalog()
 
-    if not (all_linucb_reports or metrics or arm_counts or by_job or by_education or by_poutcome or by_age_group):
-        typer.echo("[Erro] Você precisa selecionar pelo menos um relatório para gerar.")
-        raise typer.Exit(code=1)
 
     if all_linucb_reports:
         typer.echo("Iniciando geração de todos os relatórios do LinUCB...")
         cli.generate_all_linucb_reports()
         return
 
-    if metrics:
-        typer.echo("Iniciando geração do relatório de métricas do LinUCB...")
-        cli.generate_report_linucb_metrics()
-
-    if arm_counts:
-        typer.echo("Iniciando geração do relatório de contagem de braços do LinUCB...")
-        cli.generate_report_arm_counts_linucb()
-
-    if by_job:
-        typer.echo("Iniciando geração do relatório de braço predominante por profissão...")
-        cli.generate_report_arm_by_job()
-
-    if by_education:
-        typer.echo("Iniciando geração do relatório de braço predominante por escolaridade...")
-        cli.generate_report_arm_by_education()
-
-    if by_poutcome:
-        typer.echo("Iniciando geração do relatório de braço predominante por resultado da campanha anterior...")
-        cli.generate_report_arm_by_poutcome()
-
-    if by_age_group:
-        typer.echo("Iniciando geração do relatório de braço predominante por faixa etária...")
-        cli.generate_report_arm_by_age_group()
+    if all_thompson_sampling_reports:
+        typer.echo("Iniciando geração de todos os relatórios do Thompson Sampling...")
+        cli.generate_all_thompson_sampling_reports()
+        return
     
 
 @app.command(name="index-documents")
