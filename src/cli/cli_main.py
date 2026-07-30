@@ -34,15 +34,6 @@ def generate_report(
     all_reports: bool = typer.Option(
         False, "--all", help="Gera todos os relatórios de todos os experimentos (Thompson Sampling + LinUCB)."
     ),
-    tsmetrics: bool = typer.Option(
-        False, "--tsmetrics", help="Gera o relatório de progressão das métricas do Thompson Sampling."
-    ),
-    acbl: bool = typer.Option(
-        False, "--acbl", help="Gera o relatório de contagem de execuções de braços da política Baseline."
-    ),
-    acts: bool = typer.Option(
-        False, "--acts", help="Gera o relatório de contagem de execuções de braços do Thompson Sampling."
-    ),
     oc: bool = typer.Option(
         False, "--oc", help="Gera o relatório do catálogo de ofertas."
     ),
@@ -58,7 +49,7 @@ def generate_report(
     Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, --acts, --oc, --all linucb.
     Para relatórios específicos do LinUCB, use o comando "generate-linucb-report".
     """
-    if not (all_reports or tsmetrics or acbl or acts or oc):
+    if not (all_reports or oc or all_linucb_reports or all_thompson_sampling_reports):
         typer.echo("[Erro] Você precisa selecionar pelo menos um relatório para gerar.")
         raise typer.Exit(code=1)
 
@@ -66,18 +57,6 @@ def generate_report(
         typer.echo("Iniciando geração de todos os relatórios (Thompson Sampling + LinUCB)...")
         cli.generate_all_experiment_reports()
         return
-
-    if tsmetrics:
-        typer.echo("Iniciando geração do relatório de métricas do Thompson Sampling...")
-        cli.generate_report_ts_metrics()
-
-    if acbl:
-        typer.echo("Iniciando geração do relatório da Baseline...")
-        cli.generate_report_arm_counts_bl()
-
-    if acts:
-        typer.echo("Iniciando geração do relatório do Thompson Sampling (Arm Counts)...")
-        cli.generate_report_arm_counts_ts()
 
     if oc:
         typer.echo("Iniciando geração do relatório do Catálogo de Ofertas...")
