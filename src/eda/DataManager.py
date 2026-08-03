@@ -5,7 +5,9 @@ from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
-# Load environment variables
+
+# kaggle authenticates eagerly at import time (kaggle/__init__.py calls
+# api.authenticate() on import), so the .env must be loaded before this import.
 load_dotenv()
 from kaggle.api.kaggle_api_extended import KaggleApi
 
@@ -16,10 +18,9 @@ class DataManager:
 
     def get_raw_data(self):
         try:
-
-            kaggle_user = os.getenv("KAGGLE_USERNAME", "")
-            kaggle_key = os.getenv("KAGGLE_KEY", "")
-            dataset = os.getenv("DATASET", "")
+            kaggle_user = os.getenv("KAGGLE_USERNAME")
+            kaggle_key = os.getenv("KAGGLE_KEY")
+            dataset = os.getenv("DATASET")
 
             # Validate required environment variables
             if not kaggle_user or not kaggle_key or not dataset:

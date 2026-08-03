@@ -13,6 +13,8 @@ Pontos importantes:
     2. Relógio simulado — avança a cada impressão (0–30 dias + horas aleatórias).
     3. Dreno final — ao término, processa todas as recompensas pendentes
        restantes na fila.
+    4. Parâmetro `encoder` (usado no LinUCB) — se fornecido, codifica o cliente
+       em um vetor de contexto que é armazenado na fila e repassado ao update().
 
 Dados:
     Lê clientes de `data/kaggle/processed/clean_bank.parquet`.
@@ -52,14 +54,19 @@ def run_simulation(
     offers: list[dict],
     rng: np.random.Generator,
     base_date: datetime = None,
+    encoder=None,  # BankContextEncoder | None — usado no LinUCB
 ) -> MetricsTracker:
     if base_date is None:
         base_date = BASE_DATE
     env = OfferEnvironment(rng, delay_scale_days=DELAY_SCALE_DAYS)
     metrics = MetricsTracker()
-    offer_by_arm = {o["arm_id"]: o for o in offers}
+    offer_by_arm = {o["id_braco"]: o for o in offers}
 
-    # fila: (conversion_time, arm_id, reward, converted, optimal_expected)
+    # fila: (conversion_time, arm_id, reward, converted, optimal_expected, context)
+    # O campo `context` (np.ndarray | None) foi adicionado para o LinUCB:
+    # o vetor de features do cliente precisa ser armazenado aqui porque o
+    # update() só é chamado depois do delay, quando o contexto original
+    # já não está mais disponível no loop principal.
     pending: list[tuple] = []
     sim_clock = base_date
 
@@ -70,8 +77,12 @@ def run_simulation(
         if not eligible:
             continue
 
-        eligible_ids = [o["arm_id"] for o in eligible]
-        arm_id = policy.select_arm(eligible_ids)
+        eligible_ids = [o["id_braco"] for o in eligible]
+
+        # Codifica o cliente em vetor de contexto se encoder foi fornecido — usado no LinUCB
+        context = encoder.encode(client_dict) if encoder is not None else None
+
+        arm_id = policy.select_arm(eligible_ids, context=context)  # context=None é ignorado pelas outras políticas
         offer = offer_by_arm[arm_id]
 
         impression_time = sim_clock + timedelta(
@@ -83,6 +94,7 @@ def run_simulation(
         outcome = env.simulate_outcome(offer, impression_time)
         opt_exp = optimal_expected_reward(eligible)
 
+        # 6-tupla: contexto adicionado na posição final — usado no LinUCB
         pending.append(
             (
                 outcome["conversion_time"],
@@ -90,20 +102,23 @@ def run_simulation(
                 outcome["reward"],
                 outcome["converted"],
                 opt_exp,
+                context,  # np.ndarray ou None — usado no LinUCB
             )
         )
 
         # processa recompensas cujo delay já venceu
         pending.sort(key=lambda x: x[0])
         while pending and pending[0][0] <= sim_clock:
-            conv_time, arm, reward, converted, opt = pending.pop(0)
-            policy.update(arm, converted)
+            conv_time, arm, reward, converted, opt, ctx = pending.pop(0)
+            # reward=reward (valor monetário, não só se converteu) — usado pelo LinUCB
+            # para aprender o valor esperado de cada braço; as demais políticas ignoram.
+            policy.update(arm, converted, context=ctx, reward=reward)
             metrics.record_impression(arm, opt, reward)
 
     # drenar fila restante (fim da simulação)
     while pending:
-        _, arm, reward, converted, opt = pending.pop(0)
-        policy.update(arm, converted)
+        _, arm, reward, converted, opt, ctx = pending.pop(0)
+        policy.update(arm, converted, context=ctx, reward=reward)
         metrics.record_impression(arm, opt, reward)
 
     return metrics
