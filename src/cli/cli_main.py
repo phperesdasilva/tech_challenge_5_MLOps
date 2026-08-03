@@ -46,7 +46,7 @@ def generate_report(
 ):
     """
     Gera os relatórios executivos em Markdown utilizando LLM.
-    Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, --acts, --oc, --all linucb.
+    Você deve passar pelo menos uma das opções: --all, --oc, --linucb, --thompson-sampling.
     Para relatórios específicos do LinUCB, use o comando "generate-linucb-report".
     """
     if not (all_reports or oc or all_linucb_reports or all_thompson_sampling_reports):
@@ -72,7 +72,7 @@ def generate_report(
         typer.echo("Iniciando geração de todos os relatórios do Thompson Sampling...")
         cli.generate_all_thompson_sampling_reports()
         return
-    
+
 
 @app.command(name="index-documents")
 def index_documents():
