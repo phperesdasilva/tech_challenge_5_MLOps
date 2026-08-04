@@ -25,52 +25,54 @@ def run_thompson_sampling():
     """Executa a simulação do algoritmo Thompson Sampling e salva os resultados."""
     cli.run_thompson_sampling()
 
+@app.command(name="run-linucb")
+def run_linucb():
+    cli.run_linucb()
+
 @app.command(name="generate-report")
 def generate_report(
     all_reports: bool = typer.Option(
-        False, "--all", help="Gera todos os 3 relatórios disponíveis de uma vez."
-    ),
-    tsmetrics: bool = typer.Option(
-        False, "--tsmetrics", help="Gera o relatório de progressão das métricas do Thompson Sampling."
-    ),
-    acbl: bool = typer.Option(
-        False, "--acbl", help="Gera o relatório de contagem de execuções de braços da política Baseline."
-    ),
-    acts: bool = typer.Option(
-        False, "--acts", help="Gera o relatório de contagem de execuções de braços do Thompson Sampling."
+        False, "--all", help="Gera todos os relatórios de todos os experimentos (Thompson Sampling + LinUCB)."
     ),
     oc: bool = typer.Option(
         False, "--oc", help="Gera o relatório do catálogo de ofertas."
+    ),
+    all_linucb_reports: bool = typer.Option(
+        False, "--linucb", help="Gera todos os relatórios do LinUCB de uma vez."
+    ),
+    all_thompson_sampling_reports: bool = typer.Option(
+        False, "--thompson-sampling", help="Gera todos os relatórios do Thompson Sampling de uma vez."
     )
 ):
     """
     Gera os relatórios executivos em Markdown utilizando LLM.
-    Você deve passar pelo menos uma das opções: --all, --tsmetrics, --acbl, --acts, --oc.
+    Você deve passar pelo menos uma das opções: --all, --oc, --linucb, --thompson-sampling.
+    Para relatórios específicos do LinUCB, use o comando "generate-linucb-report".
     """
-    if not (all_reports or tsmetrics or acbl or acts or oc):
+    if not (all_reports or oc or all_linucb_reports or all_thompson_sampling_reports):
         typer.echo("[Erro] Você precisa selecionar pelo menos um relatório para gerar.")
         raise typer.Exit(code=1)
 
     if all_reports:
-        typer.echo("Iniciando geração de todos os relatórios...")
-        cli.generate_all_reports()
+        typer.echo("Iniciando geração de todos os relatórios (Thompson Sampling + LinUCB)...")
+        cli.generate_all_experiment_reports()
         return
-
-    if tsmetrics:
-        typer.echo("Iniciando geração do relatório de métricas do Thompson Sampling...")
-        cli.generate_report_ts_metrics()
-
-    if acbl:
-        typer.echo("Iniciando geração do relatório da Baseline...")
-        cli.generate_report_arm_counts_bl()
-
-    if acts:
-        typer.echo("Iniciando geração do relatório do Thompson Sampling (Arm Counts)...")
-        cli.generate_report_arm_counts_ts()
 
     if oc:
         typer.echo("Iniciando geração do relatório do Catálogo de Ofertas...")
         cli.generate_report_offer_catalog()
+
+
+    if all_linucb_reports:
+        typer.echo("Iniciando geração de todos os relatórios do LinUCB...")
+        cli.generate_all_linucb_reports()
+        return
+
+    if all_thompson_sampling_reports:
+        typer.echo("Iniciando geração de todos os relatórios do Thompson Sampling...")
+        cli.generate_all_thompson_sampling_reports()
+        return
+
 
 @app.command(name="index-documents")
 def index_documents():

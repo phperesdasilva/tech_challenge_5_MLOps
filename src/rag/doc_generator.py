@@ -1,4 +1,3 @@
-import os
 import time
 from pathlib import Path
 from dotenv import load_dotenv
@@ -6,83 +5,105 @@ from google.genai.errors import ClientError, ServerError
 
 from llm.gemini_model import gemini_client
 from llm.groq_model import groq_client
+import rag.paths as paths
 
 load_dotenv()
-
-TS_METRICS_PATH = os.getenv(
-    "TS_METRICS_PATH",
-    "data/experiments/thompson_sampling/metrics_timeseries.csv",
-)
-TS_METRICS_REPORT_PATH = os.getenv(
-    "TS_METRICS_REPORT_PATH",
-    "data/rag/thompson_sampling/metrics_timeseries_report.md",
-)
-ARM_COUNTS_BL_PATH = os.getenv(
-    "ARM_COUNTS_BL_PATH",
-    "data/experiments/thompson_sampling/arm_counts_BaselineFixedPolicy.csv",
-)
-ARM_COUNTS_REPORT_BL_PATH = os.getenv(
-    "ARM_COUNTS_REPORT_BL_PATH",
-    "data/rag/thompson_sampling/baseline_count_report.md",
-)
-ARM_COUNTS_TS_PATH = os.getenv(
-    "ARM_COUNTS_TS_PATH",
-    "data/experiments/thompson_sampling/arm_counts_ThompsonSamplingPolicy.csv",
-)
-ARM_COUNTS_REPORT_TS_PATH = os.getenv(
-    "ARM_COUNTS_REPORT_TS_PATH",
-    "data/rag/thompson_sampling/thompson_sampling_count_report.md",
-)
-OFFER_CATALOG_PATH = os.getenv(
-    "OFFER_CATALOG_PATH",
-    "data/kaggle/synthetic_enrichment/offer_catalog.json",
-)
-OFFER_CATALOG_REPORT_PATH = os.getenv(
-    "OFFER_CATALOG_REPORT_PATH",
-    "data/rag/thompson_sampling/offer_catalog_report.md",
-)
-METRICS_SUMMARY_PATH = os.getenv(
-    "METRICS_SUMMARY_PATH",
-    "data/experiments/thompson_sampling/metrics_summary.csv",
-)
 
 PROMPTS = {
 
 "prompt_ts_metrics": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo CSV {TS_METRICS_PATH} que contém métricas de experimentos de Thompson Sampling.
+Você tem acesso ao arquivo CSV {paths.TS_METRICS_PATH} que contém métricas de experimentos de Thompson Sampling.
 Você deve analisar os dados e escrever um relatório que compare a progressão da baseline com a progressão do modelo de Thompson Sampling.
 Destacando as diferenças e insights obtidos a partir dos resultados.
-Escreva o relatório em português e salve o resultado no arquivo {TS_METRICS_REPORT_PATH}.
+Escreva o relatório em português e salve o resultado no arquivo {paths.TS_METRICS_REPORT_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+Use {paths.METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """,
 
 "prompt_arm_counts_bl": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo CSV {ARM_COUNTS_BL_PATH} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling com a política BaselineFixedPolicy.
+Você tem acesso ao arquivo CSV {paths.ARM_COUNTS_BL_PATH} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling com a política BaselineFixedPolicy.
 Você deve analisar os dados e escrever um relatório que descreva a contagem de execuções de cada braço.
-Escreva o relatório em português e salve o resultado no arquivo {ARM_COUNTS_REPORT_BL_PATH}.
+Escreva o relatório em português e salve o resultado no arquivo {paths.ARM_COUNTS_REPORT_BL_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+Use {paths.METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """,
 
 "prompt_arm_counts_ts": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo CSV {ARM_COUNTS_TS_PATH} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling.
+Você tem acesso ao arquivo CSV {paths.ARM_COUNTS_TS_PATH} que contém a contagem de execuções de cada braço do experimento de Thompson Sampling.
 Você deve analisar os dados e escrever um relatório que descreva a contagem de execuções de cada braço.
-Escreva o relatório em português e salve o resultado no arquivo {ARM_COUNTS_REPORT_TS_PATH}.
+Escreva o relatório em português e salve o resultado no arquivo {paths.ARM_COUNTS_REPORT_TS_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+Use {paths.METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """,
 
 "prompt_offer_catalog": f"""
 Você é um cientista de dados e engenheiro de machine learning.
-Você tem acesso ao arquivo JSON {OFFER_CATALOG_PATH} que contém o catálogo de ofertas.
+Você tem acesso ao arquivo JSON {paths.OFFER_CATALOG_PATH} que contém o catálogo de ofertas.
 Você deve analisar os dados e escrever um relatório que descreva as características e benefícios de cada oferta.
-Escreva o relatório em português e salve o resultado no arquivo {OFFER_CATALOG_REPORT_PATH}.
+Escreva o relatório em português e salve o resultado no arquivo {paths.OFFER_CATALOG_REPORT_PATH}.
 Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
-Use {METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+Use {paths.METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+""",
+
+# =============================================================================
+# LinUCB — prompts para os relatórios gerados a partir dos CSVs do experimento
+# contextual (ver LinUCBSimulator.run_linucb()).
+# =============================================================================
+
+"prompt_linucb_metrics": f"""
+Você é um cientista de dados e engenheiro de machine learning.
+Você tem acesso ao arquivo CSV {paths.LINUCB_METRICS_SUMMARY_PATH} que contém as métricas agregadas do experimento de LinUCB (bandit contextual): impressões, conversões, taxa de conversão, recompensa acumulada, regret acumulado e entropia de exploração.
+Você deve analisar os dados e escrever um relatório que explique o desempenho da política LinUCB, destacando o que os números indicam sobre o equilíbrio entre exploração e explotação e sobre o valor gerado pelas recomendações.
+Escreva o relatório em português e salve o resultado no arquivo {paths.LINUCB_METRICS_REPORT_PATH}.
+Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
+""",
+
+"prompt_arm_counts_linucb": f"""
+Você é um cientista de dados e engenheiro de machine learning.
+Você tem acesso ao arquivo CSV {paths.ARM_COUNTS_LINUCB_PATH} que contém a contagem de quantas vezes cada braço (oferta) foi escolhido pela política LinUCB durante o experimento.
+Você deve analisar os dados e escrever um relatório que descreva a distribuição de escolhas entre os braços, destacando qual oferta foi mais recomendada e possíveis razões de negócio para isso.
+Escreva o relatório em português e salve o resultado no arquivo {paths.ARM_COUNTS_REPORT_LINUCB_PATH}.
+Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
+Use {paths.LINUCB_METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+""",
+
+"prompt_arm_by_job": f"""
+Você é um cientista de dados e engenheiro de machine learning.
+Você tem acesso ao arquivo CSV {paths.ARM_BY_JOB_PATH}, que mostra, para cada profissão (job) dos clientes, quantas vezes a política LinUCB recomendou cada braço (oferta). A coluna 'predominante' indica o braço mais recomendado para aquela profissão, e 'total' é o número de clientes elegíveis considerados.
+Você deve analisar os dados e escrever um relatório que descreva quais ofertas a LinUCB associou a cada profissão, e o que isso sugere sobre o perfil de cliente que cada oferta atrai.
+Escreva o relatório em português e salve o resultado no arquivo {paths.ARM_BY_JOB_REPORT_PATH}.
+Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
+Use {paths.LINUCB_METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+""",
+
+"prompt_arm_by_education": f"""
+Você é um cientista de dados e engenheiro de machine learning.
+Você tem acesso ao arquivo CSV {paths.ARM_BY_EDUCATION_PATH}, que mostra, para cada nível de escolaridade (education) dos clientes, quantas vezes a política LinUCB recomendou cada braço (oferta). A coluna 'predominante' indica o braço mais recomendado para aquele nível de escolaridade, e 'total' é o número de clientes elegíveis considerados.
+Você deve analisar os dados e escrever um relatório que descreva quais ofertas a LinUCB associou a cada nível de escolaridade, e o que isso sugere sobre o perfil de cliente que cada oferta atrai.
+Escreva o relatório em português e salve o resultado no arquivo {paths.ARM_BY_EDUCATION_REPORT_PATH}.
+Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
+Use {paths.LINUCB_METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+""",
+
+"prompt_arm_by_poutcome": f"""
+Você é um cientista de dados e engenheiro de machine learning.
+Você tem acesso ao arquivo CSV {paths.ARM_BY_POUTCOME_PATH}, que mostra, para cada resultado da campanha anterior (poutcome) do cliente, quantas vezes a política LinUCB recomendou cada braço (oferta). A coluna 'predominante' indica o braço mais recomendado para aquele resultado, e 'total' é o número de clientes elegíveis considerados.
+Você deve analisar os dados e escrever um relatório que descreva quais ofertas a LinUCB associou a cada resultado de campanha anterior, e o que isso sugere sobre como o histórico do cliente influencia a recomendação.
+Escreva o relatório em português e salve o resultado no arquivo {paths.ARM_BY_POUTCOME_REPORT_PATH}.
+Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
+Use {paths.LINUCB_METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
+""",
+
+"prompt_arm_by_age_group": f"""
+Você é um cientista de dados e engenheiro de machine learning.
+Você tem acesso ao arquivo CSV {paths.ARM_BY_AGE_GROUP_PATH}, que mostra, para cada faixa etária (age_group) dos clientes, quantas vezes a política LinUCB recomendou cada braço (oferta). A coluna 'predominante' indica o braço mais recomendado para aquela faixa etária, e 'total' é o número de clientes elegíveis considerados.
+Você deve analisar os dados e escrever um relatório que descreva quais ofertas a LinUCB associou a cada faixa etária, e o que isso sugere sobre o perfil de cliente que cada oferta atrai.
+Escreva o relatório em português e salve o resultado no arquivo {paths.ARM_BY_AGE_GROUP_REPORT_PATH}.
+Não se esqueça de incluir apenas o texto do arquivo markdown, sem nenhuma nota extra sobre o processo de geração do relatório.
+Use {paths.LINUCB_METRICS_SUMMARY_PATH} como referência para o resumo das métricas.
 """
 }
 

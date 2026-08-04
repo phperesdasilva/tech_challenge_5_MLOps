@@ -28,13 +28,13 @@ class SyntheticEventGenerator:
         with open(self.offer_catalog_path, "r", encoding="utf-8") as f:
             catalog = json.load(f)
 
-        return df_bank, catalog["offers"]
+        return df_bank, catalog["ofertas"]
 
     def is_eligible(self, client, rules):
         """Verifica se o cliente atende aos guardrails da oferta."""
-        if client["age"] < rules.get("min_age", 0):
+        if client["age"] < rules.get("idade_minima", 0):
             return False
-        if rules.get("requires_housing_loan") and client["housing"] == "no":
+        if rules.get("requer_emprestimo_habitacional") and client["housing"] == "no":
             return False
         return True
 
@@ -51,7 +51,7 @@ class SyntheticEventGenerator:
         for index, client in df_bank.iterrows():
             # 1. Filtrar braços elegíveis (Guardrails)
             eligible_offers = [
-                offer for offer in offers if self.is_eligible(client, offer["eligibility_rules"])
+                offer for offer in offers if self.is_eligible(client, offer["regras_elegibilidade"])
             ]
 
             client["client_id"] = index
@@ -74,7 +74,7 @@ class SyntheticEventGenerator:
                     "event_id": event_id,
                     "client_id": client["client_id"],
                     "timestamp": impression_time,
-                    "arm_id": chosen_offer["arm_id"],
+                    "arm_id": chosen_offer["id_braco"],
                     "context_age": client["age"],
                     "context_balance": client["balance"],
                 }
@@ -83,7 +83,7 @@ class SyntheticEventGenerator:
             # 3. Simular a Recompensa (O cliente converteu?)
             # Usamos o prior da oferta. Em um projeto mais avançado,
             # você pode somar o prior a um peso baseado no saldo do cliente.
-            prob_conversion = chosen_offer["synthetic_conversion_prior"]
+            prob_conversion = chosen_offer["prior_conversao_sintetica"]
             is_converted = np.random.binomial(1, prob_conversion) == 1
 
             if is_converted:
@@ -96,8 +96,8 @@ class SyntheticEventGenerator:
                     {
                         "event_id": event_id,
                         "conversion_timestamp": conversion_time,
-                        "reward_value": chosen_offer["reward_value"],
-                        "arm_id": chosen_offer["arm_id"],
+                        "reward_value": chosen_offer["valor_recompensa"],
+                        "arm_id": chosen_offer["id_braco"],
                     }
                 )
             else:
@@ -107,7 +107,7 @@ class SyntheticEventGenerator:
                         "event_id": event_id,
                         "conversion_timestamp": None,
                         "reward_value": 0.0,
-                        "arm_id": chosen_offer["arm_id"],
+                        "arm_id": chosen_offer["id_braco"],
                     }
                 )
 

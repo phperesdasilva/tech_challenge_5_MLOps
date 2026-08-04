@@ -6,9 +6,12 @@ from dotenv import load_dotenv
 import faiss
 import numpy as np
 
-from rag.embeddings import embedding_model
-
 load_dotenv()
+
+from rag.embeddings import embedding_model
+import rag.paths as paths
+
+
 
 VECTOR_STORE_DIR = Path(os.getenv("VECTOR_STORE_DIR", "data/rag"))
 VECTOR_STORE_PATH = Path(
@@ -19,22 +22,18 @@ METADATA_PATH = Path(
 )
 
 MD_FILES = [
-    os.getenv(
-        "TS_METRICS_REPORT_PATH",
-        "data/rag/thompson_sampling/metrics_timeseries_report.md",
-    ),
-    os.getenv(
-        "ARM_COUNTS_REPORT_BL_PATH",
-        "data/rag/thompson_sampling/baseline_count_report.md",
-    ),
-    os.getenv(
-        "ARM_COUNTS_REPORT_TS_PATH",
-        "data/rag/thompson_sampling/thompson_sampling_count_report.md",
-    ),
-    os.getenv(
-        "OFFER_CATALOG_REPORT_PATH",
-        "data/rag/thompson_sampling/offer_catalog_report.md",
-    ),
+    # Thompson Sampling
+    paths.TS_METRICS_REPORT_PATH,
+    paths.ARM_COUNTS_REPORT_BL_PATH,
+    paths.ARM_COUNTS_REPORT_TS_PATH,
+    paths.OFFER_CATALOG_REPORT_PATH,
+    # LinUCB
+    paths.LINUCB_METRICS_REPORT_PATH,
+    paths.ARM_COUNTS_REPORT_LINUCB_PATH,
+    paths.ARM_BY_JOB_REPORT_PATH,
+    paths.ARM_BY_EDUCATION_REPORT_PATH,
+    paths.ARM_BY_POUTCOME_REPORT_PATH,
+    paths.ARM_BY_AGE_GROUP_REPORT_PATH,
 ]
 
 def chunk_markdown(text, chunk_size=1500):

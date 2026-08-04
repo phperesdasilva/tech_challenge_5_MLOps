@@ -25,3 +25,5 @@ mlruns/
 build/
 dist/
 *.egg-info/
+
+sandbox/
