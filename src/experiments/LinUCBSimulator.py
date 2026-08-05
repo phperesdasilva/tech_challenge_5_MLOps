@@ -21,7 +21,7 @@ from bandit.catalog import get_eligible_offers, load_catalog
 from bandit.features import BankContextEncoder
 from bandit.policies import LinUCBPolicy
 from bandit.simulator import run_simulation
-from bandit.tracking import configure_mlflow, log_policy_metrics
+from bandit.tracking import configure_mlflow, log_dataset, log_policy_metrics
 
 
 class LinUCBSimulator:
@@ -57,6 +57,8 @@ class LinUCBSimulator:
         policy = LinUCBPolicy(id_bracos, dim=encoder.dim)
 
         with mlflow.start_run(run_name=policy.name()):
+            log_dataset(df_clean_bank, source_path=str(self.default_bank_path), name="clean_bank")
+
             # Roda a simulação com a política LinUCB, passando o encoder para que ela possa usar o contexto do cliente.
             rng = np.random.default_rng(self.seed) # Número aleatório para reprodutibilidade
             metrics = run_simulation(policy, df_clean_bank, ofertas, rng, encoder=encoder)

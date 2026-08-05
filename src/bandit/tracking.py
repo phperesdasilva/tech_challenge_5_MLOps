@@ -12,7 +12,9 @@ from dotenv import load_dotenv
 from mlflow.entities import Metric
 from mlflow.utils.validation import MAX_METRICS_PER_BATCH
 import mlflow
+import mlflow.data
 import os
+import pandas as pd
 
 load_dotenv()
 
@@ -21,6 +23,12 @@ def configure_mlflow(experiment_name: str) -> None:
     """Aponta o MLflow para o tracking store local e seleciona o experimento."""
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "mlruns"))
     mlflow.set_experiment(experiment_name)
+
+
+def log_dataset(df: pd.DataFrame, source_path: str, name: str = None, context: str = "training") -> None:
+    """Associa o dataset usado ao run ativo (preenche a coluna 'Dataset' no MLflow UI)."""
+    dataset = mlflow.data.from_pandas(df, source=source_path, name=name or os.path.basename(source_path))
+    mlflow.log_input(dataset, context=context)
 
 
 def log_policy_metrics(policy_name: str, params: dict, metrics: MetricsTracker) -> None:
