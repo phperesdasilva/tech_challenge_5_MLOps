@@ -5,8 +5,12 @@ cargo de cada simulador, já que LinUCB roda uma política por execução e o
 Thompson Sampling roda várias políticas no mesmo run.
 """
 
+import time
+
 from bandit.metrics import MetricsTracker
 from dotenv import load_dotenv
+from mlflow.entities import Metric
+from mlflow.utils.validation import MAX_METRICS_PER_BATCH
 import mlflow
 import os
 
@@ -20,12 +24,28 @@ def configure_mlflow(experiment_name: str) -> None:
 
 
 def log_policy_metrics(policy_name: str, params: dict, metrics: MetricsTracker) -> None:
-    """Loga params e métricas de uma política no run MLflow ativo no momento da chamada."""
+    """Loga params e métricas de uma política no run MLflow ativo no momento da chamada.
+
+    `metrics.history` tem uma linha por impressão — para datasets grandes
+    (dezenas de milhares de linhas), logar uma métrica por vez via
+    `mlflow.log_metrics` faz uma transação por chamada e fica lento. Em vez
+    disso, monta todos os pontos e envia em lotes via `MlflowClient.log_batch`.
+    """
     mlflow.log_param("policy", policy_name)
     mlflow.log_params(params)
 
-    for row in metrics.history:
-        mlflow.log_metrics({k: v for k, v in row.items() if k != "step"}, step=row["step"])
+    run_id = mlflow.active_run().info.run_id
+    timestamp_ms = int(time.time() * 1000)
+    points = [
+        Metric(key=key, value=value, timestamp=timestamp_ms, step=row["step"])
+        for row in metrics.history
+        for key, value in row.items()
+        if key != "step"
+    ]
+
+    client = mlflow.MlflowClient()
+    for i in range(0, len(points), MAX_METRICS_PER_BATCH):
+        client.log_batch(run_id, metrics=points[i : i + MAX_METRICS_PER_BATCH])
 
     summary = metrics.summary(policy_name)
     mlflow.log_metrics({k: v for k, v in summary.items() if k != "policy"})
