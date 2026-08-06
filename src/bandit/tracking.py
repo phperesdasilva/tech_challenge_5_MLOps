@@ -55,5 +55,11 @@ def log_policy_metrics(policy_name: str, params: dict, metrics: MetricsTracker) 
     for i in range(0, len(points), MAX_METRICS_PER_BATCH):
         client.log_batch(run_id, metrics=points[i : i + MAX_METRICS_PER_BATCH])
 
+    # cumulative_reward/cumulative_regret/conversion_rate já estão no histórico por
+    # step (com o mesmo valor final) — relogá-los aqui sem step criaria um ponto
+    # duplicado em step=0, poluindo a curva no MLflow UI. Loga só o que é exclusivo do summary.
+    history_keys = set(metrics.history[-1].keys()) - {"step"} if metrics.history else set()
     summary = metrics.summary(policy_name)
-    mlflow.log_metrics({k: v for k, v in summary.items() if k != "policy"})
+    mlflow.log_metrics(
+        {k: v for k, v in summary.items() if k != "policy" and k not in history_keys}
+    )
