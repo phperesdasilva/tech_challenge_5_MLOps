@@ -105,3 +105,7 @@ ARM_BY_AGE_GROUP_REPORT_PATH = os.getenv(
     "ARM_BY_AGE_GROUP_REPORT_PATH",
     "data/rag/linucb/arm_by_age_group_report.md",
 )
+GOLDEN_SET_PATH = os.getenv(
+    "GOLDEN_SET_PATH",
+    "data/golden_set/golden_set.md",
+)

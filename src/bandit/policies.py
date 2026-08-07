@@ -46,18 +46,35 @@ class BaselineFixedPolicy(Policy):
 
 
 class ThompsonSamplingPolicy(Policy):
-    def __init__(self, arm_ids: list[str], alpha0: float = None, beta0: float = None):
+    """Beta(α, β) por braço, com amostra ponderada pelo valor de negócio do braço.
+
+    `arm_values` pondera a amostra θ pelo valor de recompensa de cada braço
+    (θ × valor), evitando que a política convirja para o braço de maior taxa de
+    conversão quando ele não é o de maior valor esperado. Sem `arm_values`, o
+    comportamento é o bandit puro por taxa de conversão (todos os pesos = 1.0).
+    """
+
+    def __init__(
+        self,
+        arm_ids: list[str],
+        alpha0: float = None,
+        beta0: float = None,
+        rng: np.random.Generator = None,
+        arm_values: dict[str, float] = None,
+    ):
         if alpha0 is None:
             alpha0 = float(os.getenv("THOMPSON_ALPHA0", "1.0"))
         if beta0 is None:
             beta0 = float(os.getenv("THOMPSON_BETA0", "1.0"))
         self.alpha = {a: alpha0 for a in arm_ids}
         self.beta = {a: beta0 for a in arm_ids}
-        self.rng = np.random.default_rng()
+        self.rng = rng if rng is not None else np.random.default_rng()
+        self.arm_values = arm_values if arm_values is not None else {a: 1.0 for a in arm_ids}
 
     def select_arm(self, eligible_arm_ids: list[str], **kwargs) -> str:  # **kwargs — compatibilidade LinUCB
         samples = {
-            a: self.rng.beta(self.alpha[a], self.beta[a]) for a in eligible_arm_ids
+            a: self.rng.beta(self.alpha[a], self.beta[a]) * self.arm_values.get(a, 1.0)
+            for a in eligible_arm_ids
         }
         return max(samples, key=samples.get)
 
@@ -66,6 +83,12 @@ class ThompsonSamplingPolicy(Policy):
             self.alpha[arm_id] += 1
         else:
             self.beta[arm_id] += 1
+
+    def posterior_mean(self, arm_id: str) -> float:
+        return self.alpha[arm_id] / (self.alpha[arm_id] + self.beta[arm_id])
+
+    def posterior_expected_value(self, arm_id: str) -> float:
+        return self.posterior_mean(arm_id) * self.arm_values.get(arm_id, 1.0)
 
 
 # =============================================================================
