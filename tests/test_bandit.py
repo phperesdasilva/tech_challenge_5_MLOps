@@ -49,22 +49,22 @@ class TestThompsonSamplingPolicy:
 
 class TestCatalogEligibility:
     def test_is_eligible_checks_age_and_housing(self):
-        rules = {"min_age": 25, "requires_housing_loan": True}
+        rules = {"idade_minima": 25, "requer_emprestimo_habitacional": True}
         assert is_eligible({"age": 30, "housing": "yes"}, rules) is True
         assert is_eligible({"age": 20, "housing": "yes"}, rules) is False
         assert is_eligible({"age": 30, "housing": "no"}, rules) is False
 
     def test_get_eligible_offers_filters_by_rules(self):
         offers = [
-            {"arm_id": "0", "eligibility_rules": {"min_age": 18, "requires_housing_loan": False}},
-            {"arm_id": "2", "eligibility_rules": {"min_age": 25, "requires_housing_loan": True}},
+            {"id_braco": "0", "regras_elegibilidade": {"idade_minima": 18, "requer_emprestimo_habitacional": False}},
+            {"id_braco": "2", "regras_elegibilidade": {"idade_minima": 25, "requer_emprestimo_habitacional": True}},
         ]
         client = {"age": 19, "housing": "no"}
         eligible = get_eligible_offers(client, offers)
-        assert [o["arm_id"] for o in eligible] == ["0"]
+        assert [o["id_braco"] for o in eligible] == ["0"]
 
     def test_expected_reward_multiplies_prior_by_value(self):
-        offer = {"synthetic_conversion_prior": 0.08, "reward_value": 300.0}
+        offer = {"prior_conversao_sintetica": 0.08, "valor_recompensa": 300.0}
         assert expected_reward(offer) == pytest.approx(24.0)
 
 
