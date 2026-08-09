@@ -155,7 +155,7 @@ class LinUCBSimulator:
         for coluna in colunas_de_perfil:
             # Conta, para cada valor da coluna (ex: cada profissão), quantas vezes
             # cada braço foi recomendado
-            pivot = df_recomendacoes.groupby([coluna, "arm_id"]).size().unstack(fill_value=0)
+            pivot = df_recomendacoes.groupby([coluna, "arm_id"], observed=True).size().unstack(fill_value=0)
 
             # Identifica o braço mais recomendado para cada valor da coluna
             pivot["predominante"] = pivot.idxmax(axis=1)

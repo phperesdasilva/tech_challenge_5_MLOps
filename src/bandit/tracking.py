@@ -6,6 +6,7 @@ Thompson Sampling roda várias políticas no mesmo run.
 """
 
 import time
+import warnings
 
 from bandit.metrics import MetricsTracker
 from dotenv import load_dotenv
@@ -13,6 +14,7 @@ from mlflow.entities import Metric
 from mlflow.utils.validation import MAX_METRICS_PER_BATCH
 import mlflow
 import mlflow.data
+from mlflow.data.sources import LocalArtifactDatasetSource
 import os
 import pandas as pd
 
@@ -26,9 +28,30 @@ def configure_mlflow(experiment_name: str) -> None:
 
 
 def log_dataset(df: pd.DataFrame, source_path: str, name: str = None, context: str = "training") -> None:
-    """Associa o dataset usado ao run ativo (preenche a coluna 'Dataset' no MLflow UI)."""
-    dataset = mlflow.data.from_pandas(df, source=source_path, name=name or os.path.basename(source_path))
-    mlflow.log_input(dataset, context=context)
+    """Associa o dataset usado ao run ativo (preenche a coluna 'Dataset' no MLflow UI).
+
+    Constrói o DatasetSource explicitamente em vez de passar `source_path` como
+    string: o registry interno do MLflow associa arquivos locais a duas entradas
+    equivalentes (esquemas "" e "file"), então resolver a partir de uma string
+    sempre "bate" com as duas e gera o aviso de ambiguidade
+    ("dataset source can be interpreted in multiple ways"). Passar o objeto já
+    resolvido evita essa etapa de resolução.
+    """
+    source = LocalArtifactDatasetSource(uri=source_path)
+    dataset = mlflow.data.from_pandas(df, source=source, name=name or os.path.basename(source_path))
+
+    with warnings.catch_warnings():
+        # mlflow infere o schema do dataset para exibi-lo no UI e avisa quando
+        # há colunas inteiras, pois um modelo *servido* com essas colunas
+        # ausentes em produção as receberia como float. Aqui o dataset só é
+        # usado para registrar linhagem (qual CSV/parquet gerou o run), não
+        # para servir um modelo, então o aviso não se aplica.
+        warnings.filterwarnings(
+            "ignore",
+            message="Hint: Inferred schema contains integer column",
+            category=UserWarning,
+        )
+        mlflow.log_input(dataset, context=context)
 
 
 def log_policy_metrics(policy_name: str, params: dict, metrics: MetricsTracker) -> None:

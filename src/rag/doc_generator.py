@@ -114,6 +114,23 @@ Use {paths.LINUCB_METRICS_SUMMARY_PATH} como referência para o resumo das métr
 """
 }
 
+def _sugestao_para_gerar_arquivo(source_path: str) -> str:
+    """
+    Sugere o comando de CLI que gera o arquivo de origem ausente, com base
+    no caminho do arquivo (thompson_sampling/linucb/synthetic_enrichment).
+    """
+    caminho_normalizado = source_path.replace("\\", "/")
+
+    if "thompson_sampling" in caminho_normalizado:
+        return "project run-thompson-sampling"
+    if "linucb" in caminho_normalizado:
+        return "project run-linucb"
+    if "synthetic_enrichment" in caminho_normalizado:
+        return "project generate-events"
+
+    return "o experimento correspondente"
+
+
 def _prepare_source_for_llm(source_path):
     """
     Reduz o tamanho de um CSV antes de ele ser enviado a um LLM (Gemini/Groq).
@@ -248,6 +265,14 @@ def generate_report_with_groq(prompt, source_path):
 
 def generate_report(prompt, source_path, report_path):
     report_name = report_path.split("/")[-1]
+
+    if not os.path.exists(source_path):
+        comando = _sugestao_para_gerar_arquivo(source_path)
+        raise FileNotFoundError(
+            f"❌ O arquivo '{source_path}', necessário para gerar '{report_name}', não existe. "
+            f"Rode '{comando}' para gerá-lo antes de tentar gerar o relatório novamente."
+        )
+
     mime_type = "application/json" if source_path.endswith(".json") else "text/csv"
     resposta_texto = None
 
