@@ -8,7 +8,7 @@ import numpy as np
 
 load_dotenv()
 
-from rag.embeddings import embedding_model
+from rag.embeddings import get_embedding_model
 import rag.paths as paths
 
 
@@ -135,7 +135,7 @@ def index_documents():
 
 
     print(f"Gerando embeddings para {len(chunks_to_index)} trechos...")
-    embeddings = np.array(embedding_model.encode(chunks_to_index)).astype('float32')
+    embeddings = np.array(get_embedding_model().encode(chunks_to_index)).astype('float32')
 
     dimension = embeddings.shape[1]
 

@@ -1,11 +1,16 @@
 import os
+from functools import lru_cache
 
 import mlflow
 
 from bandit.tracking import configure_mlflow
 from graph.builder import build_graph
 
-app = build_graph()
+
+@lru_cache(maxsize=1)
+def _get_app():
+    return build_graph()
+
 
 def run_llm(prompt=None):
     configure_mlflow(os.getenv("MLFLOW_EXPERIMENT_LLM", "LLM_RAG"))
@@ -34,4 +39,4 @@ def run_llm(prompt=None):
 
 @mlflow.trace(name="run_llm")
 def _run_graph(prompt: str) -> dict:
-    return app.invoke({"prompt": prompt})
+    return _get_app().invoke({"prompt": prompt})
