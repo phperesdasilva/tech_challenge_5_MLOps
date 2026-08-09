@@ -79,8 +79,8 @@ class ThompsonSamplingSimulator:
                 run_ids[policy.name()] = run.info.run_id
 
         pd.DataFrame(summaries).to_csv(self.out_dir / "metrics_summary.csv", index=False)
-        pd.DataFrame(all_history).to_parquet(
-            self.out_dir / "metrics_timeseries.parquet", index=False
+        pd.DataFrame(all_history).to_csv(
+            self.out_dir / "metrics_timeseries.csv", index=False
         )
         print(pd.DataFrame(summaries))
 
