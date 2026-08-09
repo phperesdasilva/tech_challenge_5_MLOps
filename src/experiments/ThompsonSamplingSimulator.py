@@ -89,7 +89,7 @@ class ThompsonSamplingSimulator:
             print(f"\n[{policy_name}]")
             print(arm_df.to_string(index=False))
 
-        # metrics_summary.csv/metrics_timeseries.parquet só existem a partir daqui
+        # metrics_summary.csv/metrics_timeseries.csv só existem a partir daqui
         # (são combinados das duas políticas), então os artifacts são anexados
         # a cada run já finalizado via MlflowClient em vez de mlflow.log_artifacts.
         client = mlflow.MlflowClient()
