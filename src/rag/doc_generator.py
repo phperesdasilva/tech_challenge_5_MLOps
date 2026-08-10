@@ -1,13 +1,20 @@
+import os
+import tempfile
 import time
 from pathlib import Path
 from dotenv import load_dotenv
 from google.genai.errors import ClientError, ServerError
+import pandas as pd
 
 from llm.gemini_model import gemini_client
 from llm.groq_model import groq_client
 import rag.paths as paths
 
 load_dotenv()
+
+# Limite de linhas a partir do qual um CSV é reamostrado antes de ser enviado
+# ao LLM, para não estourar o limite de tokens do Gemini/Groq.
+MAX_ROWS_FOR_LLM = 2000
 
 PROMPTS = {
 
@@ -107,6 +114,120 @@ Use {paths.LINUCB_METRICS_SUMMARY_PATH} como referência para o resumo das métr
 """
 }
 
+def _sugestao_para_gerar_arquivo(source_path: str) -> str:
+    """
+    Sugere o comando de CLI que gera o arquivo de origem ausente, com base
+    no caminho do arquivo (thompson_sampling/linucb/synthetic_enrichment).
+    """
+    caminho_normalizado = source_path.replace("\\", "/")
+
+    if "thompson_sampling" in caminho_normalizado:
+        return "project run-thompson-sampling"
+    if "linucb" in caminho_normalizado:
+        return "project run-linucb"
+    if "synthetic_enrichment" in caminho_normalizado:
+        return "project generate-events"
+
+    return "o experimento correspondente"
+
+
+def _prepare_source_for_llm(source_path):
+    """
+    Reduz o tamanho de um CSV antes de ele ser enviado a um LLM (Gemini/Groq).
+
+    Alguns CSVs de origem (ex: metrics_timeseries.csv) guardam uma linha por
+    step de simulação. Com o dataset completo (45 mil+ eventos), isso gera
+    arquivos de vários MB, que estouram o limite de contexto do Gemini
+    (1.048.576 tokens) e do Groq. Para o relatório de progressão ainda fazer
+    sentido, não basta truncar o arquivo: é preciso manter uma amostra
+    representativa da evolução ao longo de TODOS os steps, para TODAS as
+    policies presentes — não só o começo do arquivo.
+
+    Passo a passo:
+      1. Se o arquivo não for .csv (ex: offer_catalog.json), devolve
+         source_path sem alteração. A reamostragem só faz sentido para CSVs
+         tabulares.
+      2. Se o CSV já for pequeno (linhas <= MAX_ROWS_FOR_LLM), também
+         devolve source_path sem alteração — não vale a pena criar um
+         arquivo temporário para algo que já cabe no contexto do LLM.
+      3. Caso contrário, reamostra o CSV (ver _downsample_dataframe).
+      4. Salva o resultado em um CSV temporário à parte — o arquivo original
+         em disco nunca é modificado — e devolve o caminho desse temporário.
+         Quem chama esta função é responsável por apagá-lo depois de usá-lo
+         (ver o bloco `finally` em generate_report()).
+
+    Args:
+        source_path: caminho do arquivo CSV/JSON de origem do relatório.
+
+    Returns:
+        source_path original (quando não precisa reamostrar) ou o caminho
+        de um CSV temporário já reamostrado, pronto para envio ao LLM.
+    """
+    eh_csv = source_path.endswith(".csv")
+    if not eh_csv:
+        # JSON (ex: catálogo de ofertas) e outros formatos não têm a noção
+        # de "linha" usada aqui, e já são pequenos o bastante.
+        return source_path
+
+    df = pd.read_csv(source_path)
+    arquivo_ja_e_pequeno = len(df) <= MAX_ROWS_FOR_LLM
+    if arquivo_ja_e_pequeno:
+        return source_path
+
+    df_sampled = _downsample_dataframe(df, max_rows=MAX_ROWS_FOR_LLM)
+
+    # Escreve a versão reamostrada em um arquivo temporário; o CSV original
+    # permanece intocado em disco.
+    tmp_file = tempfile.NamedTemporaryFile(
+        mode="w", suffix=".csv", delete=False, encoding="utf-8"
+    )
+    tmp_file.close()
+    df_sampled.to_csv(tmp_file.name, index=False)
+
+    print(
+        f"⚠️ {source_path} tem {len(df)} linhas; reamostrado para {len(df_sampled)} "
+        f"linhas antes de enviar ao LLM."
+    )
+    return tmp_file.name
+
+
+def _downsample_dataframe(df, max_rows):
+    """
+    Reduz um DataFrame a, no máximo, aproximadamente `max_rows` linhas,
+    preservando a ordem original e cobrindo do início ao fim dos dados
+    (amostragem por passo/stride uniforme, não um corte no fim do arquivo).
+
+    Caso especial — coluna "policy": o metrics_timeseries.csv concatena uma
+    "faixa" de linhas por policy (todas as linhas da BaselineFixedPolicy,
+    depois todas as da ThompsonSamplingPolicy, etc). Se reamostrássemos o
+    arquivo inteiro de uma vez com um único stride, uma policy poderia ficar
+    sub-representada (ou até de fora) na amostra final, dependendo de onde
+    suas linhas caem no arquivo. Por isso, quando existe a coluna "policy",
+    reamostramos CADA GRUPO separadamente, dividindo o orçamento de
+    `max_rows` igualmente entre as policies — garantindo que a progressão de
+    cada uma apareça, do primeiro ao último step.
+    """
+    tem_coluna_policy = "policy" in df.columns
+
+    if not tem_coluna_policy:
+        stride = max(len(df) // max_rows, 1)
+        return df.iloc[::stride]
+
+    numero_de_policies = df["policy"].nunique()
+    linhas_alvo_por_policy = max(max_rows // numero_de_policies, 1)
+
+    def _downsample_um_grupo_de_policy(grupo):
+        # Stride necessário para reduzir este grupo a ~linhas_alvo_por_policy
+        # linhas, mantendo a ordem original (ex: por "step") e cobrindo do
+        # início ao fim da série dessa policy.
+        stride = max(len(grupo) // linhas_alvo_por_policy, 1)
+        return grupo.iloc[::stride]
+
+    return df.groupby("policy", group_keys=False)[df.columns.tolist()].apply(
+        _downsample_um_grupo_de_policy
+    )
+
+
 def generate_report_with_groq(prompt, source_path):
     """
     Função interna para realizar a chamada ao Groq usando o groq_client importado.
@@ -144,29 +265,43 @@ def generate_report_with_groq(prompt, source_path):
 
 def generate_report(prompt, source_path, report_path):
     report_name = report_path.split("/")[-1]
+
+    if not os.path.exists(source_path):
+        comando = _sugestao_para_gerar_arquivo(source_path)
+        raise FileNotFoundError(
+            f"❌ O arquivo '{source_path}', necessário para gerar '{report_name}', não existe. "
+            f"Rode '{comando}' para gerá-lo antes de tentar gerar o relatório novamente."
+        )
+
     mime_type = "application/json" if source_path.endswith(".json") else "text/csv"
     resposta_texto = None
 
+    llm_source_path = _prepare_source_for_llm(source_path)
+
     try:
-        print(f"Fazendo upload de {source_path} no Gemini...")
-        doc_upload = gemini_client.files.upload(file=source_path, config={"mime_type": mime_type})
-
-        print(f"Gerando o relatório {report_name} via Gemini...")
-
-        # Chamada usando o gemini_client importado
-        result = gemini_client.models.generate_content(
-            model="gemini-3.5-flash",
-            contents=[prompt, doc_upload]
-        )
-        resposta_texto = result.text
-
-    except Exception as e:
-        print(f"\n⚠️ Falha ao processar com o Gemini ({type(e).__name__}): {e}")
         try:
-            resposta_texto = generate_report_with_groq(prompt, source_path)
-        except Exception as groq_err:
-            print(f"❌ Erro crítico: Fallback para o Groq também falhou: {groq_err}")
-            raise groq_err
+            print(f"Fazendo upload de {llm_source_path} no Gemini...")
+            doc_upload = gemini_client.files.upload(file=llm_source_path, config={"mime_type": mime_type})
+
+            print(f"Gerando o relatório {report_name} via Gemini...")
+
+            # Chamada usando o gemini_client importado
+            result = gemini_client.models.generate_content(
+                model="gemini-3.5-flash",
+                contents=[prompt, doc_upload]
+            )
+            resposta_texto = result.text
+
+        except Exception as e:
+            print(f"\n⚠️ Falha ao processar com o Gemini ({type(e).__name__}): {e}")
+            try:
+                resposta_texto = generate_report_with_groq(prompt, llm_source_path)
+            except Exception as groq_err:
+                print(f"❌ Erro crítico: Fallback para o Groq também falhou: {groq_err}")
+                raise groq_err
+    finally:
+        if llm_source_path != source_path:
+            os.remove(llm_source_path)
 
     if resposta_texto:
         caminho_relatorio = Path(report_path)

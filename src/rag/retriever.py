@@ -1,11 +1,10 @@
 import faiss
 import os
 import json
+from functools import lru_cache
 
 from dotenv import load_dotenv
-from rag.embeddings import embedding_model
-
-index = faiss.read_index("data/rag/vector_store.faiss")
+from rag.embeddings import get_embedding_model
 
 load_dotenv()
 
@@ -14,12 +13,23 @@ METADATA_PATH = os.getenv(
     "data/rag/vector_store_metadata.json",
 )
 
-with open(METADATA_PATH, "r", encoding="utf-8") as f:
-    metadata = json.load(f)
+
+@lru_cache(maxsize=1)
+def _get_index():
+    return faiss.read_index("data/rag/vector_store.faiss")
+
+
+@lru_cache(maxsize=1)
+def _get_metadata():
+    with open(METADATA_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
 
 def retrieve_context(prompt, top_k=4):
     print(f"\nRetrieving context...\n")
-    prompt_vector = embedding_model.encode([prompt], convert_to_numpy=True).astype('float32')
+    index = _get_index()
+    metadata = _get_metadata()
+    prompt_vector = get_embedding_model().encode([prompt], convert_to_numpy=True).astype('float32')
 
     scores, positions = index.search(prompt_vector, top_k)
 

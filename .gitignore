@@ -13,6 +13,7 @@ __pycache__/
 # Dados e Experimentos de MLOps
 data/*
 mlruns/
+mlflow.db
 *.parquet
 *.csv
 *.json
