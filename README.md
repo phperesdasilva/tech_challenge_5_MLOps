@@ -134,6 +134,39 @@ Execute os testes com:
 pytest
 ```
 
+## Golden Set — Casos de Teste (Etapa 4)
+
+O arquivo [`data/golden_set/evaluation_cases.jsonl`](data/golden_set/evaluation_cases.jsonl) reúne 20 casos de teste — 5 conversões reais observadas na simulação para cada uma das 4 ofertas do catálogo —, mostrando qual oferta foi recomendada, para qual cliente, e se a decisão faz sentido em relação ao valor esperado do catálogo. Os casos das ofertas de maior valor (Refinanciamento Imobiliário e CDB) vêm da política Thompson Sampling já treinada e coincidem com o braço de maior valor esperado entre os elegíveis; os casos da Conta Digital e do Cartão Premium vêm de impressões de exploração (Thompson Sampling) ou da regra fixa (baseline), já que essas duas ofertas raramente são a escolha ótima quando o cliente também é elegível para uma oferta mais valiosa. O detalhamento completo está no notebook [`src/eda/Etapa3_Etapa4_Bandit_Analysis.ipynb`](src/eda/Etapa3_Etapa4_Bandit_Analysis.ipynb).
+
+| Oferta | Cliente (`client_id`) | Idade | Financ. habitacional | Política (origem) | Recompensa | Bate com o ótimo teórico? |
+|---|---|---|---|---|---|---|
+| Conta Digital Padrão | 269 | 40 | sim | BaselineFixedPolicy | R$ 10,00 | Não |
+| Conta Digital Padrão | 20076 | 32 | não | BaselineFixedPolicy | R$ 10,00 | Não |
+| Conta Digital Padrão | 15029 | 55 | não | BaselineFixedPolicy | R$ 10,00 | Não |
+| Conta Digital Padrão | 11094 | 48 | sim | BaselineFixedPolicy | R$ 10,00 | Não |
+| Conta Digital Padrão | 41173 | 32 | não | BaselineFixedPolicy | R$ 10,00 | Não |
+| Cartão de Crédito Premium | 17979 | 54 | não | ThompsonSamplingPolicy | R$ 150,00 | Não |
+| Cartão de Crédito Premium | 9469 | 56 | não | ThompsonSamplingPolicy | R$ 150,00 | Não |
+| Cartão de Crédito Premium | 23215 | 38 | não | ThompsonSamplingPolicy | R$ 150,00 | Não |
+| Cartão de Crédito Premium | 7802 | 39 | não | ThompsonSamplingPolicy | R$ 150,00 | Não |
+| Cartão de Crédito Premium | 24670 | 52 | não | ThompsonSamplingPolicy | R$ 150,00 | Não |
+| Refinanciamento Imobiliário | 7265 | 39 | sim | ThompsonSamplingPolicy | R$ 300,00 | Sim |
+| Refinanciamento Imobiliário | 8886 | 44 | sim | ThompsonSamplingPolicy | R$ 300,00 | Sim |
+| Refinanciamento Imobiliário | 32528 | 37 | sim | ThompsonSamplingPolicy | R$ 300,00 | Sim |
+| Refinanciamento Imobiliário | 26830 | 41 | sim | ThompsonSamplingPolicy | R$ 300,00 | Sim |
+| Refinanciamento Imobiliário | 17264 | 28 | sim | ThompsonSamplingPolicy | R$ 300,00 | Sim |
+| Depósito a Prazo (CDB) | 28239 | 32 | não | ThompsonSamplingPolicy | R$ 80,00 | Sim |
+| Depósito a Prazo (CDB) | 40299 | 37 | não | ThompsonSamplingPolicy | R$ 80,00 | Sim |
+| Depósito a Prazo (CDB) | 22910 | 34 | não | ThompsonSamplingPolicy | R$ 80,00 | Sim |
+| Depósito a Prazo (CDB) | 39545 | 30 | não | ThompsonSamplingPolicy | R$ 80,00 | Sim |
+| Depósito a Prazo (CDB) | 20344 | 43 | não | ThompsonSamplingPolicy | R$ 80,00 | Sim |
+
+## Etapa 6 — Arquitetura-alvo em Nuvem (GCP)
+
+Para colocar este projeto em produção, o grupo utilizaria a Google Cloud Platform (GCP). Os dados (base de clientes, catálogo de ofertas, Golden Set e o índice vetorial do RAG) ficariam no **Cloud Storage**, com o **BigQuery** guardando as métricas dos experimentos para consultas analíticas. A geração de eventos sintéticos e a simulação das políticas bandit rodariam como jobs agendados via **Cloud Scheduler** disparando **Cloud Run Jobs**, enquanto a API que recomenda ofertas em tempo real (a política Thompson Sampling treinada) seria exposta como um serviço **Cloud Run**, escalando automaticamente conforme a demanda sem precisar gerenciar servidores.
+
+O assistente de RAG/LLM (hoje rodando localmente com Gemini e Groq como fallback) seria outro serviço **Cloud Run**, com as chaves de API guardadas no **Secret Manager** em vez de arquivos `.env`. As imagens de container seriam construídas e versionadas com **Cloud Build** e **Artifact Registry**, e o **Cloud Logging**/**Cloud Monitoring** cuidariam da observabilidade (erros, latência, uso de cada serviço), com o **IAM** controlando quem acessa cada recurso. A criação de diagramas de arquitetura é opcional e não foi incluída nesta etapa.
+
 ## Licença
 
 Este repositório não informa uma licença explícita no momento.
