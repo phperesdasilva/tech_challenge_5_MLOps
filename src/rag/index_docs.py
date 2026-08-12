@@ -33,8 +33,7 @@ MD_FILES = [
     paths.ARM_BY_JOB_REPORT_PATH,
     paths.ARM_BY_EDUCATION_REPORT_PATH,
     paths.ARM_BY_POUTCOME_REPORT_PATH,
-    paths.ARM_BY_AGE_GROUP_REPORT_PATH,
-    paths.GOLDEN_SET_PATH
+    paths.ARM_BY_AGE_GROUP_REPORT_PATH
 ]
 
 def chunk_markdown(text, chunk_size=1500):
