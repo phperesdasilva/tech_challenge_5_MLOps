@@ -170,3 +170,42 @@ class CLI:
 
     def ask_llm(self, prompt: str = None):
         run_llm(prompt=prompt)
+
+    def start_api(self):
+        """Sobe a API Flask (/health, /predict, /ask-llm).
+
+        Import feito aqui dentro (e não no topo do arquivo) de propósito: subir a
+        API treina as policies do bandit e carrega o índice RAG na importação do
+        módulo (alguns segundos) — um custo que só quem roda "start-api" deve
+        pagar, não todo comando do CLI.
+        """
+        import os
+
+        from api.app import app as flask_app
+
+        host = os.getenv("API_HOST", "0.0.0.0")
+        port = int(os.getenv("API_PORT", "5000"))
+        flask_app.run(host=host, port=port)
+
+    def start_mlflow_ui(self):
+        """Sobe a UI do MLflow (dashboard de experimentos) num processo separado.
+
+        Fica de fora do start_api de propósito: são dois processos com ciclos de
+        vida independentes (dá pra usar a API sem o dashboard, e vice-versa), e a
+        porta padrão do "mlflow ui" (5000) colide com a porta padrão da API.
+        """
+        import os
+        import subprocess
+
+        tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "mlruns")
+        port = os.getenv("MLFLOW_UI_PORT", "5001")
+
+        try:
+            subprocess.run(["mlflow", "ui", "--backend-store-uri", tracking_uri, "--port", port])
+        except FileNotFoundError:
+            print(
+                "[Erro] Comando 'mlflow' não encontrado. Instale o extra mlops: "
+                'pip install -e ".[mlops]"'
+            )
+        except KeyboardInterrupt:
+            print("\nEncerrando a UI do MLflow.")

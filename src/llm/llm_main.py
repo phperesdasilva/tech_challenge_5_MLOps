@@ -26,7 +26,7 @@ def run_llm(prompt=None):
             break
 
 
-        output = _run_graph(prompt)
+        output = run_prompt(prompt)
 
         print(f"""
     ⬜⬜⬜⬜⬜⬜⬜
@@ -38,5 +38,5 @@ def run_llm(prompt=None):
 
 
 @mlflow.trace(name="run_llm")
-def _run_graph(prompt: str) -> dict:
+def run_prompt(prompt: str) -> dict:
     return _get_app().invoke({"prompt": prompt})
