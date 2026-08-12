@@ -1,130 +1,195 @@
 # Tech Challenge 5 - MLOps
 
-Projeto de MLOps voltado à análise de dados de marketing bancário e à simulação de políticas de recomendação com multi-armed bandits. O repositório reúne a preparação dos dados, a geração de eventos sintéticos, o experimento da etapa 3 e os artefatos de documentação do modelo.
+Projeto de MLOps para recomendação de ofertas bancárias. O repositório reúne a preparação dos dados, a geração de eventos sintéticos, a simulação de políticas de bandit, o pipeline RAG para relatórios e uma API Flask para consulta de recomendações assistidas por LLM.
 
-## Visão Geral
+## O Que Este Projeto Faz
 
-O fluxo principal do projeto é:
+O fluxo atual do projeto é este:
 
-1. Explorar e preparar os dados do banco de marketing.
-2. Construir um catálogo de ofertas com regras de elegibilidade e recompensa sintética.
-3. Gerar eventos sintéticos de impressão e conversão com atraso.
-4. Simular políticas bandit, como baseline fixa, Thompson Sampling e UCB1.
-5. Salvar métricas e históricos para análise posterior.
+1. Preparar e limpar a base Bank Marketing.
+2. Gerar eventos sintéticos com recompensas e atrasos.
+3. Simular políticas de recomendação com Thompson Sampling e LinUCB.
+4. Gerar relatórios Markdown a partir dos resultados dos experimentos, do catálogo de ofertas e das políticas de negócio.
+5. Indexar esses documentos em FAISS para busca semântica e uso em RAG.
+6. Expor uma API Flask para recomendar uma oferta com base no perfil do cliente.
 
-## Estrutura do Repositório
+## Estrutura Atual
 
-- `src/EDA.ipynb`: notebook de exploração e análise inicial dos dados.
-- `src/run_etapa3_experiment.py`: script principal que executa o experimento da etapa 3.
-- `src/bandit/`: implementação do catálogo, ambiente, métricas, políticas e simulador.
-- `src/event_generator/`: geração de eventos sintéticos e recompensas atrasadas.
-- `data/`: dados brutos, processados, conjuntos sintéticos e resultados de experimentos.
-- `docs/model-card.md`: resumo do modelo e de suas limitações.
+- `src/api/`: API Flask com `/health`, `/predict` e Swagger UI em `/apidocs`.
+- `src/bandit/`: catálogo de ofertas, ambiente, features, métricas, políticas e tracking.
+- `src/cli/`: comando principal `project` com as rotas operacionais do projeto.
+- `src/eda/`: notebooks e scripts de preparação/análise dos dados.
+- `src/event_generator/`: geração dos eventos sintéticos e recompensas atrasadas.
+- `src/experiments/`: simulações de Thompson Sampling e LinUCB.
+- `src/graph/`: grafo e roteamento de estado usados pelo fluxo conversacional.
+- `src/llm/`: integrações com Gemini, Groq e orquestração do prompt.
+- `src/rag/`: geração de documentos, embeddings, indexação, paths e recuperação de contexto.
+- `data/`: insumos, artefatos sintéticos, relatórios e índices gerados.
+- `docs/model-card.md`: resumo do modelo e das suas limitações.
 - `tests/`: testes automatizados.
 
 ## Requisitos
 
 - Python `>=3.12.3`
-- Dependências principais: `numpy`, `pandas`, `pyarrow`, `python-dotenv`
-- Dependências opcionais:
-	- Desenvolvimento: `pytest`, `pytest-cov`, `pre-commit`, `black`, `isort`
-	- MLOps: `kaggle`, `mlflow`
+- Dependências principais: `numpy`, `pandas`, `pyarrow`, `python-dotenv`, `flask`, `flasgger`, `faiss-cpu`, `sentence-transformers`, `google-genai`, `groq`, `langgraph`, `typer`
+- Dependências opcionais de desenvolvimento: `pytest`, `pytest-cov`, `pre-commit`, `black`, `isort`
+- Dependências opcionais de MLOps: `kaggle`, `mlflow`
 
 ## Instalação
 
-Crie e ative o ambiente virtual, depois instale o projeto em modo editável:
+Crie e ative o ambiente virtual e depois instale o projeto em modo editável:
 
 ```bash
 pip install -e .
 ```
 
-Para instalar extras de desenvolvimento:
+Para instalar os extras de desenvolvimento:
 
 ```bash
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
-Para instalar extras de MLOps:
+Para instalar os extras de MLOps:
 
 ```bash
-pip install -e .[mlops]
+pip install -e ".[mlops]"
 ```
 
 Para instalar tudo junto:
 
 ```bash
-pip install -e .[dev,mlops]
+pip install -e ".[dev,mlops]"
 ```
 
-## Dados
+## Dados E Artefatos
 
-O projeto espera, por padrão, os seguintes artefatos:
+O projeto espera, por padrão, os seguintes dados e artefatos:
 
 - `data/kaggle/processed/clean_bank.parquet`
 - `data/kaggle/synthetic_enrichment/offer_catalog.json`
 - `data/kaggle/synthetic_enrichment/offer_events.csv`
 - `data/kaggle/synthetic_enrichment/delayed_rewards.csv`
+- `data/golden_set/evaluation_cases.jsonl`
+- `data/policies/faq-ofertas.md`
+- `data/policies/governanca-dados.md`
+- `data/policies/politica-comunicacao.md`
+- `data/policies/politica-elegibilidade.md`
+- `data/policies/politica-suitability.md`
 
-O notebook de EDA e o script de geração sintética partem da base do Bank Marketing disponível em `data/kaggle/raw/bank-marketing-data-set/`.
+Os relatórios e índices gerados pelo RAG ficam em `data/rag/` e os resultados dos experimentos em `data/experiments/`.
 
 ## Como Executar
 
-### 1. Análise exploratória
+### Preparar os dados
 
-Abra o notebook `src/EDA.ipynb` no VS Code ou no Jupyter para revisar a preparação inicial dos dados.
-
-### 2. Gerar eventos sintéticos
-
-O pacote expõe um comando de console para gerar eventos e recompensas atrasadas:
+Abra os notebooks em `src/eda/` para explorar a base e preparar os arquivos intermediários, ou execute:
 
 ```bash
-generate-events
+project run-eda
 ```
 
-Esse comando produz arquivos em `data/kaggle/synthetic_enrichment/`.
+O script `src/eda/run_eda.py` executa a preparação principal dos dados.
 
-### 3. Rodar o experimento da etapa 3
+### Gerar eventos sintéticos
 
-Execute o script principal a partir da raiz do projeto:
+Use o comando de console:
 
 ```bash
-python src/run_etapa3_experiment.py
+project generate-events
 ```
 
-Os resultados são salvos por padrão em `data/experiments/etapa3/`.
+### Rodar as simulações
 
-## Saídas do Experimento
+Thompson Sampling:
 
-O experimento gera três artefatos principais:
+```bash
+project run-thompson-sampling
+```
 
-- `metrics_summary.csv`: resumo agregado das métricas por política.
-- `metrics_timeseries.parquet`: série temporal das métricas registradas.
-- `arm_counts_<policy>.csv`: contagem de seleções por braço e política.
+LinUCB:
 
-## Variáveis de Ambiente
+```bash
+project run-linucb
+```
 
-As seguintes variáveis podem ser definidas via `.env`:
+### Gerar relatórios em Markdown
 
-- `TS_OUT_DIR`: diretório de saída do experimento.
-- `SEED`: semente aleatória do experimento Thompson Sampling.
-- `DEFAULT_BANK_PATH`: caminho para `clean_bank.parquet`.
-- `DEFAULT_CATALOG_PATH`: caminho para o catálogo de ofertas.
-- `BASE_DATE`: data base da simulação.
-- `DELAY_SCALE_DAYS`: escala do atraso das conversões.
-- `THOMPSON_ALPHA0` e `THOMPSON_BETA0`: priors da política Thompson Sampling.
-- `UCB1_EXPLORATION_BONUS`: fator de exploração da política UCB1.
+O comando `generate-report` aceita combinações de flags:
 
-## Políticas Implementadas
+- `project generate-report --oc` gera o relatório do catálogo de ofertas.
+- `project generate-report --linucb` gera todos os relatórios do LinUCB.
+- `project generate-report --thompson-sampling` gera todos os relatórios do Thompson Sampling.
+- `project generate-report --all` gera todos os relatórios de uma vez.
 
-- `BaselineFixedPolicy`: sempre tenta o braço `0` quando elegível.
-- `ThompsonSamplingPolicy`: seleciona braços por amostragem Beta por recompensa binária.
-- `UCB1Policy`: usa o índice UCB para balancear exploração e exploração.
+### Indexar documentos no RAG
+
+Depois de gerar os relatórios, indexe os Markdown com:
+
+```bash
+project index-documents
+```
+
+### Consultar o contexto recuperado
+
+```bash
+project retrieve-context "sua pergunta aqui"
+```
+
+### Construir prompt RAG
+
+```bash
+project build-rag-prompt "sua pergunta aqui"
+```
+
+### Falar com o LLM
+
+```bash
+project ask-llm
+```
+
+### Subir a API
+
+```bash
+project start-api
+```
+
+Para a interface de experimentos do MLflow:
+
+```bash
+project start-mlflow-ui
+```
+
+A API expõe:
+
+- `GET /health`
+- `POST /predict`
+- `GET /apidocs/`
+
+## Saídas Principais
+
+- `data/experiments/thompson_sampling/`: métricas e contagens do experimento Thompson Sampling.
+- `data/experiments/linucb/`: métricas e contagens do experimento LinUCB.
+- `data/rag/`: relatórios Markdown e índice FAISS do RAG.
+- `data/golden_set/`: casos de validação do conjunto dourado.
+
+## Variáveis De Ambiente
+
+As variáveis abaixo podem ser definidas em `.env` quando necessário:
+
+- `API_HOST` e `API_PORT`: host e porta da API Flask.
+- `VECTOR_STORE_DIR`, `VECTOR_STORE_PATH` e `METADATA_PATH`: local do índice e dos metadados do RAG.
+- `TS_METRICS_PATH`, `ARM_COUNTS_BL_PATH`, `ARM_COUNTS_TS_PATH`, `OFFER_CATALOG_PATH`: entradas usadas na geração de relatórios do Thompson Sampling.
+- `LINUCB_METRICS_SUMMARY_PATH`, `ARM_COUNTS_LINUCB_PATH`, `ARM_BY_JOB_PATH`, `ARM_BY_EDUCATION_PATH`, `ARM_BY_POUTCOME_PATH`, `ARM_BY_AGE_GROUP_PATH`: entradas usadas na geração de relatórios do LinUCB.
+- `POLICIES_DIR`: diretório base da pasta de políticas.
+- `DEFAULT_BANK_PATH` e `DEFAULT_CATALOG_PATH`: caminhos esperados pelo fluxo de simulação.
+- `BASE_DATE`, `DELAY_SCALE_DAYS`, `SEED`, `THOMPSON_ALPHA0`, `THOMPSON_BETA0`, `UCB1_EXPLORATION_BONUS`: parâmetros da simulação.
+- `OPENAI_API_KEY`, `GOOGLE_API_KEY`, ou equivalentes usados pelos clientes de LLM, quando aplicável.
 
 ## Limitações Conhecidas
 
-- A abordagem não é contextual; os clientes não influenciam diretamente o score além da elegibilidade.
-- Os priors e recompensas sintéticas dependem de hipóteses simplificadas.
-- O pipeline assume a existência do parquet processado `clean_bank.parquet`.
+- A abordagem segue majoritariamente um desenho não contextual nas políticas clássicas de bandit.
+- Os relatórios RAG dependem dos arquivos Markdown já gerados em `data/rag/`.
+- A API de recomendação depende da disponibilidade do LLM configurado no ambiente.
 
 ## Testes
 
