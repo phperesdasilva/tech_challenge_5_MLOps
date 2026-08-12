@@ -172,12 +172,11 @@ class CLI:
         run_llm(prompt=prompt)
 
     def start_api(self):
-        """Sobe a API Flask (/health, /predict, /ask-llm).
+        """Sobe a API Flask (/health, /predict).
 
         Import feito aqui dentro (e não no topo do arquivo) de propósito: subir a
-        API treina as policies do bandit e carrega o índice RAG na importação do
-        módulo (alguns segundos) — um custo que só quem roda "start-api" deve
-        pagar, não todo comando do CLI.
+        API carrega o índice RAG na importação do módulo — um custo que só quem
+        roda "start-api" deve pagar, não todo comando do CLI.
         """
         import os
 
