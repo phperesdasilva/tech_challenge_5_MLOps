@@ -91,7 +91,7 @@ def run_simulation(
         )
         sim_clock = impression_time
 
-        outcome = env.simulate_outcome(offer, impression_time)
+        outcome = env.simulate_outcome(offer, client_dict, impression_time)
         opt_exp = optimal_expected_reward(eligible)
 
         # 6-tupla: contexto adicionado na posição final — usado no LinUCB
