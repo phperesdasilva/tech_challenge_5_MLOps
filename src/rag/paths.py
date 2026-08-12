@@ -5,6 +5,45 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # =============================================================================
+# Políticas de negócio — documentos Markdown usados como base de consulta no
+# RAG e no catálogo de governança.
+# =============================================================================
+
+POLICIES_DIR = os.getenv("POLICIES_DIR", "data/policies")
+FAQ_OFERTAS_PATH = os.getenv("FAQ_OFERTAS_PATH", f"{POLICIES_DIR}/faq-ofertas.md")
+GOVERNANCA_DADOS_PATH = os.getenv(
+    "GOVERNANCA_DADOS_PATH",
+    f"{POLICIES_DIR}/governanca-dados.md",
+)
+POLITICA_COMUNICACAO_PATH = os.getenv(
+    "POLITICA_COMUNICACAO_PATH",
+    f"{POLICIES_DIR}/politica-comunicacao.md",
+)
+POLITICA_ELEGIBILIDADE_PATH = os.getenv(
+    "POLITICA_ELEGIBILIDADE_PATH",
+    f"{POLICIES_DIR}/politica-elegibilidade.md",
+)
+POLITICA_SUITABILITY_PATH = os.getenv(
+    "POLITICA_SUITABILITY_PATH",
+    f"{POLICIES_DIR}/politica-suitability.md",
+)
+
+POLICIES_REPORT_PATHS = [
+    FAQ_OFERTAS_PATH,
+    GOVERNANCA_DADOS_PATH,
+    POLITICA_COMUNICACAO_PATH,
+    POLITICA_ELEGIBILIDADE_PATH,
+    POLITICA_SUITABILITY_PATH,
+]
+
+# =============================================================================
+# Golden set — casos de avaliação e documentação associada ao conjunto de
+# testes de recomendação.
+# =============================================================================
+
+GOLDEN_SET_PATH = os.getenv("GOLDEN_SET_PATH", "data/golden_set/golden_set.md")
+
+# =============================================================================
 # Thompson Sampling — caminhos de origem (CSVs/JSON do experimento) e destino
 # (relatórios em markdown gerados pelo LLM a partir deles).
 # =============================================================================
@@ -104,8 +143,4 @@ ARM_BY_POUTCOME_REPORT_PATH = os.getenv(
 ARM_BY_AGE_GROUP_REPORT_PATH = os.getenv(
     "ARM_BY_AGE_GROUP_REPORT_PATH",
     "data/rag/linucb/arm_by_age_group_report.md",
-)
-GOLDEN_SET_PATH = os.getenv(
-    "GOLDEN_SET_PATH",
-    "data/golden_set/golden_set.md",
 )

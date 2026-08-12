@@ -22,6 +22,14 @@ METADATA_PATH = Path(
 )
 
 MD_FILES = [
+    # Policies
+    paths.FAQ_OFERTAS_PATH,
+    paths.GOVERNANCA_DADOS_PATH,
+    paths.POLITICA_COMUNICACAO_PATH,
+    paths.POLITICA_ELEGIBILIDADE_PATH,
+    paths.POLITICA_SUITABILITY_PATH,
+    # Golden set
+    paths.GOLDEN_SET_PATH,
     # Thompson Sampling
     paths.TS_METRICS_REPORT_PATH,
     paths.ARM_COUNTS_REPORT_BL_PATH,
@@ -33,8 +41,7 @@ MD_FILES = [
     paths.ARM_BY_JOB_REPORT_PATH,
     paths.ARM_BY_EDUCATION_REPORT_PATH,
     paths.ARM_BY_POUTCOME_REPORT_PATH,
-    paths.ARM_BY_AGE_GROUP_REPORT_PATH,
-    paths.GOLDEN_SET_PATH
+    paths.ARM_BY_AGE_GROUP_REPORT_PATH
 ]
 
 def chunk_markdown(text, chunk_size=1500):

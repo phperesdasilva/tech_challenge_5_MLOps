@@ -8,6 +8,7 @@ env/
 __pycache__/
 *.pyc
 .pytest_cache/
+.coverage
 .DS_Store
 
 # Dados e Experimentos de MLOps
@@ -16,7 +17,9 @@ mlruns/
 mlflow.db
 *.parquet
 *.csv
-*.json
+
+!data/rag/
+!data/golden_set/
 
 # Exceção: corpus sintético de políticas (base do RAG do assistente)
 !data/policies/

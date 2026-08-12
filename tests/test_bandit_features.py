@@ -10,14 +10,11 @@ def make_train_df() -> pd.DataFrame:
         {
             "age": [20, 40, 60],
             "balance": [100, 200, 300],
-            "pdays": [-1, 5, 10],
-            "previous": [0, 1, 2],
             "housing": ["yes", "no", "yes"],
             "loan": ["no", "no", "yes"],
             "job": ["admin", "blue-collar", "admin"],
             "marital": ["single", "married", "married"],
             "education": ["primary", "secondary", "tertiary"],
-            "poutcome": ["unknown", "success", "failure"],
         }
     )
 
@@ -26,23 +23,20 @@ def make_client(**overrides) -> dict:
     client = {
         "age": 30,
         "balance": 100,
-        "pdays": -1,
-        "previous": 0,
         "housing": "no",
         "loan": "no",
         "job": "admin",
         "marital": "single",
         "education": "primary",
-        "poutcome": "unknown",
     }
     client.update(overrides)
     return client
 
 
-def test_dim_sums_numeric_pdays_flag_binary_one_hot_and_bias():
+def test_dim_sums_numeric_binary_one_hot_and_bias():
     encoder = BankContextEncoder(make_train_df())
 
-    expected_dim = len(NUMERIC_COLS) + 1 + len(BINARY_COLS) + 10 + 1  # 10 = soma dos vocabulários
+    expected_dim = len(NUMERIC_COLS) + len(BINARY_COLS) + 7 + 1  # 7 = soma dos vocabulários
 
     assert encoder.dim == expected_dim
     assert len(encoder.feature_names()) == encoder.dim
@@ -70,20 +64,9 @@ def test_encode_applies_zscore_to_numeric_columns():
     assert vec[1] == pytest.approx(expected_balance_z)
 
 
-def test_encode_flags_pdays_was_contacted():
-    encoder = BankContextEncoder(make_train_df())
-    pdays_flag_index = len(NUMERIC_COLS)
-
-    never_contacted = encoder.encode(make_client(pdays=-1))
-    contacted = encoder.encode(make_client(pdays=5))
-
-    assert never_contacted[pdays_flag_index] == 0.0
-    assert contacted[pdays_flag_index] == 1.0
-
-
 def test_encode_sets_binary_columns_only_on_yes():
     encoder = BankContextEncoder(make_train_df())
-    binary_start = len(NUMERIC_COLS) + 1
+    binary_start = len(NUMERIC_COLS)
 
     vec_yes = encoder.encode(make_client(housing="yes", loan="yes"))
     vec_no = encoder.encode(make_client(housing="no", loan="no"))
@@ -98,7 +81,7 @@ def test_encode_one_hot_activates_only_the_client_category():
     df = make_train_df()
     encoder = BankContextEncoder(df)
     job_vocab = sorted(df["job"].unique().tolist())
-    job_start = len(NUMERIC_COLS) + 1 + len(BINARY_COLS)
+    job_start = len(NUMERIC_COLS) + len(BINARY_COLS)
 
     vec = encoder.encode(make_client(job="admin"))
 
@@ -111,7 +94,7 @@ def test_encode_unseen_category_yields_all_zero_one_hot_block():
     df = make_train_df()
     encoder = BankContextEncoder(df)
     job_vocab = sorted(df["job"].unique().tolist())
-    job_start = len(NUMERIC_COLS) + 1 + len(BINARY_COLS)
+    job_start = len(NUMERIC_COLS) + len(BINARY_COLS)
 
     vec = encoder.encode(make_client(job="never-seen-job"))
 

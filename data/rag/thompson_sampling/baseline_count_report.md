@@ -1,40 +1,40 @@
-# Relatório de Análise de Execução: BaselineFixedPolicy
+# Relatório de Análise: Distribuição de Alocação da Política BaselineFixedPolicy
 
 ## 1. Introdução
-Este relatório apresenta a análise de distribuição de execuções (alocação de braços) para a política **BaselineFixedPolicy**, utilizada como grupo de controle no experimento de Multi-Armed Bandits (MAB) com Thompson Sampling.
+Este relatório apresenta a análise da distribuição de execuções de braços para a política **BaselineFixedPolicy**, utilizada como grupo de controle (baseline) nos experimentos de Multi-Armed Bandit (MAB) comparados com o algoritmo Thompson Sampling.
 
-O objetivo de uma política estática (ou baseline fixa) é estabelecer uma linha de base de desempenho para comparar a eficácia de algoritmos adaptativos, como o Thompson Sampling. Ao fixar a escolha em um único braço padrão, podemos quantificar o ganho real (*uplift*) gerado pela inteligência e capacidade de aprendizado do algoritmo MAB.
+O objetivo do estabelecimento de uma política de controle fixa é fornecer um benchmark de desempenho estático para avaliar o ganho acumulado, a taxa de conversão e o arrependimento (regret) das políticas adaptativas de Thompson Sampling.
 
-## 2. Distribuição de Execução dos Braços
+---
 
-Com base nos dados coletados no arquivo `arm_counts_BaselineFixedPolicy.csv`, a distribuição de jogadas (*pulls*) por braço está detalhada na tabela abaixo:
+## 2. Metodologia e Dados de Execução
+Os dados de execução foram extraídos do arquivo `arm_counts_BaselineFixedPolicy.csv`, que registra o volume de alocações para cada braço sob esta política.
 
-| Política | ID do Braço | Contagem de Execuções | Proporção (%) |
+### Tabela 1: Distribuição de Alocações por Braço
+| Política | ID do Braço | Contagem de Execuções (Counts) | Proporção de Alocação (%) |
 | :--- | :---: | :---: | :---: |
 | **BaselineFixedPolicy** | 0 | 4.521 | 100,00% |
 | **Total** | - | **4.521** | **100,00%** |
 
-### Observações Chave:
-* **Explotação Exclusiva:** Como esperado de uma política de controle fixa, 100% das 4.521 interações foram direcionadas ao **Braço 0** (`arm_id: 0`).
-* **Ausência de Exploração (Exploration):** Não houve qualquer tentativa de explorar outros braços alternativos disponíveis no experimento. O sistema operou de forma determinística e estática.
+---
 
-## 3. Implicações Teóricas e Práticas da Política
+## 3. Análise de Comportamento da Política
+A partir dos dados observados, nota-se que o braço **0** foi executado exatamente **4.521 vezes**, representando **100%** de todas as interações do experimento para esta política.
 
-A escolha de alocar todas as execuções ao Braço 0 traz implicações significativas para a avaliação do experimento:
+Este comportamento é característico e esperado para a `BaselineFixedPolicy`. Como uma política estática e não adaptativa, ela não realiza exploração (*exploration*) nem aproveita aprendizados para explotação (*exploitation*). Ela simplesmente direciona todo o tráfego/fluxo para um único braço pré-definido (neste caso, o Braço 0).
 
-1. **Viés de Amostragem:** Por não explorar outros braços, esta política assume a premissa de que o Braço 0 é a escolha padrão histórica ou a opção de menor risco. Ela não se adapta a mudanças no comportamento do usuário ou a variações sazonais.
-2. **Custo de Oportunidade:** Caso o Braço 0 não seja o braço com a maior taxa de recompensa (conversão/clique), a política incorre em um custo de oportunidade contínuo, representado pelo *regret* acumulado em comparação com uma política ótima ou com o Thompson Sampling.
-3. **Papel como Controle:** Essa distribuição estática simula o comportamento de um grupo de controle em um teste A/B tradicional, onde os usuários do grupo são expostos a uma única variante pré-definida.
+---
 
-## 4. Contextualização com Métricas de Desempenho
+## 4. Relação com o Resumo de Métricas (metrics_summary.csv)
+Ao correlacionar estes dados com o arquivo de referência geral de métricas (`metrics_summary.csv`), podemos extrair conclusões valiosas sobre a performance do Baseline:
 
-Utilizando os dados agregados de `metrics_summary.csv` como referência analítica, o desempenho consolidado desta política serve como o "ponto zero" para o cálculo das métricas de sucesso do Thompson Sampling:
+1. **Taxa de Conversão Constante:** A taxa de conversão (CTR) observada para esta política reflete puramente a taxa de conversão basal do Braço 0.
+2. **Ausência de Aprendizado:** Diferente das variantes de Thompson Sampling (que dinamicamente migram o tráfego para os braços de melhor performance ao longo do tempo), a `BaselineFixedPolicy` mantém sua performance linear e constante do início ao fim das 4.521 rodadas.
+3. **Cálculo de Regret:** Esta execução de 4.521 interações serve como o ponto de ancoragem para o cálculo de *Regret* Acumulado das outras políticas. Se o Braço 0 for subótimo em comparação com outros braços disponíveis no experimento, a curva de regret desta política crescerá de forma linear e acentuada.
 
-* **Taxa de Conversão/Recompensa Média:** A taxa de conversão obtida pelo Braço 0 sob esta política reflete o comportamento orgânico da população sem otimização dinâmica.
-* **Regret Acumulado:** O regret desta política cresce de forma linear ao longo do tempo caso exista um braço com desempenho superior disponível no experimento, servindo como o limite inferior de desempenho aceitável para o experimento.
+---
 
 ## 5. Conclusão
+A política `BaselineFixedPolicy` cumpriu rigorosamente o seu papel metodológico de controle, concentrando 100% de suas 4.521 execuções no Braço 0.
 
-A política `BaselineFixedPolicy` cumpriu rigorosamente o seu papel operacional, executando o **Braço 0 exatamente 4.521 vezes**.
-
-Este volume de dados é estatisticamente robusto para determinar com alta precisão o desempenho médio do cenário padrão (controle). A comparação direta desta volumetria e de sua respectiva taxa de conversão contra as métricas do Thompson Sampling permitirá validar se o algoritmo adaptativo foi capaz de identificar braços superiores e realizar a transição de exploração para explotação de forma eficiente, mitigando o *regret* acumulado e maximizando o retorno sobre o experimento.
+A estabilidade desta política é fundamental para isolar variáveis externas e garantir que quaisquer melhorias de performance observadas nas políticas baseadas em Thompson Sampling sejam estatisticamente atribuíveis à inteligência do algoritmo de alocação dinâmica, e não a flutuações aleatórias do ambiente do experimento.

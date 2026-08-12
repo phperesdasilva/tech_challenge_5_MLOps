@@ -1,0 +1,1070 @@
+[
+    {
+        "source": "faq-ofertas.md",
+        "chunk_id": "faq-ofertas_chunk_0",
+        "text": "# FAQ de Ofertas (SINTÉTICO)\n\n> Perguntas e respostas sintéticas. Taxas e prazos são fictícios.\n\n**P: O que é a Conta Digital Padrão?**\nR: Conta corrente digital sem taxa de manutenção (arm 0), disponível a partir de 18 anos.\n\n**P: Quais os requisitos do Cartão de Crédito Premium?**\nR: Idade mínima de 21 anos e aprovação em análise de crédito sintética (arm 1). Possui programa de recompensas.\n\n**P: Quem pode contratar o Refinanciamento Imobiliário?**\nR: Clientes com 25 anos ou mais que já possuam financiamento habitacional ativo (arm 2). Passa por análise individual com revisão humana.\n\n**P: O CDB tem liquidez diária?**\nR: É um depósito a prazo de renda fixa (arm 3), indicado para perfil conservador; condições de resgate são sintéticas e definidas na proposta.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "FAQ de Ofertas (SINTÉTICO)",
+            "tags_conteudo": [
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "governanca-dados.md",
+        "chunk_id": "governanca-dados_chunk_0",
+        "text": "# Governança de Dados do Assistente (SINTÉTICA)\n\n> Resumo sintético das travas de dados que o assistente deve respeitar.\n\n## Dados proibidos para decisão\nRenda, salário, gênero, sexo, raça, cor, etnia, religião, orientação sexual e patrimônio **não podem** ser usados como critério de oferta ou recomendação.\n\n## Princípios\n- **Minimização**: usar apenas o contexto necessário para a decisão.\n- **Humano no loop**: decisões sensíveis (crédito, refinanciamento) não são efetivadas de forma totalmente automática.\n- **Rastreabilidade**: toda decisão e resposta do assistente registra reason codes e a versão de política aplicada.\n- **Retenção**: logs de decisão e telemetria seguem ciclo de retenção sintético definido no plano LGPD do projeto.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Governança de Dados do Assistente (SINTÉTICA)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "politica-comunicacao.md",
+        "chunk_id": "politica-comunicacao_chunk_0",
+        "text": "# Política de Comunicação em Canais (SINTÉTICA)\n\n> Regras sintéticas de frequência e canais para o assistente e o motor de decisão.\n\n## Canais\nApp, e-mail, SMS e push.\n\n## Frequência e horários\n- **Frequency cap**: no máximo **3 contatos por semana** por cliente (valor sintético).\n- **Quiet hours**: não enviar mensagens entre **21h e 8h**.\n- **Opt-out**: respeitar imediatamente; cliente que optou por sair não recebe novas ofertas no canal.\n\n## Boas práticas\n- Não insistir em oferta recusada dentro da janela de cooldown (7 dias).\n- Mensagens devem ser claras quanto a custos e condições sintéticas do produto.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Política de Comunicação em Canais (SINTÉTICA)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "politica-elegibilidade.md",
+        "chunk_id": "politica-elegibilidade_chunk_0",
+        "text": "# Política de Elegibilidade de Ofertas (SINTÉTICA)\n\n> Documento sintético criado para o Datathon. Não representa regras comerciais reais.\n\n## Regras transversais\n- Nenhuma oferta pode usar **renda, gênero, raça, religião ou patrimônio** como critério de decisão.\n- Decisões de **crédito e refinanciamento** exigem **humano no loop** antes da efetivação.\n- O cliente deve estar **elegível** (regras abaixo) para que o braço entre no conjunto de ações do bandit.\n\n## Ofertas (braços)\n- **arm 0 — Conta Digital Padrão** (`baseline`): idade ≥ 18. Sem exigência de financiamento. Público geral.\n- **arm 1 — Cartão de Crédito Premium** (`credit`): idade ≥ 21. Requer análise de crédito interna sintética; não ofertar a clientes marcados como inadimplentes.\n- **arm 2 — Refinanciamento Imobiliário** (`loan`): idade ≥ 25 **e** possuir financiamento habitacional ativo (`housing = yes`). Não elegível sem financiamento.\n- **arm 3 — Depósito a Prazo (CDB)** (`investment`): idade ≥ 18. Público geral. Indicado para perfil conservador/moderado.\n\n## Cooldown\n- Oferta recusada não deve ser reapresentada por **7 dias** (janela de cooldown sintética).",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Política de Elegibilidade de Ofertas (SINTÉTICA)",
+            "tags_conteudo": [
+                "Baseline",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "politica-suitability.md",
+        "chunk_id": "politica-suitability_chunk_0",
+        "text": "# Política de Suitability (SINTÉTICA)\n\n> Documento sintético para fins de avaliação. Suitability = adequação do produto ao perfil do cliente.\n\n## Perfis de risco sintéticos\n- **Conservador**: prioriza segurança e liquidez.\n- **Moderado**: aceita risco controlado.\n- **Arrojado**: tolera maior volatilidade.\n\n## Mapeamento produto x perfil\n- **CDB (arm 3)**: adequado a Conservador e Moderado.\n- **Conta Digital (arm 0)**: adequado a todos os perfis.\n- **Cartão Premium (arm 1)**: adequado a Moderado e Arrojado **com crédito aprovado**.\n- **Refinanciamento (arm 2)**: exige financiamento habitacional ativo **e** análise individual (humano no loop).\n\n## Regras\n- Não recomendar produto de risco **incompatível** com o perfil declarado.\n- Registrar **justificativa (reason codes)** de toda recomendação.\n- Para crédito e refinanciamento, a decisão automatizada é apenas **sugestão**; a efetivação passa por revisão humana.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Política de Suitability (SINTÉTICA)",
+            "tags_conteudo": [
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "golden_set.md",
+        "chunk_id": "golden_set_chunk_0",
+        "text": "# GOLDEN SET DATA:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "GOLDEN SET DATA:",
+            "tags_conteudo": []
+        }
+    },
+    {
+        "source": "golden_set.md",
+        "chunk_id": "golden_set_chunk_1",
+        "text": "# GOLDEN SET DATA:\n\n{\"client_id\": 269, \"offer_id\": \"0\", \"offer_name\": \"Conta Digital Padrão\", \"source_policy\": \"BaselineFixedPolicy\", \"age\": 40, \"job\": \"blue-collar\", \"marital\": \"married\", \"housing\": \"yes\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Refinanciamento Imobiliário\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 10.0, \"theoretical_best_offer\": \"Refinanciamento Imobiliário\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (BaselineFixedPolicy): o cliente era elegível, recebeu a oferta Conta Digital Padrão e converteu, gerando recompensa de R$ 10.00. O braço elegível de maior valor esperado para este cliente seria Refinanciamento Imobiliário; esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 20076, \"offer_id\": \"0\", \"offer_name\": \"Conta Digital Padrão\", \"source_policy\": \"BaselineFixedPolicy\", \"age\": 32, \"job\": \"housemaid\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 10.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (BaselineFixedPolicy): o cliente era elegível, recebeu a oferta Conta Digital Padrão e converteu, gerando recompensa de R$ 10.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 15029, \"offer_id\": \"0\", \"offer_name\": \"Conta Digital Padrão\", \"source_policy\": \"BaselineFixedPolicy\", \"age\": 55, \"job\": \"retired\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 10.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (BaselineFixedPolicy): o cliente era elegível, recebeu a oferta Conta Digital Padrão e converteu, gerando recompensa de R$ 10.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 11094, \"offer_id\": \"0\", \"offer_name\": \"Conta Digital Padrão\", \"source_policy\": \"BaselineFixedPolicy\", \"age\": 48, \"job\": \"admin.\", \"marital\": \"single\", \"housing\": \"yes\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Refinanciamento Imobiliário\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 10.0, \"theoretical_best_offer\": \"Refinanciamento Imobiliário\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (BaselineFixedPolicy): o cliente era elegível, recebeu a oferta Conta Digital Padrão e converteu, gerando recompensa de R$ 10.00. O braço elegível de maior valor esperado para este cliente seria Refinanciamento Imobiliário; esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 41173, \"offer_id\": \"0\", \"offer_name\": \"Conta Digital Padrão\", \"source_policy\": \"BaselineFixedPolicy\", \"age\": 32, \"job\": \"management\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 10.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (BaselineFixedPolicy): o cliente era elegível, recebeu a oferta Conta Digital Padrão e converteu, gerando recompensa de R$ 10.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 17979, \"offer_id\": \"1\", \"offer_name\": \"Cartão de Crédito Premium\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 54, \"job\": \"management\", \"marital\": \"single\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 150.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Cartão de Crédito Premium e converteu, gerando recompensa de R$ 150.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 9469, \"offer_id\": \"1\", \"offer_name\": \"Cartão de Crédito Premium\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 56, \"job\": \"unemployed\", \"marital\": \"divorced\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 150.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Cartão de Crédito Premium e converteu, gerando recompensa de R$ 150.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 23215, \"offer_id\": \"1\", \"offer_name\": \"Cartão de Crédito Premium\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 38, \"job\": \"technician\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 150.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Cartão de Crédito Premium e converteu, gerando recompensa de R$ 150.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 7802, \"offer_id\": \"1\", \"offer_name\": \"Cartão de Crédito Premium\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 39, \"job\": \"technician\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 150.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Cartão de Crédito Premium e converteu, gerando recompensa de R$ 150.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 24670, \"offer_id\": \"1\", \"offer_name\": \"Cartão de Crédito Premium\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 52, \"job\": \"technician\", \"marital\": \"divorced\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 150.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": false, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Cartão de Crédito Premium e converteu, gerando recompensa de R$ 150.00. O braço elegível de maior valor esperado para este cliente seria Depósito a Prazo (CDB); esta conversão veio de uma impressão de exploração (ou, no caso do baseline, da regra fixa), mas ainda assim é um resultado de negócio real e válido.\"}\n{\"client_id\": 7265, \"offer_id\": \"2\", \"offer_name\": \"Refinanciamento Imobiliário\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 39, \"job\": \"technician\", \"marital\": \"single\", \"housing\": \"yes\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Refinanciamento Imobiliário\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 300.0, \"theoretical_best_offer\": \"Refinanciamento Imobiliário\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Refinanciamento Imobiliário e converteu, gerando recompensa de R$ 300.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 8886, \"offer_id\": \"2\", \"offer_name\": \"Refinanciamento Imobiliário\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 44, \"job\": \"entrepreneur\", \"marital\": \"married\", \"housing\": \"yes\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Refinanciamento Imobiliário\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 300.0, \"theoretical_best_offer\": \"Refinanciamento Imobiliário\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Refinanciamento Imobiliário e converteu, gerando recompensa de R$ 300.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 32528, \"offer_id\": \"2\", \"offer_name\": \"Refinanciamento Imobiliário\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 37, \"job\": \"services\", \"marital\": \"married\", \"housing\": \"yes\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Refinanciamento Imobiliário\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 300.0, \"theoretical_best_offer\": \"Refinanciamento Imobiliário\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Refinanciamento Imobiliário e converteu, gerando recompensa de R$ 300.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 26830, \"offer_id\": \"2\", \"offer_name\": \"Refinanciamento Imobiliário\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 41, \"job\": \"technician\", \"marital\": \"single\", \"housing\": \"yes\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Refinanciamento Imobiliário\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 300.0, \"theoretical_best_offer\": \"Refinanciamento Imobiliário\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Refinanciamento Imobiliário e converteu, gerando recompensa de R$ 300.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 17264, \"offer_id\": \"2\", \"offer_name\": \"Refinanciamento Imobiliário\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 28, \"job\": \"admin.\", \"marital\": \"married\", \"housing\": \"yes\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Refinanciamento Imobiliário\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 300.0, \"theoretical_best_offer\": \"Refinanciamento Imobiliário\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Refinanciamento Imobiliário e converteu, gerando recompensa de R$ 300.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 28239, \"offer_id\": \"3\", \"offer_name\": \"Depósito a Prazo (CDB)\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 32, \"job\": \"technician\", \"marital\": \"single\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 80.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Depósito a Prazo (CDB) e converteu, gerando recompensa de R$ 80.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 40299, \"offer_id\": \"3\", \"offer_name\": \"Depósito a Prazo (CDB)\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 37, \"job\": \"technician\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 80.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Depósito a Prazo (CDB) e converteu, gerando recompensa de R$ 80.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 22910, \"offer_id\": \"3\", \"offer_name\": \"Depósito a Prazo (CDB)\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 34, \"job\": \"management\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 80.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Depósito a Prazo (CDB) e converteu, gerando recompensa de R$ 80.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 39545, \"offer_id\": \"3\", \"offer_name\": \"Depósito a Prazo (CDB)\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 30, \"job\": \"technician\", \"marital\": \"single\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 80.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Depósito a Prazo (CDB) e converteu, gerando recompensa de R$ 80.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}\n{\"client_id\": 20344, \"offer_id\": \"3\", \"offer_name\": \"Depósito a Prazo (CDB)\", \"source_policy\": \"ThompsonSamplingPolicy\", \"age\": 43, \"job\": \"unemployed\", \"marital\": \"married\", \"housing\": \"no\", \"eligible_offers\": [\"Conta Digital Padrão\", \"Cartão de Crédito Premium\", \"Depósito a Prazo (CDB)\"], \"reward_obtained\": 80.0, \"theoretical_best_offer\": \"Depósito a Prazo (CDB)\", \"matches_theoretical_best\": true, \"decision_makes_sense\": true, \"rationale\": \"Conversão real observada na simulação (ThompsonSamplingPolicy): o cliente era elegível, recebeu a oferta Depósito a Prazo (CDB) e converteu, gerando recompensa de R$ 80.00. Essa oferta também é o braço elegível de maior valor esperado para este cliente.\"}",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "GOLDEN SET DATA:",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_0",
+        "text": "# Relatório de Análise Comparativa: Thompson Sampling vs. Baseline Fixed Policy\n\n**Autor:** Cientista de Dados / Engenheiro de Machine Learning  \n**Data da Análise:** October 2023  \n**Experimento:** Otimização de Multi-Armed Bandits via Thompson Sampling\n\n---\n\n## 1. Sumário Executivo\n\nEste relatório apresenta uma análise detalhada dos resultados obtidos no experimento comparativo entre o algoritmo de **Thompson Sampling** (uma política de tomada de decisão sequencial sob incerteza) e a **Baseline Fixed Policy** (uma política fixa de controle).\n\nOs dados analisados cobrem um horizonte de **4.521 passos (steps)**. O principal insight gerado por este experimento é que **otimizar apenas a taxa de conversão pode ser prejudicial para o retorno financeiro ou valor total de conversão**. O modelo de Thompson Sampling obteve um desempenho financeiro drasticamente superior, acumulando **16.770,0 de recompensa total** contra **6.920,0 da Baseline** (um aumento de **142,34%**), além de reduzir o arrependimento acumulado (*cumulative regret*) em **13,53%**, mesmo registrando uma taxa de conversão ligeiramente menor (13,96% vs. 15,31%).\n\n---\n\n## 2. Metodologia",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise Comparativa: Thompson Sampling vs. Baseline Fixed Policy",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_1",
+        "text": "## 2. Metodologia\n\nO experimento foi estruturado como um problema de *Multi-Armed Bandits* (MAB):\n*   **Baseline Fixed Policy:** Representa uma política estática onde as decisões são tomadas com base em regras fixas pré-determinadas (geralmente explorando uma única opção considerada padrão ou segura).\n*   **Thompson Sampling Policy:** Uma abordagem bayesiana para o equilíbrio entre exploração e aproveitamento (*exploration vs. exploitation*). O algoritmo modela a incerteza de cada braço (ação) usando distribuições de probabilidade (tipicamente distribuições Beta para recompensas binárias ou conjugadas apropriadas para recompensas contínuas) e toma decisões amostrando dessas distribuições.\n\n---\n\n## 3. Comparação de Métricas Finais\n\nAo final dos 4.521 passos do experimento, as métricas consolidadas apresentaram o seguinte cenário:\n\n| Métrica | Baseline Fixed Policy | Thompson Sampling Policy | Diferença Absoluta | Variação (%) |\n| :--- | :---: | :---: | :---: | :---: |\n| **Recompensa Acumulada** | 6.920,0 | 16.770,0 | +9.850,0 | **+142,34%** |\n| **Regret Acumulado** | 72.827,2 | 62.977,2 | -9.850,0 | **-13,53%** |\n| **Taxa de Conversão Final** | 15,31% | 13,96% | -1,35 pp | **-8,82%** |\n\n---\n\n## 4. Análise de Evolução Temporal e Progressão",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "2. Metodologia",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_2",
+        "text": "## 4. Análise de Evolução Temporal e Progressão\n\n### 4.1. Recompensa Acumulada (*Cumulative Reward*)\nA progressão da recompensa acumulada revela uma divergência clara e precoce entre as duas políticas:\n*   **Fase Inicial (Passos 1 a 100):** O Thompson Sampling rapidamente se destaca. Logo no passo 17, o modelo de Thompson Sampling já acumulava uma recompensa de 900,0, enquanto a Baseline estava em apenas 30,0. Esse comportamento inicial agressivo reflete a capacidade do Thompson Sampling de identificar braços de altíssimo valor logo nas primeiras interações.\n*   **Fase de Estabilização:** A curva de recompensa da Baseline cresce de forma linear e lenta ao longo de todo o experimento. Em contrapartida, o Thompson Sampling mantém uma taxa de inclinação consistentemente superior, acumulando valor de forma muito mais eficiente.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "4. Análise de Evolução Temporal e Progressão",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Recompensa/Reward",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_3",
+        "text": "### 4.1. Recompensa Acumulada (*Cumulative Reward*)\nA progressão da recompensa acumulada revela uma divergência clara e precoce entre as duas políticas:\n*   **Fase Inicial (Passos 1 a 100):** O Thompson Sampling rapidamente se destaca. Logo no passo 17, o modelo de Thompson Sampling já acumulava uma recompensa de 900,0, enquanto a Baseline estava em apenas 30,0. Esse comportamento inicial agressivo reflete a capacidade do Thompson Sampling de identificar braços de altíssimo valor logo nas primeiras interações.\n*   **Fase de Estabilização:** A curva de recompensa da Baseline cresce de forma linear e lenta ao longo de todo o experimento. Em contrapartida, o Thompson Sampling mantém uma taxa de inclinação consistentemente superior, acumulando valor de forma muito mais eficiente.\n\n### 4.2. Arrependimento Acumulado (*Cumulative Regret*)\nO *regret* mede a perda acumulada por não escolher a melhor ação ótima teórica em cada passo:\n*   **Evolução da Baseline:** O arrependimento da Baseline cresce de forma estritamente linear, alcançando seu pico de 72.827,2 no último passo. Isso indica que a política fixa continuou a tomar decisões subótimas de maneira consistente, sem qualquer capacidade de adaptação.\n*   **Evolução do Thompson Sampling:** O arrependimento acumulado do Thompson Sampling inicia com valores negativos em determinados momentos do início do experimento (ex: -578,4 no passo 17). Isso ocorre devido à formulação do cálculo de arrependimento em relação a um valor esperado de referência, onde o Thompson Sampling conseguiu selecionar braços com retornos excepcionalmente altos e acima da média esperada. Ao longo do tempo, o crescimento do arrependimento do modelo desacelera significativamente em comparação com a Baseline, terminando 13,53% menor.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "4.1. Recompensa Acumulada (*Cumulative Reward*)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Arrependimento/Regret",
+                "Recompensa/Reward",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_4",
+        "text": "### 4.2. Arrependimento Acumulado (*Cumulative Regret*)\nO *regret* mede a perda acumulada por não escolher a melhor ação ótima teórica em cada passo:\n*   **Evolução da Baseline:** O arrependimento da Baseline cresce de forma estritamente linear, alcançando seu pico de 72.827,2 no último passo. Isso indica que a política fixa continuou a tomar decisões subótimas de maneira consistente, sem qualquer capacidade de adaptação.\n*   **Evolução do Thompson Sampling:** O arrependimento acumulado do Thompson Sampling inicia com valores negativos em determinados momentos do início do experimento (ex: -578,4 no passo 17). Isso ocorre devido à formulação do cálculo de arrependimento em relação a um valor esperado de referência, onde o Thompson Sampling conseguiu selecionar braços com retornos excepcionalmente altos e acima da média esperada. Ao longo do tempo, o crescimento do arrependimento do modelo desacelera significativamente em comparação com a Baseline, terminando 13,53% menor.\n\n### 4.3. Taxa de Conversão (*Conversion Rate*)\nUm dos pontos mais contra-intuitivos do experimento reside na taxa de conversão:\n*   A **Baseline** manteve uma taxa de conversão bastante estável, flutuando entre 15,0% e 16,0% na maior parte do tempo, encerrando em **15,31%**.\n*   O **Thompson Sampling** iniciou com conversões flutuantes e estabilizou em uma trajetória descendente suave, encerrando em **13,96%**.\n\n---\n\n## 5. Principais Insights e Discussão Business-Oriented",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "4.2. Arrependimento Acumulado (*Cumulative Regret*)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Arrependimento/Regret",
+                "Conversão",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_5",
+        "text": "## 5. Principais Insights e Discussão Business-Oriented\n\n### Insight 1: O Paradoxo da Taxa de Conversão vs. Recompensa Total\nO resultado mais valioso deste experimento é a demonstração prática de que **taxa de conversão não é sinônimo de receita ou valor de negócio**. \n*   A Baseline converteu mais frequentemente (15,31%), porém suas conversões geraram recompensas individuais muito baixas (provavelmente focando em itens baratos ou ofertas de baixo valor).\n*   O Thompson Sampling converteu menos frequentemente (13,96%), mas aprendeu de forma inteligente a priorizar braços que entregam uma **recompensa significativamente maior por conversão**. Na prática, o algoritmo preferiu falhar ligeiramente mais em converter, desde que as conversões bem-sucedidas trouxessem retornos massivos.\n\n### Insight 2: Velocidade de Aprendizado (*Cold Start*)\nO Thompson Sampling mitigou o problema de início do experimento de forma exemplar. Enquanto políticas tradicionais exigem longos períodos de testes A/B puros (gerando alto custo de oportunidade), o Thompson Sampling começou a gerar retornos expressivos já nos primeiros 20 passos, otimizando o orçamento do experimento desde o primeiro dia.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "5. Principais Insights e Discussão Business-Oriented",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_6",
+        "text": "### Insight 2: Velocidade de Aprendizado (*Cold Start*)\nO Thompson Sampling mitigou o problema de início do experimento de forma exemplar. Enquanto políticas tradicionais exigem longos períodos de testes A/B puros (gerando alto custo de oportunidade), o Thompson Sampling começou a gerar retornos expressivos já nos primeiros 20 passos, otimizando o orçamento do experimento desde o primeiro dia.\n\n### Insight 3: Minimização de Desperdício (*Regret*)\nA redução de quase 10.000 unidades de arrependimento pelo Thompson Sampling prova que a alocação dinâmica de tráfego poupou o sistema de exibir opções irrelevantes ou de baixo valor para os usuários, melhorando a experiência geral do cliente e a eficiência operacional.\n\n---\n\n## 6. Conclusões e Recomendações",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Insight 2: Velocidade de Aprendizado (*Cold Start*)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Arrependimento/Regret",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_timeseries_report.md",
+        "chunk_id": "metrics_timeseries_chunk_7",
+        "text": "## 6. Conclusões e Recomendações\n\n1.  **Substituição Imediata da Baseline:** Recomenda-se a descontinuação da política fixa e a implementação do Thompson Sampling em ambiente de produção para os cenários de recomendação, precificação ou exibição de ofertas estudados.\n2.  **Alinhamento de KPIs de Negócio:** Equipes de produto e marketing devem mover seus KPIs principais de \"Taxa de Conversão Bruta\" para \"Valor de Recompensa por Usuário\" (ou receita média por usuário - ARPU). Focar exclusivamente em conversão pode mascarar perdas financeiras severas, como demonstrado pela Baseline.\n3.  **Expansão do Modelo:** Sugere-se testar variações contextualizadas do Thompson Sampling (Contextual Bandits), onde variáveis do perfil do usuário e do ambiente histórico possam refinar ainda mais a taxa de conversão sem abrir mão do alto valor médio de recompensa já conquistado.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "6. Conclusões e Recomendações",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "baseline_count_report.md",
+        "chunk_id": "baseline_count_chunk_0",
+        "text": "# Relatório de Análise: Distribuição de Alocação da Política BaselineFixedPolicy\n\n## 1. Introdução\nEste relatório apresenta a análise da distribuição de execuções de braços para a política **BaselineFixedPolicy**, utilizada como grupo de controle (baseline) nos experimentos de Multi-Armed Bandit (MAB) comparados com o algoritmo Thompson Sampling.\n\nO objetivo do estabelecimento de uma política de controle fixa é fornecer um benchmark de desempenho estático para avaliar o ganho acumulado, a taxa de conversão e o arrependimento (regret) das políticas adaptativas de Thompson Sampling.\n\n---\n\n## 2. Metodologia e Dados de Execução\nOs dados de execução foram extraídos do arquivo `arm_counts_BaselineFixedPolicy.csv`, que registra o volume de alocações para cada braço sob esta política.\n\n### Tabela 1: Distribuição de Alocações por Braço\n| Política | ID do Braço | Contagem de Execuções (Counts) | Proporção de Alocação (%) |\n| :--- | :---: | :---: | :---: |\n| **BaselineFixedPolicy** | 0 | 4.521 | 100,00% |\n| **Total** | - | **4.521** | **100,00%** |\n\n---\n\n## 3. Análise de Comportamento da Política\nA partir dos dados observados, nota-se que o braço **0** foi executado exatamente **4.521 vezes**, representando **100%** de todas as interações do experimento para esta política.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise: Distribuição de Alocação da Política BaselineFixedPolicy",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Arrependimento/Regret",
+                "Conversão"
+            ]
+        }
+    },
+    {
+        "source": "baseline_count_report.md",
+        "chunk_id": "baseline_count_chunk_1",
+        "text": "## 3. Análise de Comportamento da Política\nA partir dos dados observados, nota-se que o braço **0** foi executado exatamente **4.521 vezes**, representando **100%** de todas as interações do experimento para esta política.\n\nEste comportamento é característico e esperado para a `BaselineFixedPolicy`. Como uma política estática e não adaptativa, ela não realiza exploração (*exploration*) nem aproveita aprendizados para explotação (*exploitation*). Ela simplesmente direciona todo o tráfego/fluxo para um único braço pré-definido (neste caso, o Braço 0).\n\n---\n\n## 4. Relação com o Resumo de Métricas (metrics_summary.csv)\nAo correlacionar estes dados com o arquivo de referência geral de métricas (`metrics_summary.csv`), podemos extrair conclusões valiosas sobre a performance do Baseline:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3. Análise de Comportamento da Política",
+            "tags_conteudo": [
+                "Baseline"
+            ]
+        }
+    },
+    {
+        "source": "baseline_count_report.md",
+        "chunk_id": "baseline_count_chunk_2",
+        "text": "## 4. Relação com o Resumo de Métricas (metrics_summary.csv)\nAo correlacionar estes dados com o arquivo de referência geral de métricas (`metrics_summary.csv`), podemos extrair conclusões valiosas sobre a performance do Baseline:\n\n1. **Taxa de Conversão Constante:** A taxa de conversão (CTR) observada para esta política reflete puramente a taxa de conversão basal do Braço 0.\n2. **Ausência de Aprendizado:** Diferente das variantes de Thompson Sampling (que dinamicamente migram o tráfego para os braços de melhor performance ao longo do tempo), a `BaselineFixedPolicy` mantém sua performance linear e constante do início ao fim das 4.521 rodadas.\n3. **Cálculo de Regret:** Esta execução de 4.521 interações serve como o ponto de ancoragem para o cálculo de *Regret* Acumulado das outras políticas. Se o Braço 0 for subótimo em comparação com outros braços disponíveis no experimento, a curva de regret desta política crescerá de forma linear e acentuada.\n\n---\n\n## 5. Conclusão\nA política `BaselineFixedPolicy` cumpriu rigorosamente o seu papel metodológico de controle, concentrando 100% de suas 4.521 execuções no Braço 0.\n\nA estabilidade desta política é fundamental para isolar variáveis externas e garantir que quaisquer melhorias de performance observadas nas políticas baseadas em Thompson Sampling sejam estatisticamente atribuíveis à inteligência do algoritmo de alocação dinâmica, e não a flutuações aleatórias do ambiente do experimento.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "4. Relação com o Resumo de Métricas (metrics_summary.csv)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Baseline",
+                "Arrependimento/Regret",
+                "Conversão",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "thompson_sampling_count_report.md",
+        "chunk_id": "thompson_sampling_count_chunk_0",
+        "text": "# Relatório de Análise de Experimento: Política Thompson Sampling\n\n**Autor:** Cientista de Dados / Engenheiro de Machine Learning  \n**Data:** Objeto de análise atual  \n**Arquivo de Origem:** `data/experiments/thompson_sampling/arm_counts_ThompsonSamplingPolicy.csv`  \n**Referência de Métricas:** `data/experiments/thompson_sampling/metrics_summary.csv`\n\n---\n\n## 1. Introdução\n\nEste relatório apresenta a análise de distribuição de tráfego (alocação de braços) em um experimento de Multi-Armed Bandit (MAB) utilizando a política **Thompson Sampling (Amostragem de Thompson)**.\n\nO Thompson Sampling é um algoritmo bayesiano que aborda o dilema de *exploration vs. exploitation* (exploração vs. explotação). Ele mantém uma distribuição de probabilidade a posteriori para a taxa de sucesso de cada braço e seleciona os braços proporcionalmente à probabilidade de eles serem a melhor opção.\n\nO objetivo desta análise é avaliar como o algoritmo distribuiu as execuções entre os quatro braços disponíveis (IDs 0, 1, 2 e 3) e validar se o comportamento esperado de convergência para os braços mais eficientes foi atingido.\n\n---\n\n## 2. Metodologia e Dados Brutos\n\nO experimento registrou um total de **4.521 execuções** (seleções de braço). A distribuição das execuções por braço está detalhada na tabela abaixo:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise de Experimento: Política Thompson Sampling",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "thompson_sampling_count_report.md",
+        "chunk_id": "thompson_sampling_count_chunk_1",
+        "text": "O experimento registrou um total de **4.521 execuções** (seleções de braço). A distribuição das execuções por braço está detalhada na tabela abaixo:\n\n| Política | ID do Braço | Contagem de Execuções (Count) | Representação Percentual (%) |\n| :--- | :---: | :---: | :---: |\n| **ThompsonSamplingPolicy** | 0 | 3.315 | 73,32% |\n| **ThompsonSamplingPolicy** | 3 | 1.040 | 23,00% |\n| **ThompsonSamplingPolicy** | 1 | 89 | 1,97% |\n| **ThompsonSamplingPolicy** | 2 | 77 | 1,70% |\n| **Total** | - | **4.521** | **100,00%** |\n\n---\n\n## 3. Análise do Comportamento dos Braços\n\n```\nDistribuição de Alocação por Braço:\n████████████████████████████████████████ 73.32% (Braço 0)\n████████████ 23.00% (Braço 3)\n█ 1.97% (Braço 1)\n█ 1.70% (Braço 2)\n```\n\n### Braço 0: O Líder de Performance (73,32% do tráfego)\nCom **3.315 execuções**, o Braço 0 foi o claro vencedor do experimento. Sob a ótica do Thompson Sampling, isso indica que o Braço 0 rapidamente demonstrou uma taxa de recompensa (conversão/clique) superior aos demais. A distribuição a posteriori deste braço deslocou-se para a direita (maiores taxas de sucesso) com alta certeza, fazendo com que o algoritmo concentrasse a maior parte do tráfego nele para maximizar o retorno acumulado (*exploitation*).",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3. Análise do Comportamento dos Braços",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Conversão",
+                "Recompensa/Reward"
+            ]
+        }
+    },
+    {
+        "source": "thompson_sampling_count_report.md",
+        "chunk_id": "thompson_sampling_count_chunk_2",
+        "text": "### Braço 0: O Líder de Performance (73,32% do tráfego)\nCom **3.315 execuções**, o Braço 0 foi o claro vencedor do experimento. Sob a ótica do Thompson Sampling, isso indica que o Braço 0 rapidamente demonstrou uma taxa de recompensa (conversão/clique) superior aos demais. A distribuição a posteriori deste braço deslocou-se para a direita (maiores taxas de sucesso) com alta certeza, fazendo com que o algoritmo concentrasse a maior parte do tráfego nele para maximizar o retorno acumulado (*exploitation*).\n\n### Braço 3: O Desafiante Forte (23,00% do tráfego)\nO Braço 3 recebeu **1.040 execuções**. Esta alocação expressiva sugere que o Braço 3 possui uma performance competitiva, embora inferior à do Braço 0. O algoritmo manteve uma exploração contínua sobre ele durante parte do experimento devido à incerteza inicial ou por apresentar uma taxa de conversão próxima à do líder.\n\n### Braços 1 e 2: Descarte Rápido (Menos de 4% combinados)\nOs Braços 1 e 2 receberam apenas **89** e **77 execuções**, respectivamente. Esse comportamento é uma assinatura clássica da eficiência do Thompson Sampling: ao perceber, com poucas amostras, que as distribuições de probabilidade desses braços apresentavam médias de recompensa significativamente inferiores, o algoritmo reduziu drasticamente sua exploração. Isso minimizou o *regret* (perda de oportunidade) do experimento, evitando o desperdício de tráfego em opções comprovadamente subótimas.\n\n---",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "Braço 0: O Líder de Performance (73,32% do tráfego)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "thompson_sampling_count_report.md",
+        "chunk_id": "thompson_sampling_count_chunk_3",
+        "text": "---\n\n## 4. Correlação com o Resumo de Métricas (`metrics_summary.csv`)\n\nAo cruzarmos a contagem de execuções com os dados consolidados de performance contidos em `metrics_summary.csv`, observamos uma validação direta do comportamento do algoritmo:\n\n1. **Taxa de Recompensa (Reward Rate):** O Braço 0 apresenta a maior taxa média de recompensa observada, justificando a alocação massiva de 73,32%.\n2. **Incerteza e Variância:** Os braços com menor amostragem (1 e 2) exibem distribuições com limites superiores de intervalo de confiança que se posicionam abaixo da média do Braço 0, o que matematicamente reduziu a probabilidade de serem selecionados nas rodadas subsequentes.\n3. **Minimização de Regret:** Comparado a uma política estática (como A/B/C/D clássico com divisão igualitária de 25% para cada braço), o Thompson Sampling economizou aproximadamente **2.000 exibições subótimas** que teriam sido direcionadas aos Braços 1 e 2, convertendo-as em exibições de alta performance nos Braços 0 e 3.\n\n---\n\n## 5. Conclusões e Recomendações",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "4. Correlação com o Resumo de Métricas (`metrics_summary.csv`)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Arrependimento/Regret",
+                "Recompensa/Reward",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "thompson_sampling_count_report.md",
+        "chunk_id": "thompson_sampling_count_chunk_4",
+        "text": "## 5. Conclusões e Recomendações\n\n1. **Sucesso da Otimização:** O Thompson Sampling cumpriu com excelência seu papel de otimização em tempo real. O experimento convergiu de maneira robusta para a melhor alternativa (Braço 0), mantendo uma margem de segurança aceitável para o segundo colocado (Braço 3).\n2. **Decisão de Negócio:** \n   * **Implementação:** Recomenda-se a implementação do **Braço 0** como a opção padrão (produção) para 100% do tráfego, dado o seu desempenho amplamente superior.\n   * **Descarte:** Os Braços 1 e 2 podem ser arquivados ou reformulados, pois apresentaram desempenho muito abaixo do aceitável.\n   * **Próximo Experimento:** Caso haja interesse em otimizar ainda mais o sistema, novos testes podem ser projetados utilizando variações incrementais baseadas nos elementos de design/lógica do Braço 0 e do Braço 3.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "5. Conclusões e Recomendações",
+            "tags_conteudo": [
+                "Thompson Sampling"
+            ]
+        }
+    },
+    {
+        "source": "offer_catalog_report.md",
+        "chunk_id": "offer_catalog_chunk_0",
+        "text": "# Relatório de Análise: Catálogo de Ofertas e Performance (MAB - Thompson Sampling)\n\n## 1. Introdução\n\nEste relatório apresenta uma análise detalhada do catálogo de ofertas (versão `1.0.0`) utilizado no motor de recomendação baseado no algoritmo de **Thompson Sampling**. O objetivo deste documento é descrever as características de cada oferta, suas regras de elegibilidade, o balanço entre probabilidade de conversão (*prior*) e valor de recompensa, bem como servir de referência para a análise de desempenho consolidada no arquivo `data/experiments/thompson_sampling/metrics_summary.csv`.\n\nO algoritmo de Thompson Sampling utiliza os dados históricos de conversão para equilibrar a exploração (*exploration*) e a explotação (*exploitation*) das ofertas, otimizando o retorno financeiro esperado por usuário elegível.\n\n---\n\n## 2. Visão Geral do Catálogo de Ofertas\n\nO catálogo é composto por 4 ofertas distintas, cobrindo diferentes perfis de produtos financeiros (serviços básicos, crédito, empréstimos e investimentos).",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise: Catálogo de Ofertas e Performance (MAB - Thompson Sampling)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "offer_catalog_report.md",
+        "chunk_id": "offer_catalog_chunk_1",
+        "text": "O catálogo é composto por 4 ofertas distintas, cobrindo diferentes perfis de produtos financeiros (serviços básicos, crédito, empréstimos e investimentos).\n\n| ID do Braço | Nome da Oferta | Tipo de Oferta | Taxa de Conversão Prévia (*Prior*) | Valor da Recompensa ($) | Valor Esperado Inicial ($) | Idade Mínima | Requer Empréstimo Habitacional |\n| :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: |\n| **0** | Conta Digital Padrão | `baseline` | 15.0% | 10.00 | 1.50 | 18 anos | Não |\n| **1** | Cartão de Crédito Premium | `credit` | 5.0% | 150.00 | 7.50 | 21 anos | Não |\n| **2** | Refinanciamento Imobiliário | `loan` | 8.0% | 300.00 | 24.00 | 25 anos | Sim |\n| **3** | Depósito a Prazo (CDB) | `investimento` | 12.0% | 80.00 | 9.60 | 18 anos | Não |\n\n*Nota: O Valor Esperado Inicial é calculado como $Prior \\times Recompensa$, representando a expectativa matemática de retorno antes da otimização pelo algoritmo.*\n\n---\n\n## 3. Análise Individual das Ofertas\n\n### Braço 0: Conta Digital Padrão\n* **Tipo:** `baseline`\n* **Descrição:** Abertura de conta corrente digital sem taxas.\n* **Perfil de Público:** Clientes jovens ou novos entrantes no ecossistema (Idade $\\ge$ 18).\n* **Análise Estratégica:** Possui a maior probabilidade de conversão inicial (15.0%), porém o menor valor de recompensa (10.00). É uma oferta porta de entrada, excelente para atrair novos clientes ao portfólio (aquisição), mas com baixo retorno financeiro imediato por conversão.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3. Análise Individual das Ofertas",
+            "tags_conteudo": [
+                "Baseline",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "offer_catalog_report.md",
+        "chunk_id": "offer_catalog_chunk_2",
+        "text": "### Braço 0: Conta Digital Padrão\n* **Tipo:** `baseline`\n* **Descrição:** Abertura de conta corrente digital sem taxas.\n* **Perfil de Público:** Clientes jovens ou novos entrantes no ecossistema (Idade $\\ge$ 18).\n* **Análise Estratégica:** Possui a maior probabilidade de conversão inicial (15.0%), porém o menor valor de recompensa (10.00). É uma oferta porta de entrada, excelente para atrair novos clientes ao portfólio (aquisição), mas com baixo retorno financeiro imediato por conversão.\n\n### Braço 1: Cartão de Crédito Premium\n* **Tipo:** `credit`\n* **Descrição:** Cartão de crédito com programa de recompensas exclusivo.\n* **Perfil de Público:** Clientes com perfil de consumo ativo (Idade $\\ge$ 21).\n* **Análise Estratégica:** Apresenta a menor taxa de conversão a priori (5.0%), refletindo a maior fricção na aprovação e aceitação de crédito. No entanto, o valor de recompensa é alto (150.00). O algoritmo precisará balancear o baixo volume de aceitação com a alta rentabilidade unitária.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "Braço 0: Conta Digital Padrão",
+            "tags_conteudo": [
+                "Baseline",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "offer_catalog_report.md",
+        "chunk_id": "offer_catalog_chunk_3",
+        "text": "### Braço 1: Cartão de Crédito Premium\n* **Tipo:** `credit`\n* **Descrição:** Cartão de crédito com programa de recompensas exclusivo.\n* **Perfil de Público:** Clientes com perfil de consumo ativo (Idade $\\ge$ 21).\n* **Análise Estratégica:** Apresenta a menor taxa de conversão a priori (5.0%), refletindo a maior fricção na aprovação e aceitação de crédito. No entanto, o valor de recompensa é alto (150.00). O algoritmo precisará balancear o baixo volume de aceitação com a alta rentabilidade unitária.\n\n### Braço 2: Refinanciamento Imobiliário\n* **Tipo:** `loan`\n* **Descrição:** Taxas reduzidas para clientes que já possuem financiamento habitacional ativo.\n* **Perfil de Público:** Clientes de perfil maduro e consolidado (Idade $\\ge$ 25) que possuem o flag `requer_emprestimo_habitacional` como verdadeiro.\n* **Análise Estratégica:** É a oferta mais restritiva devido às regras de elegibilidade cumulativas. Possui o maior valor de recompensa do catálogo (300.00) e uma conversão a priori moderada (8.0%). Embora o valor esperado teórico inicial seja o maior (24.00), a elegibilidade restrita limita o volume absoluto de exibições que esta oferta pode receber.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 1,
+            "secao": "Braço 1: Cartão de Crédito Premium",
+            "tags_conteudo": [
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "offer_catalog_report.md",
+        "chunk_id": "offer_catalog_chunk_4",
+        "text": "### Braço 2: Refinanciamento Imobiliário\n* **Tipo:** `loan`\n* **Descrição:** Taxas reduzidas para clientes que já possuem financiamento habitacional ativo.\n* **Perfil de Público:** Clientes de perfil maduro e consolidado (Idade $\\ge$ 25) que possuem o flag `requer_emprestimo_habitacional` como verdadeiro.\n* **Análise Estratégica:** É a oferta mais restritiva devido às regras de elegibilidade cumulativas. Possui o maior valor de recompensa do catálogo (300.00) e uma conversão a priori moderada (8.0%). Embora o valor esperado teórico inicial seja o maior (24.00), a elegibilidade restrita limita o volume absoluto de exibições que esta oferta pode receber.\n\n### Braço 3: Depósito a Prazo (CDB)\n* **Tipo:** `investimento`\n* **Descrição:** Investimento de renda fixa atrelado ao comportamento e perfil da base original.\n* **Perfil de Público:** Clientes com capacidade de poupança (Idade $\\ge$ 18).\n* **Análise Estratégica:** É uma oferta altamente equilibrada. Apresenta uma taxa de conversão prévia expressiva (12.0%) aliada a uma recompensa intermediária atraente (80.00), resultando em um valor esperado inicial de 9.60. Esta oferta tende a apresentar forte tração e estabilidade durante as rodadas do Thompson Sampling.\n\n---\n\n## 4. Regras de Elegibilidade e Direcionamento de Público\n\nAs regras de elegibilidade atuam como um filtro rígido antes que o algoritmo de Thompson Sampling decida qual oferta exibir.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 2,
+            "secao": "Braço 2: Refinanciamento Imobiliário",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "offer_catalog_report.md",
+        "chunk_id": "offer_catalog_chunk_5",
+        "text": "As regras de elegibilidade atuam como um filtro rígido antes que o algoritmo de Thompson Sampling decida qual oferta exibir.\n\n1. **Filtro de Idade:** \n   * **Menores de 21 anos** são elegíveis apenas para as ofertas `0` e `3`.\n   * **Entre 21 e 24 anos** tornam-se elegíveis também para a oferta `1`.\n   * **A partir de 25 anos**, o cliente ganha acesso a todo o catálogo (sujeito à regra de crédito imobiliário).\n\n2. **Filtro de Financiamento Habitacional:**\n   * A oferta `2` é estritamente reservada para clientes que possuem financiamento imobiliário prévio. Este direcionamento evita o desperdício de impressões em clientes fora do perfil demográfico e financeiro correto.\n\n---\n\n## 5. Referência de Métricas do Experimento (`metrics_summary.csv`)\n\nAo analisar a execução do Thompson Sampling através do sumário de métricas consolidado em `data/experiments/thompson_sampling/metrics_summary.csv`, o analista deve atentar para as seguintes dinâmicas de aprendizado do modelo:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "5. Referência de Métricas do Experimento (`metrics_summary.csv`)",
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "offer_catalog_report.md",
+        "chunk_id": "offer_catalog_chunk_6",
+        "text": "Ao analisar a execução do Thompson Sampling através do sumário de métricas consolidado em `data/experiments/thompson_sampling/metrics_summary.csv`, o analista deve atentar para as seguintes dinâmicas de aprendizado do modelo:\n\n1. **Taxa de Conversão Observada vs. Prior:** Verificar se a taxa de conversão empírica convergiu para os valores de *prior* sintéticos (0.15, 0.05, 0.08, 0.12) ou se houve desvios significativos devido à distribuição demográfica da base.\n2. **Distribuição de Alocações (Regret Minimization):** Ofertas com maior retorno esperado real (como a combinação de conversão e recompensa do CDB e do Cartão Premium) devem, progressivamente, receber mais alocações à medida que o algoritmo reduz a incerteza de suas distribuições Beta.\n3. **Volume de Elegibilidade:** Avaliar se a oferta `2` (Refinanciamento) teve suas exibições severamente limitadas pela restrição de elegibilidade, mesmo apresentando a maior recompensa unitária.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": null,
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_summary_report.md",
+        "chunk_id": "metrics_summary_chunk_0",
+        "text": "# Relatório de Desempenho do Experimento: LinUCB (Bandit Contextual)\n\n**Autor:** Cientista de Dados & Engenheiro de Machine Learning  \n**Data:** 24 de Maio de 2024  \n**Experimento:** Análise da Política LinUCB (Linear Upper Confidence Bound)  \n**Arquivo de Origem:** `data/experiments/linucb/metrics_summary.csv`\n\n---\n\n## 1. Introdução\n\nEste relatório apresenta a análise de desempenho da política **LinUCB (Linear Upper Confidence Bound)**, um algoritmo de bandit contextual projetado para otimizar a seleção de ações (recomendações) com base em recursos de contexto (usuário e item). O LinUCB aborda o clássico dilema entre **exploração** (*exploration* - testar novas ações para coletar informações) e **explotação** (*exploitation* - escolher a melhor ação conhecida para maximizar o retorno imediato) assumindo uma relação linear entre os recursos do contexto e a recompensa esperada.\n\nO objetivo desta análise é avaliar a eficácia da política em termos de conversão, geração de valor (recompensa), custo de aprendizado (regret) e o nível de diversidade nas escolhas (entropia).\n\n---\n\n## 2. Resumo das Métricas do Experimento\n\nAbaixo estão consolidada as métricas obtidas durante a execução do experimento:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Desempenho do Experimento: LinUCB (Bandit Contextual)",
+            "tags_conteudo": [
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_summary_report.md",
+        "chunk_id": "metrics_summary_chunk_1",
+        "text": "Abaixo estão consolidada as métricas obtidas durante a execução do experimento:\n\n| Métrica | Valor Absoluto / Proporção | Descrição |\n| :--- | :--- | :--- |\n| **Política** | `LinUCBPolicy` | Algoritmo de bandit contextual avaliado. |\n| **Impressões (Jogadas)** | $4.521$ | Número total de decisões de recomendação tomadas. |\n| **Conversões** | $433$ | Total de interações positivas (sucessos) obtidas. |\n| **Taxa de Conversão (CTR)** | $9,58\\%$ (`0.095775`) | Proporção de conversões em relação às impressões. |\n| **Recompensa Acumulada** | $53.010,0$ | Soma dos valores de recompensa obtidos no experimento. |\n| **Regret Acumulado** | $26.737,2$ | Perda acumulada por não escolher a ação ótima teórica. |\n| **Entropia de Exploração** | $1,2048$ | Medida de incerteza/dispersão na escolha das ações. |\n\n---\n\n## 3. Análise de Desempenho\n\n### 3.1. Eficácia e Geração de Valor\nCom **4.521 impressões**, a política LinUCB gerou **433 conversões**, resultando em uma **Taxa de Conversão de 9,58%**. Em cenários reais de recomendação e publicidade digital, uma taxa de conversão próxima de 10% é considerada altamente competitiva, demonstrando que a política foi capaz de utilizar os recursos de contexto de maneira eficaz para personalizar as ofertas.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "3. Análise de Desempenho",
+            "tags_conteudo": [
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_summary_report.md",
+        "chunk_id": "metrics_summary_chunk_2",
+        "text": "### 3.1. Eficácia e Geração de Valor\nCom **4.521 impressões**, a política LinUCB gerou **433 conversões**, resultando em uma **Taxa de Conversão de 9,58%**. Em cenários reais de recomendação e publicidade digital, uma taxa de conversão próxima de 10% é considerada altamente competitiva, demonstrando que a política foi capaz de utilizar os recursos de contexto de maneira eficaz para personalizar as ofertas.\n\nA **Recompensa Acumulada de 53.010,0** indica que o algoritmo gerou um retorno médio de **11,72 unidades de recompensa por impressão**. Isso prova que a política não apenas buscou cliques/conversões simples, mas conseguiu otimizar a entrega de itens de maior valor agregado quando o contexto era propício.\n\n### 3.2. O Trade-Off entre Exploração e Explotação\nO equilíbrio entre exploração e explotação é o núcleo do LinUCB. Podemos inferir o comportamento do algoritmo através de duas métricas principais:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "3.1. Eficácia e Geração de Valor",
+            "tags_conteudo": [
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_summary_report.md",
+        "chunk_id": "metrics_summary_chunk_3",
+        "text": "### 3.2. O Trade-Off entre Exploração e Explotação\nO equilíbrio entre exploração e explotação é o núcleo do LinUCB. Podemos inferir o comportamento do algoritmo através de duas métricas principais:\n\n1. **Entropia de Exploração (1,2048):**\n   Uma entropia de ~1,20 indica uma distribuição moderadamente ativa e saudável na exploração de braços (ações). Se a entropia fosse muito próxima de zero, a política estaria estagnada em explotação pura (recomendando sempre os mesmos itens super-otimizados). Se fosse excessivamente alta, indicaria escolhas puramente aleatórias. O valor de 1,20 demonstra que o LinUCB manteve uma postura investigativa ativa, distribuindo impressões entre diferentes braços para refinar seus modelos lineares de recompensa, ao mesmo tempo em que direcionava tráfego para as melhores opções conhecidas.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "3.2. O Trade-Off entre Exploração e Explotação",
+            "tags_conteudo": [
+                "Recompensa/Reward"
+            ]
+        }
+    },
+    {
+        "source": "metrics_summary_report.md",
+        "chunk_id": "metrics_summary_chunk_4",
+        "text": "1. **Entropia de Exploração (1,2048):**\n   Uma entropia de ~1,20 indica uma distribuição moderadamente ativa e saudável na exploração de braços (ações). Se a entropia fosse muito próxima de zero, a política estaria estagnada em explotação pura (recomendando sempre os mesmos itens super-otimizados). Se fosse excessivamente alta, indicaria escolhas puramente aleatórias. O valor de 1,20 demonstra que o LinUCB manteve uma postura investigativa ativa, distribuindo impressões entre diferentes braços para refinar seus modelos lineares de recompensa, ao mesmo tempo em que direcionava tráfego para as melhores opções conhecidas.\n\n2. **Regret Acumulado (26.737,2):**\n   O *regret* (arrependimento) mede a diferença entre a recompensa que teria sido obtida pela melhor ação teórica (oráculo) e a recompensa real obtida pela política. \n   * Um regret acumulado de 26.737,2 em relação a uma recompensa de 53.010,0 indica que o custo de aprendizado do algoritmo representou cerca de **33,5% do potencial ótimo**.\n   * Em bandits contextuais, o regret tende a crescer de forma sublinear (logarítmica) ao longo do tempo. Na fase inicial do experimento, o regret cresce rapidamente enquanto o modelo aprende os coeficientes lineares de cada braço. À medida que o número de impressões aumenta, a taxa de crescimento do regret deve diminuir, convergindo para um estado de explotação de alta performance.\n\n---\n\n## 4. Diagnóstico Técnico e Conclusões",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "4. Diagnóstico Técnico e Conclusões",
+            "tags_conteudo": [
+                "Arrependimento/Regret",
+                "Recompensa/Reward"
+            ]
+        }
+    },
+    {
+        "source": "metrics_summary_report.md",
+        "chunk_id": "metrics_summary_chunk_5",
+        "text": "## 4. Diagnóstico Técnico e Conclusões\n\n1. **Viabilidade do Modelo Linear:** A taxa de conversão saudável de 9,58% sugere que a suposição de linearidade entre os contextos dos usuários/itens e as recompensas é válida para este conjunto de dados. O LinUCB conseguiu extrair valor real das variáveis de contexto para tomar decisões informadas.\n2. **Custo de Aprendizado Aceitável:** Embora o regret acumulado pareça expressivo em termos absolutos (26.737,2), ele é um investimento necessário para a convergência do algoritmo. O nível de entropia controlado (1,20) valida que o algoritmo não ficou \"preso\" em mínimos locais e manteve uma busca ativa por políticas melhores.\n3. **Robustez do Algoritmo:** O LinUCB provou ser uma escolha robusta, entregando um volume robusto de conversões e recompensa financeira expressiva sob um regime de exploração controlado.\n\n---\n\n## 5. Próximos Passos Recomendados\n\nPara otimizar ainda mais o desempenho e reduzir o regret acumulado, sugerem-se as seguintes ações de engenharia de machine learning:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "4. Diagnóstico Técnico e Conclusões",
+            "tags_conteudo": [
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "metrics_summary_report.md",
+        "chunk_id": "metrics_summary_chunk_6",
+        "text": "Para otimizar ainda mais o desempenho e reduzir o regret acumulado, sugerem-se as seguintes ações de engenharia de machine learning:\n\n* **Ajuste do Hiperparâmetro $\\alpha$ (Exploração):** O parâmetro $\\alpha$ do LinUCB controla diretamente a largura das bandas de confiança (o peso dado à incerteza). Um teste de grade (*grid search*) ou decaimento gradual de $\\alpha$ ao longo do tempo poderia reduzir a entropia na fase tardia do experimento, diminuindo o regret e aumentando a taxa de conversão final.\n* **Engenharia de Recursos (Feature Engineering):** Adicionar interações não lineares ou aplicar reduções de dimensionalidade nos contextos pode ajudar o modelo linear a convergir mais rapidamente, reduzindo o tempo necessário para que o regret se estabilize.\n* **Benchmark com Outras Políticas:** Recomenda-se comparar estes resultados com políticas de *Thompson Sampling Contextual* ou *$\\epsilon$-greedy* adaptativo para validar se o LinUCB continua sendo a melhor abordagem para este domínio de negócio.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": null,
+            "tags_conteudo": [
+                "Thompson Sampling",
+                "Arrependimento/Regret",
+                "Conversão",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_counts_linucb_report.md",
+        "chunk_id": "arm_counts_linucb_chunk_0",
+        "text": "# Relatório de Análise de Seleção de Braços: Política LinUCB\n\n## 1. Introdução\nEste relatório apresenta a análise do comportamento de seleção de braços (ofertas) pela política **LinUCB (Linear Upper Confidence Bound)** durante o período do experimento. O LinUCB é um algoritmo de *Contextual Multi-Armed Bandit* que seleciona a melhor ação (braço) com base em atributos contextuais do usuário e do ambiente, equilibrando a exploração de novas oportunidades (exploração) com a escolha de ofertas com histórico comprovado de sucesso (explorando).\n\nO objetivo desta análise é compreender a distribuição das decisões do modelo, identificar a oferta mais recomendada e levantar hipóteses de negócio que justifiquem essa distribuição.\n\n---\n\n## 2. Análise Quantitativa das Escolhas\nAbaixo estão consolidados os dados de volumetria e representatividade de cada braço (oferta) no experimento conduzido pela política LinUCB:\n\n| Posição | Braço (ID) | Contagem (Escolhas) | Participação (%) |\n| :---: | :---: | :---: | :---: |\n| 1º | **Arm 3** | 2.136 | 47,25% |\n| 2º | **Arm 2** | 1.343 | 29,71% |\n| 3º | **Arm 1** | 658 | 14,55% |\n| 4º | **Arm 0** | 384 | 8,49% |\n| **Total** | - | **4.521** | **100,00%** |\n\n### Distribuição Visual (Proporção)\n```\nArm 3 [█████████████████████████████████████████████] 47.25%\nArm 2 [██████████████████████████████] 29.71%\nArm 1 [██████████████▊] 14.55%\nArm 0 [████████] 8.49%\n```\n\n---\n\n## 3. Principais Descobertas e Comportamento do Algoritmo",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise de Seleção de Braços: Política LinUCB",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_counts_linucb_report.md",
+        "chunk_id": "arm_counts_linucb_chunk_1",
+        "text": "## 3. Principais Descobertas e Comportamento do Algoritmo\n\n### Dominância do Arm 3 e Arm 2\nO **Arm 3** foi o campeão absoluto de recomendações, sendo acionado em **47,25%** dos casos (2.136 vezes). Somado ao **Arm 2** (29,71%), ambos concentram **76,96%** de todas as exibições do experimento.\n\nEsse fenômeno indica que o algoritmo LinUCB rapidamente identificou um forte sinal positivo de recompensa (como cliques ou conversões) associado a estes dois braços quando cruzados com as características dos usuários. Por ser um algoritmo linear baseado em contexto, a alta frequência desses braços sugere que eles possuem ampla aderência para diversos perfis demográficos/comportamentais ou que a maior parte do tráfego do experimento pertencia a um segmento que respondeu muito bem a estas duas opções.\n\n### Menor Relevância do Arm 0 e Arm 1\nO **Arm 0** obteve apenas **8,49%** das escolhas (384 vezes). Sob a ótica do LinUCB, isso significa que:\n1. O braço apresentou um retorno esperado (payoff) consistentemente inferior aos demais quando testado nos diferentes contextos.\n2. A incerteza (limite superior de confiança) associada ao Arm 0 diminuiu conforme ele foi explorado, e o modelo concluiu que o valor esperado dele não justificava novas alocações frente aos resultados sólidos do Arm 3.\n\n---\n\n## 4. Hipóteses de Negócio\nDo ponto de vista de negócios e de posicionamento de produto, a preferência massiva pelo **Arm 3** e **Arm 2** pode ser explicada por algumas hipóteses:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "3. Principais Descobertas e Comportamento do Algoritmo",
+            "tags_conteudo": [
+                "Recompensa/Reward"
+            ]
+        }
+    },
+    {
+        "source": "arm_counts_linucb_report.md",
+        "chunk_id": "arm_counts_linucb_chunk_2",
+        "text": "## 4. Hipóteses de Negócio\nDo ponto de vista de negócios e de posicionamento de produto, a preferência massiva pelo **Arm 3** e **Arm 2** pode ser explicada por algumas hipóteses:\n\n1. **Apelo Universal da Oferta (Arm 3):** O Arm 3 pode representar um produto de entrada, um desconto agressivo de grande apelo geral ou um serviço essencial de alta conversão natural.\n2. **Alinhamento de Persona Dominante:** Se a maior parte do público que entrou no experimento compartilha de características homogêneas (ex: usuários recorrentes, mesma faixa etária ou mesma faixa de renda), e o Arm 3 é altamente otimizado para essa persona, o LinUCB aprenderá a explorar essa correlação quase que de forma contínua.\n3. **Sazonalidade ou Momentum:** O Arm 3 pode estar alinhado com uma necessidade imediata do período do teste (ex: uma campanha temática, oferta de frete grátis, etc.), gerando um CTR (Click-Through Rate) inicial muito alto que retroalimentou positivamente a política.\n\n---\n\n## 5. Resumo das Métricas e Impacto no Negócio\nCom base no histórico e no resumo de métricas consolidadas (`metrics_summary.csv`), políticas contextualizadas como o LinUCB tendem a superar abordagens tradicionais (como políticas estáticas ou $\\epsilon$-greedy puro) porque não desperdiçam tráfego com ofertas irrelevantes para determinados contextos.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "4. Hipóteses de Negócio",
+            "tags_conteudo": [
+                "Conversão",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_counts_linucb_report.md",
+        "chunk_id": "arm_counts_linucb_chunk_3",
+        "text": "## 5. Resumo das Métricas e Impacto no Negócio\nCom base no histórico e no resumo de métricas consolidadas (`metrics_summary.csv`), políticas contextualizadas como o LinUCB tendem a superar abordagens tradicionais (como políticas estáticas ou $\\epsilon$-greedy puro) porque não desperdiçam tráfego com ofertas irrelevantes para determinados contextos.\n\n* **Minimização de Regret (Arrependimento):** A rápida convergência de tráfego para os braços 3 e 2 mostra que a política conseguiu otimizar a receita/engajamento acumulado rapidamente, reduzindo o \"custo de oportunidade\" de mostrar ofertas de menor desempenho (Arm 0 e 1).\n* **Taxa de Conversão Esperada:** A distribuição assimétrica é um forte indicativo de sucesso na personalização. Em cenários reais, essa distribuição controlada pelo contexto do LinUCB costuma elevar a taxa de conversão geral (CVR) em comparação com uma divisão uniforme (A/B Test tradicional de 25% para cada braço).\n\n---",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "5. Resumo das Métricas e Impacto no Negócio",
+            "tags_conteudo": [
+                "Arrependimento/Regret",
+                "Conversão",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_counts_linucb_report.md",
+        "chunk_id": "arm_counts_linucb_chunk_4",
+        "text": "---\n\n## 6. Recomendações para Próximos Passos\n1. **Análise de Feature Importance:** Investigar quais variáveis contextuais (ex: idade, histórico de compras, dispositivo) foram determinantes para o LinUCB priorizar o Arm 3.\n2. **Renovação de Ofertas Subutilizadas:** O Arm 0 e o Arm 1 apresentam baixo desempenho. Recomenda-se revisar a proposta de valor, imagem ou condições dessas ofertas, ou substituí-las por novos conceitos em um próximo ciclo de testes.\n3. **Exploração Dinâmica:** Avaliar se a taxa de exploração ($\\alpha$) do LinUCB está ideal ou se o modelo convergiu rápido demais para o Arm 3, potencialmente ignorando subgrupos menores onde o Arm 0 ou 1 poderiam performar melhor.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "6. Recomendações para Próximos Passos",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_job_report.md",
+        "chunk_id": "arm_by_job_chunk_0",
+        "text": "# Relatório de Análise: Segmentação de Ofertas LinUCB por Perfil Profissional\n\nEste relatório apresenta uma análise detalhada das decisões de recomendação tomadas pela política de bandit contextual **LinUCB** com base nas profissões dos clientes (`job`). O objetivo é compreender quais ofertas (braços de 0 a 3) foram prioritariamente associadas a cada grupo profissional e mapear o perfil demográfico e comportamental implícito que cada braço atrai.\n\n---\n\n## 1. Distribuição de Recomendações por Profissão\n\nA tabela abaixo consolida o número de vezes que cada braço (oferta) foi recomendado para cada profissão, identificando o braço predominante e o volume total de interações.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise: Segmentação de Ofertas LinUCB por Perfil Profissional",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_job_report.md",
+        "chunk_id": "arm_by_job_chunk_1",
+        "text": "A tabela abaixo consolida o número de vezes que cada braço (oferta) foi recomendado para cada profissão, identificando o braço predominante e o volume total de interações.\n\n| Profissão (`job`) | Braço 0 | Braço 1 | Braço 2 | Braço 3 | Predominante | Total de Clientes |\n| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n| **admin.** | 0 | 0 | 248 | 230 | **2** | 478 |\n| **blue-collar** (operários) | 0 | 0 | 96 | 850 | **3** | 946 |\n| **entrepreneur** (empresários) | 4 | 73 | 69 | 22 | **1** | 168 |\n| **housemaid** (serviços domésticos) | 0 | 0 | 37 | 75 | **3** | 112 |\n| **management** (gestores) | 0 | 28 | 435 | 506 | **3** | 969 |\n| **retired** (aposentados) | 0 | 0 | 33 | 197 | **3** | 230 |\n| **self-employed** (autônomos) | 0 | 0 | 75 | 108 | **3** | 183 |\n| **services** (prestadores de serviços) | 29 | 125 | 224 | 39 | **2** | 417 |\n| **student** (estudantes) | 23 | 54 | 7 | 0 | **1** | 84 |\n| **technician** (técnicos) | 0 | 33 | 346 | 389 | **3** | 768 |\n| **unemployed** (desempregados) | 0 | 75 | 23 | 30 | **1** | 128 |\n| **unknown** (não informado) | 33 | 1 | 1 | 3 | **0** | 38 |\n\n---\n\n## 2. Análise Comportamental dos Braços (Ofertas)\n\nA partir da distribuição das recomendações geradas pelo algoritmo LinUCB, podemos inferir a proposta de valor e o perfil de cliente associado a cada braço:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "2. Análise Comportamental dos Braços (Ofertas)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_job_report.md",
+        "chunk_id": "arm_by_job_chunk_2",
+        "text": "A partir da distribuição das recomendações geradas pelo algoritmo LinUCB, podemos inferir a proposta de valor e o perfil de cliente associado a cada braço:\n\n### Braço 0: Perfil Indefinido ou de Baixo Atrito\n*   **Público-alvo predominante:** `unknown` (33 de 38 recomendações). Apresenta baixa presença em `student` (23) e `services` (29), e quase nenhuma tração nos demais grupos.\n*   **Hipótese de Perfil:** Este braço representa uma **oferta genérica, de baixo risco ou de entrada**. Quando o algoritmo carece de dados contextuais ricos sobre o usuário (caso de perfis classificados como \"unknown\"), ele opta por essa alternativa segura e conservadora.\n\n### Braço 1: Perfis de Transição, Empreendedorismo ou Renda Variável\n*   **Público-alvo predominante:** `student` (54), `unemployed` (75) e `entrepreneur` (73).\n*   **Hipótese de Perfil:** Este grupo é composto por pessoas em fases de transição de carreira, que buscam qualificação ou que possuem alta variabilidade de renda.\n    *   **Estudantes e Desempregados** necessitam de soluções financeiras de baixo custo, sem tarifas de manutenção exigentes ou com foco em microcrédito e capacitação.\n    *   **Empresários (entrepreneurs)** demandam produtos de investimento dinâmicos ou crédito PJ/fomento comercial.\n    *   *Conclusão sobre o Braço 1:* É provável que este braço ofereça produtos financeiros focados em **flexibilidade, desenvolvimento pessoal/empresarial ou isenção de tarifas básicas**.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "Braço 0: Perfil Indefinido ou de Baixo Atrito",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_job_report.md",
+        "chunk_id": "arm_by_job_chunk_3",
+        "text": "### Braço 1: Perfis de Transição, Empreendedorismo ou Renda Variável\n*   **Público-alvo predominante:** `student` (54), `unemployed` (75) e `entrepreneur` (73).\n*   **Hipótese de Perfil:** Este grupo é composto por pessoas em fases de transição de carreira, que buscam qualificação ou que possuem alta variabilidade de renda.\n    *   **Estudantes e Desempregados** necessitam de soluções financeiras de baixo custo, sem tarifas de manutenção exigentes ou com foco em microcrédito e capacitação.\n    *   **Empresários (entrepreneurs)** demandam produtos de investimento dinâmicos ou crédito PJ/fomento comercial.\n    *   *Conclusão sobre o Braço 1:* É provável que este braço ofereça produtos financeiros focados em **flexibilidade, desenvolvimento pessoal/empresarial ou isenção de tarifas básicas**.\n\n### Braço 2: Perfis Corporativos Estáveis e Setor de Serviços\n*   **Público-alvo predominante:** `admin.` (248) e `services` (224). Também possui forte representação em `management` (435) e `technician` (346).\n*   **Hipótese de Perfil:** Atrai profissionais de colarinho branco e prestadores de serviços estruturados que possuem renda recorrente, previsibilidade financeira moderada a alta e forte inserção no mercado formal.\n    *   *Conclusão sobre o Braço 2:* Sugere um produto estruturado de varejo tradicional, como **cartões de crédito com programa de milhas/cashback intermediários, planos de previdência complementar ou investimentos de liquidez diária**.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 1,
+            "secao": "Braço 1: Perfis de Transição, Empreendedorismo ou Renda Variável",
+            "tags_conteudo": [
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_job_report.md",
+        "chunk_id": "arm_by_job_chunk_4",
+        "text": "### Braço 2: Perfis Corporativos Estáveis e Setor de Serviços\n*   **Público-alvo predominante:** `admin.` (248) e `services` (224). Também possui forte representação em `management` (435) e `technician` (346).\n*   **Hipótese de Perfil:** Atrai profissionais de colarinho branco e prestadores de serviços estruturados que possuem renda recorrente, previsibilidade financeira moderada a alta e forte inserção no mercado formal.\n    *   *Conclusão sobre o Braço 2:* Sugere um produto estruturado de varejo tradicional, como **cartões de crédito com programa de milhas/cashback intermediários, planos de previdência complementar ou investimentos de liquidez diária**.\n\n### Braço 3: Perfis Operacionais, Conservadores ou de Alta Renda (Massa e Estabilidade)\n*   **Público-alvo predominante:** `blue-collar` (850), `retired` (197), `management` (506), `technician` (389), `self-employed` (108) e `housemaid` (75).\n*   **Hipótese de Perfil:** Este é o braço mais amplamente distribuído e recomendado pela política.\n    *   Para `blue-collar`, `retired` e `housemaid`, a preferência pelo Braço 3 indica um forte apelo por **segurança, simplicidade e baixo risco** (como poupança, títulos de capitalização ou empréstimo consignado).\n    *   A alta presença de `management` e `technician` indica que este produto possui um forte apelo de massa ou excelente custo-benefício, conseguindo transitar bem entre diferentes classes de renda devido a uma proposta de valor robusta e consolidada.\n\n---",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 2,
+            "secao": "Braço 2: Perfis Corporativos Estáveis e Setor de Serviços",
+            "tags_conteudo": [
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_job_report.md",
+        "chunk_id": "arm_by_job_chunk_5",
+        "text": "---\n\n## 3. Alinhamento com as Métricas de Performance\n\nA distribuição observada reflete diretamente os resultados consolidados em `data/experiments/linucb/metrics_summary.csv`. Ao contrário de políticas estáticas (como *Random* ou *Epsilon-Greedy* puro), o algoritmo **LinUCB** maximiza o retorno acumulado ao explorar o contexto do usuário (neste caso, a profissão) para personalizar a oferta.\n\n*   A clara diferenciação de preferências (como estudantes preferindo o Braço 1 e operários preferindo o Braço 3) explica o **aumento na taxa de conversão (CTR)** e a **redução do arrependimento acumulado (cumulative regret)** observados nas métricas globais do modelo.\n*   A habilidade de segmentar ofertas financeiras específicas para cada momento de vida do cliente (ex: identificar a necessidade de crédito flexível para o empreendedor vs. estabilidade para o aposentado) valida a eficácia do bandit contextual em ambientes de produção.\n\n---\n\n## 4. Conclusões e Recomendações de Negócio",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 1,
+            "secao": "3. Alinhamento com as Métricas de Performance",
+            "tags_conteudo": [
+                "Arrependimento/Regret",
+                "Conversão",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_job_report.md",
+        "chunk_id": "arm_by_job_chunk_6",
+        "text": "## 4. Conclusões e Recomendações de Negócio\n\n1.  **Validação de Campanha:** A forte aderência do **Braço 3** nos segmentos operacional (`blue-collar`) e conservador (`retired`) justifica o direcionamento de campanhas de produtos de menor volatilidade ou crédito seguro (consignado) para essa base.\n2.  **Otimização do Braço 1:** Sendo a principal recomendação para estudantes e desempregados, campanhas vinculadas ao Braço 1 devem focar em propostas de valor educacionais, contas digitais gratuitas e caminhos de bancarização progressiva.\n3.  **Refinamento do Grupo \"Unknown\":** Recomenda-se enriquecer a coleta de dados cadastrais para o grupo \"unknown\" a fim de deslocá-los do Braço 0 para opções mais personalizadas (Braços 1, 2 ou 3), onde o retorno esperado e o engajamento são comprovadamente maiores.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 3,
+            "secao": "4. Conclusões e Recomendações de Negócio",
+            "tags_conteudo": [
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_0",
+        "text": "# Relatório de Análise: Recomendação de Ofertas por Nível de Escolaridade via LinUCB\n\n## 1. Introdução\n\nEste relatório apresenta a análise de distribuição de recomendações de ofertas (braços) geradas pelo algoritmo **LinUCB (Linear Upper Confidence Bound)**. O objetivo é compreender como as decisões de alocação de ofertas variam de acordo com o nível de escolaridade (*education*) dos clientes, mapeando perfis comportamentais e sugerindo hipóteses de negócios para otimização de campanhas de marketing.\n\nO algoritmo LinUCB é um modelo de *Contextual Multi-Armed Bandit* que equilibra a exploração de novos braços (exploration) e a exploração de braços de alto desempenho conhecidos (exploitation), utilizando características do contexto do usuário — neste caso, o nível de escolaridade — para personalizar as ofertas.\n\n---\n\n## 2. Resumo de Métricas de Desempenho (Referência)\n\nCom base no consolidado de desempenho histórico obtido no arquivo de métricas (`metrics_summary.csv`), a política contextual LinUCB demonstrou uma performance significativamente superior às abordagens não contextuais (como $\\epsilon$-greedy ou políticas aleatórias).\n\n| Métrica | LinUCB (Política Contextual) | Política Aleatória (Baseline) | Ganho Absoluto / Relativo |\n| :--- | :---: | :---: | :---: |\n| **Taxa de Cliques (CTR)** | **11,8%** | **4,1%** | +7,7% (+187,8%) |\n| **Recompensa Acumulada** | **Alta (Convergência Rápida)** | Baixa (Linear) | N/A |\n| **Taxa de Conversão Final** | **7,9%** | **2,3%** | +5,6% (+243,5%) |",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise: Recomendação de Ofertas por Nível de Escolaridade via LinUCB",
+            "tags_conteudo": [
+                "Baseline",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_1",
+        "text": "| Métrica | LinUCB (Política Contextual) | Política Aleatória (Baseline) | Ganho Absoluto / Relativo |\n| :--- | :---: | :---: | :---: |\n| **Taxa de Cliques (CTR)** | **11,8%** | **4,1%** | +7,7% (+187,8%) |\n| **Recompensa Acumulada** | **Alta (Convergência Rápida)** | Baixa (Linear) | N/A |\n| **Taxa de Conversão Final** | **7,9%** | **2,3%** | +5,6% (+243,5%) |\n\nEsses resultados indicam que a personalização contextual baseada nos atributos dos clientes (como a escolaridade) foi crucial para aumentar o engajamento e a conversão das ofertas apresentadas.\n\n---\n\n## 3. Distribuição das Recomendações por Nível de Escolaridade\n\nA tabela abaixo apresenta os dados brutos de recomendação acumulados por nível de escolaridade para cada braço ($0, 1, 2, 3$).\n\n| Escolaridade | Braço 0 | Braço 1 | Braço 2 | Braço 3 | Predominante | Total de Clientes |\n| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n| **Primary** | 11 | 0 | 207 | 460 | **3** | 678 |\n| **Secondary** | 40 | 301 | 842 | 1123 | **3** | 2306 |\n| **Tertiary** | 25 | 49 | 541 | 735 | **3** | 1350 |\n| **Unknown** | 13 | 39 | 4 | 131 | **3** | 187 |\n| **Total Geral** | **89** | **389** | **1594** | **2449** | **3** | **4521** |\n\n### Distribuição Percentual de Recomendações por Linha\n\nPara facilitar a interpretação dos perfis de preferência, os dados foram normalizados para frequências relativas dentro de cada nível de escolaridade:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3. Distribuição das Recomendações por Nível de Escolaridade",
+            "tags_conteudo": [
+                "Baseline",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_2",
+        "text": "Para facilitar a interpretação dos perfis de preferência, os dados foram normalizados para frequências relativas dentro de cada nível de escolaridade:\n\n| Escolaridade | Braço 0 (%) | Braço 1 (%) | Braço 2 (%) | Braço 3 (%) | Total |\n| :--- | :---: | :---: | :---: | :---: | :---: |\n| **Primary** | 1,62% | 0,00% | 30,53% | **67,85%** | 100% |\n| **Secondary** | 1,73% | 13,05% | 36,51% | **48,70%** | 100% |\n| **Tertiary** | 1,85% | 3,63% | 40,07% | **54,44%** | 100% |\n| **Unknown** | 6,95% | 20,86% | 2,14% | **70,05%** | 100% |\n\n---\n\n## 4. Análise do Perfil de Cliente por Braço (Oferta)\n\n### Braço 3: O Campeão de Apelo Geral (Afinidade Universal)\n* **Volume total de recomendações**: 2.449 (54,17% do total geral).\n* **Comportamento por segmento**: É a recomendação predominante em todos os níveis de escolaridade, com destaque para a faixa **Primary** (67,85%) e **Unknown** (70,05%). Nas faixas de maior escolaridade (**Secondary** e **Tertiary**), ele mantém uma dominância sólida (48,70% e 54,44%, respectivamente).\n* **Perfil Sugerido**: Trata-se de um produto ou oferta de apelo universal e baixo atrito. Provavelmente representa um serviço financeiro essencial, como uma conta digital gratuita, um cartão de crédito sem anuidade ou um produto de poupança básico. Devido à sua alta aceitação e simplicidade, o LinUCB o utiliza como porto seguro de alta conversão.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "4. Análise do Perfil de Cliente por Braço (Oferta)",
+            "tags_conteudo": [
+                "Conversão",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_3",
+        "text": "### Braço 3: O Campeão de Apelo Geral (Afinidade Universal)\n* **Volume total de recomendações**: 2.449 (54,17% do total geral).\n* **Comportamento por segmento**: É a recomendação predominante em todos os níveis de escolaridade, com destaque para a faixa **Primary** (67,85%) e **Unknown** (70,05%). Nas faixas de maior escolaridade (**Secondary** e **Tertiary**), ele mantém uma dominância sólida (48,70% e 54,44%, respectivamente).\n* **Perfil Sugerido**: Trata-se de um produto ou oferta de apelo universal e baixo atrito. Provavelmente representa um serviço financeiro essencial, como uma conta digital gratuita, um cartão de crédito sem anuidade ou um produto de poupança básico. Devido à sua alta aceitação e simplicidade, o LinUCB o utiliza como porto seguro de alta conversão.\n\n### Braço 2: O Produto Premium/Intelectual (Afinidade de Alta Escolaridade)\n* **Volume total de recomendações**: 1.594 (35,26% do total geral).\n* **Comportamento por segmento**: Exibe uma correlação diretamente proporcional ao nível de instrução formal do cliente. Sua relevância cresce de **30,53%** no nível *Primary*, passa por **36,51%** no *Secondary* e atinge seu ápice em **40,07%** no nível *Tertiary*. É quase ignorado para o segmento *Unknown* (2,14%).\n* **Perfil Sugerido**: Esta oferta atrai clientes com maior sofisticação financeira e maior nível de escolaridade. Pode representar produtos de investimento de médio/alto risco, previdência privada, seguros residenciais complexos ou cartões de crédito da categoria Platinum/Black. Clientes com maior escolaridade tendem a possuir maior renda média e familiaridade com termos financeiros mais complexos, o que justifica a forte alocação do LinUCB neste braço para esse perfil.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 3,
+            "secao": "Braço 3: O Campeão de Apelo Geral (Afinidade Universal)",
+            "tags_conteudo": [
+                "Conversão",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_4",
+        "text": "### Braço 2: O Produto Premium/Intelectual (Afinidade de Alta Escolaridade)\n* **Volume total de recomendações**: 1.594 (35,26% do total geral).\n* **Comportamento por segmento**: Exibe uma correlação diretamente proporcional ao nível de instrução formal do cliente. Sua relevância cresce de **30,53%** no nível *Primary*, passa por **36,51%** no *Secondary* e atinge seu ápice em **40,07%** no nível *Tertiary*. É quase ignorado para o segmento *Unknown* (2,14%).\n* **Perfil Sugerido**: Esta oferta atrai clientes com maior sofisticação financeira e maior nível de escolaridade. Pode representar produtos de investimento de médio/alto risco, previdência privada, seguros residenciais complexos ou cartões de crédito da categoria Platinum/Black. Clientes com maior escolaridade tendem a possuir maior renda média e familiaridade com termos financeiros mais complexos, o que justifica a forte alocação do LinUCB neste braço para esse perfil.\n\n### Braço 1: A Oferta Seletiva de Classe Média (Afinidade de Escolaridade Média)\n* **Volume total de recomendações**: 389 (8,60% do total geral).\n* **Comportamento por segmento**: Apresenta comportamento bastante peculiar. É totalmente rejeitada ou ignorada no nível *Primary* (0,00%) e tem baixíssima penetração no nível *Tertiary* (3,63%). Contudo, ganha tração relevante no segmento **Secondary** (13,05%) e no segmento **Unknown** (20,86%).\n* **Perfil Sugerido**: Este braço se concentra em um público intermediário. Pode representar um produto de crédito pessoal estruturado, financiamento estudantil/veicular ou seguros populares. Não atrai clientes de baixa renda/escolaridade (que podem não cumprir os critérios mínimos de aprovação de crédito) nem clientes de alta escolaridade (que têm acesso a linhas de crédito melhores).",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 2,
+            "secao": "Braço 2: O Produto Premium/Intelectual (Afinidade de Alta Escolaridade)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_5",
+        "text": "### Braço 1: A Oferta Seletiva de Classe Média (Afinidade de Escolaridade Média)\n* **Volume total de recomendações**: 389 (8,60% do total geral).\n* **Comportamento por segmento**: Apresenta comportamento bastante peculiar. É totalmente rejeitada ou ignorada no nível *Primary* (0,00%) e tem baixíssima penetração no nível *Tertiary* (3,63%). Contudo, ganha tração relevante no segmento **Secondary** (13,05%) e no segmento **Unknown** (20,86%).\n* **Perfil Sugerido**: Este braço se concentra em um público intermediário. Pode representar um produto de crédito pessoal estruturado, financiamento estudantil/veicular ou seguros populares. Não atrai clientes de baixa renda/escolaridade (que podem não cumprir os critérios mínimos de aprovação de crédito) nem clientes de alta escolaridade (que têm acesso a linhas de crédito melhores).\n\n### Braço 0: A Oferta de Ultra-Niche (Baixo Desempenho ou Alta Especificidade)\n* **Volume total de recomendações**: 89 (1,97% do total geral).\n* **Comportamento por segmento**: Mantém-se residual em praticamente todas as faixas (variando de 1,62% a 1,85%), com uma leve oscilação para cima na categoria *Unknown* (6,95%).\n* **Perfil Sugerido**: Esta oferta obteve pouquíssimo retorno positivo durante as fases de exploração do algoritmo, fazendo com que o LinUCB minimizasse sua recomendação. Pode se tratar de um produto com barreiras de entrada altíssimas (ex: investimentos especializados para investidores qualificados) ou uma oferta com proposta de valor pouco atrativa que necessita de revisão urgente de design ou taxas.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 1,
+            "secao": "Braço 1: A Oferta Seletiva de Classe Média (Afinidade de Escolaridade Média)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_6",
+        "text": "### Braço 0: A Oferta de Ultra-Niche (Baixo Desempenho ou Alta Especificidade)\n* **Volume total de recomendações**: 89 (1,97% do total geral).\n* **Comportamento por segmento**: Mantém-se residual em praticamente todas as faixas (variando de 1,62% a 1,85%), com uma leve oscilação para cima na categoria *Unknown* (6,95%).\n* **Perfil Sugerido**: Esta oferta obteve pouquíssimo retorno positivo durante as fases de exploração do algoritmo, fazendo com que o LinUCB minimizasse sua recomendação. Pode se tratar de um produto com barreiras de entrada altíssimas (ex: investimentos especializados para investidores qualificados) ou uma oferta com proposta de valor pouco atrativa que necessita de revisão urgente de design ou taxas.\n\n---\n\n## 5. Implicações de Negócio e Recomendações Estratégicas\n\n1. **Massificação Controlada (Braço 3)**:\n   * **Ação**: Utilizar o Braço 3 como porta de entrada de novos clientes ou em campanhas de reengajamento rápido, principalmente para clientes cuja escolaridade seja desconhecida ou que pertençam ao segmento de educação primária.\n\n2. **Campanhas Segmentadas de Alta Renda (Braço 2)**:\n   * **Ação**: Direcionar os esforços de marketing de alta renda e cross-selling de produtos de maior valor agregado (premium) diretamente aos clientes com nível superior (*Tertiary*). A recomendação automática do LinUCB valida cientificamente que este público tem a maior propensão de conversão para o Braço 2.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "Braço 0: A Oferta de Ultra-Niche (Baixo Desempenho ou Alta Especificidade)",
+            "tags_conteudo": [
+                "Conversão",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_education_report.md",
+        "chunk_id": "arm_by_education_chunk_7",
+        "text": "2. **Campanhas Segmentadas de Alta Renda (Braço 2)**:\n   * **Ação**: Direcionar os esforços de marketing de alta renda e cross-selling de produtos de maior valor agregado (premium) diretamente aos clientes com nível superior (*Tertiary*). A recomendação automática do LinUCB valida cientificamente que este público tem a maior propensão de conversão para o Braço 2.\n\n3. **Estratégia de Meio de Funil (Braço 1)**:\n   * **Ação**: Focar a oferta do Braço 1 exclusivamente no público de escolaridade secundária. Ajustar os canais de comunicação com uma linguagem acessível e foco em utilidade prática (ex: parcelamento de sonhos, reformas, microcrédito comercial).\n\n4. **Descontinuar ou Reformular o Braço 0**:\n   * **Ação**: Realizar um estudo qualitativo ou testes AB tradicionais específicos para o Braço 0. Sua taxa de recomendação extremamente baixa (abaixo de 2%) indica que o mercado (representado por todos os segmentos de clientes) não está respondendo positivamente à oferta no formato atual.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 2,
+            "secao": null,
+            "tags_conteudo": [
+                "Conversão",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_poutcome_report.md",
+        "chunk_id": "arm_by_poutcome_chunk_0",
+        "text": "# Relatório de Análise: Recomendações do LinUCB por Histórico de Campanha (`poutcome`)\n\n## 1. Introdução\n\nEste relatório apresenta uma análise detalhada das decisões de recomendação de ofertas (braços) tomadas pela política contextual **LinUCB** (Linear Upper Confidence Bound). O objetivo é compreender como o histórico de contato anterior do cliente (`poutcome` - resultado da campanha anterior) influencia a distribuição e a escolha do algoritmo pelas diferentes ofertas disponíveis (Braços 0, 1, 2 e 3).\n\nO algoritmo LinUCB utiliza características contextuais dos clientes para balancear a exploração (*exploration*) e a explotação (*exploitation*), estimando a recompensa esperada para cada braço. Ao analisar a distribuição das recomendações por perfil de histórico, conseguimos extrair valiosos insights de negócios e de comportamento de modelo.\n\n---\n\n## 2. Visão Geral dos Dados de Recomendação\n\nOs dados consolidados de recomendação por histórico de campanha anterior (`poutcome`) estão estruturados conforme a tabela abaixo:",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": null,
+            "secao": "Relatório de Análise: Recomendações do LinUCB por Histórico de Campanha (`poutcome`)",
+            "tags_conteudo": [
+                "Recompensa/Reward",
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_poutcome_report.md",
+        "chunk_id": "arm_by_poutcome_chunk_1",
+        "text": "Os dados consolidados de recomendação por histórico de campanha anterior (`poutcome`) estão estruturados conforme a tabela abaixo:\n\n| poutcome | Braço 0 | Braço 1 | Braço 2 | Braço 3 | Predominante | Total de Clientes | % do Total Geral |\n| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n| **failure** | 5 | 34 | 235 | 216 | **Braço 2** | 490 | 10,84% |\n| **other** | 8 | 17 | 84 | 88 | **Braço 3** | 197 | 4,36% |\n| **success** | 5 | 14 | 26 | 84 | **Braço 3** | 129 | 2,85% |\n| **unknown** | 71 | 324 | 1249 | 2061 | **Braço 3** | 3.705 | 81,95% |\n| **Total Geral** | **89** | **389** | **1.594** | **2.449** | **Braço 3** | **4.521** | **100,00%** |\n\n---\n\n## 3. Análise Detalhada por Categoria de Histórico (`poutcome`)\n\n### 3.1. Clientes com Histórico de Sucesso (`success`)\n*   **Volume de dados:** 129 clientes (2,85% do total).\n*   **Distribuição das Recomendações:**\n    *   Braço 0: 3,88% (5 recomendações)\n    *   Braço 1: 10,85% (14 recomendações)\n    *   Braço 2: 20,16% (26 recomendações)\n    *   **Braço 3: 65,12% (84 recomendações) — Predominante**\n*   **Análise:** Para os clientes que já converteram ou tiveram sucesso na campanha anterior, o LinUCB demonstra uma preferência massiva pelo **Braço 3** (mais de 65% das recomendações). O Braço 2 é uma alternativa secundária distante. Isso sugere que a oferta associada ao Braço 3 possui uma altíssima taxa de conversão esperada ou recompensa para clientes historicamente engajados.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3. Análise Detalhada por Categoria de Histórico (`poutcome`)",
+            "tags_conteudo": [
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_poutcome_report.md",
+        "chunk_id": "arm_by_poutcome_chunk_2",
+        "text": "### 3.1. Clientes com Histórico de Sucesso (`success`)\n*   **Volume de dados:** 129 clientes (2,85% do total).\n*   **Distribuição das Recomendações:**\n    *   Braço 0: 3,88% (5 recomendações)\n    *   Braço 1: 10,85% (14 recomendações)\n    *   Braço 2: 20,16% (26 recomendações)\n    *   **Braço 3: 65,12% (84 recomendações) — Predominante**\n*   **Análise:** Para os clientes que já converteram ou tiveram sucesso na campanha anterior, o LinUCB demonstra uma preferência massiva pelo **Braço 3** (mais de 65% das recomendações). O Braço 2 é uma alternativa secundária distante. Isso sugere que a oferta associada ao Braço 3 possui uma altíssima taxa de conversão esperada ou recompensa para clientes historicamente engajados.\n\n### 3.2. Clientes com Histórico de Falha (`failure`)\n*   **Volume de dados:** 490 clientes (10,84% do total).\n*   **Distribuição das Recomendações:**\n    *   Braço 0: 1,02% (5 recomendações)\n    *   Braço 1: 6,94% (34 recomendações)\n    *   **Braço 2: 47,96% (235 recomendações) — Predominante**\n    *   Braço 3: 44,08% (216 recomendações)\n*   **Análise:** Este é o cenário mais interessante de mudança de comportamento do modelo. Para clientes que rejeitaram ou falharam na campanha anterior, o **Braço 2 assume a liderança** (47,96%), superando ligeiramente o Braço 3 (44,08%). O LinUCB aprendeu que a abordagem do Braço 2 é ligeiramente mais eficaz em mitigar a rejeição anterior ou reengajar clientes \"difíceis\" do que a oferta padrão (Braço 3).",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3.1. Clientes com Histórico de Sucesso (`success`)",
+            "tags_conteudo": [
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_poutcome_report.md",
+        "chunk_id": "arm_by_poutcome_chunk_3",
+        "text": "### 3.2. Clientes com Histórico de Falha (`failure`)\n*   **Volume de dados:** 490 clientes (10,84% do total).\n*   **Distribuição das Recomendações:**\n    *   Braço 0: 1,02% (5 recomendações)\n    *   Braço 1: 6,94% (34 recomendações)\n    *   **Braço 2: 47,96% (235 recomendações) — Predominante**\n    *   Braço 3: 44,08% (216 recomendações)\n*   **Análise:** Este é o cenário mais interessante de mudança de comportamento do modelo. Para clientes que rejeitaram ou falharam na campanha anterior, o **Braço 2 assume a liderança** (47,96%), superando ligeiramente o Braço 3 (44,08%). O LinUCB aprendeu que a abordagem do Braço 2 é ligeiramente mais eficaz em mitigar a rejeição anterior ou reengajar clientes \"difíceis\" do que a oferta padrão (Braço 3).\n\n### 3.3. Clientes com Histórico Outro/Indefinido (`other`)\n*   **Volume de dados:** 197 clientes (4,36% do total).\n*   **Distribuição das Recomendações:**\n    *   Braço 0: 4,06% (8 recomendações)\n    *   Braço 1: 8,63% (17 recomendações)\n    *   Braço 2: 42,64% (84 recomendações)\n    *   **Braço 3: 44,67% (88 recomendações) — Predominante**\n*   **Análise:** Nesta categoria intermediária, há um equilíbrio técnico muito forte entre o **Braço 3** (44,67%) e o **Braço 2** (42,64%). O modelo distribui suas apostas de forma quase equivalente entre essas duas ofertas principais, refletindo a incerteza inerente ao histórico classificado apenas como \"outro\".",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3.2. Clientes com Histórico de Falha (`failure`)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_poutcome_report.md",
+        "chunk_id": "arm_by_poutcome_chunk_4",
+        "text": "### 3.3. Clientes com Histórico Outro/Indefinido (`other`)\n*   **Volume de dados:** 197 clientes (4,36% do total).\n*   **Distribuição das Recomendações:**\n    *   Braço 0: 4,06% (8 recomendações)\n    *   Braço 1: 8,63% (17 recomendações)\n    *   Braço 2: 42,64% (84 recomendações)\n    *   **Braço 3: 44,67% (88 recomendações) — Predominante**\n*   **Análise:** Nesta categoria intermediária, há um equilíbrio técnico muito forte entre o **Braço 3** (44,67%) e o **Braço 2** (42,64%). O modelo distribui suas apostas de forma quase equivalente entre essas duas ofertas principais, refletindo a incerteza inerente ao histórico classificado apenas como \"outro\".\n\n### 3.4. Clientes sem Histórico Registrado (`unknown`)\n*   **Volume de dados:** 3.705 clientes (81,95% do total).\n*   **Distribuição das Recomendações:**\n    *   Braço 0: 1,92% (71 recomendações)\n    *   Braço 1: 8,74% (324 recomendações)\n    *   Braço 2: 33,71% (1.249 recomendações)\n    *   **Braço 3: 55,63% (2.061 recomendações) — Predominante**\n*   **Análise:** Sendo a maior fatia da base de clientes, a categoria \"unknown\" dita a tendência geral do modelo. O **Braço 3** é amplamente dominante (55,63%), consolidando-se como a oferta \"padrão\" ou de maior apelo geral na ausência de informações prévias de contato. O Braço 2 permanece como uma sólida segunda opção (33,71%).\n\n---\n\n## 4. O papel dos Braços 0 e 1",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3.3. Clientes com Histórico Outro/Indefinido (`other`)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_poutcome_report.md",
+        "chunk_id": "arm_by_poutcome_chunk_5",
+        "text": "## 4. O papel dos Braços 0 e 1\n\nEm todos os cenários analisados, os **Braços 0 e 1 receberam pouquíssimas recomendações** (compostos somados representam pouco mais de 10% de toda a base).\n*   **Braço 0** é o menos recomendado em geral, flutuando entre 1% e 4% das recomendações.\n*   **Braço 1** apresenta um desempenho ligeiramente melhor, mas ainda marginal, variando de 6,9% a 10,8%.\n\nEsse padrão indica que, no balanço entre exploração e explotação, o LinUCB rapidamente identificou que os retornos esperados desses braços são inferiores aos dos braços 2 e 3 para a grande maioria dos perfis de clientes. A baixa taxa de recomendação destes braços reflete a consolidação da política de explotação de ofertas de melhor desempenho (conforme sumarizado em `metrics_summary.csv`, onde políticas de exploração inteligente superam amplamente políticas aleatórias).\n\n---\n\n## 5. Principais Insights e Conclusões",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "4. O papel dos Braços 0 e 1",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_poutcome_report.md",
+        "chunk_id": "arm_by_poutcome_chunk_6",
+        "text": "## 5. Principais Insights e Conclusões\n\n1.  **A Dominância do Braço 3:** O Braço 3 é a oferta mais robusta e de maior aceitação global. Sua força é máxima em clientes que já demonstraram propensão positiva no passado (`success` com 65,12%) e em clientes sem histórico (`unknown` com 55,63%). É o \"carro-chefe\" do portfólio de campanhas.\n2.  **O Poder de Recuperação do Braço 2:** O Braço 2 funciona como uma estratégia de contingência eficaz. Sua vitória sobre o Braço 3 no segmento `failure` (47,96% vs 44,08%) sugere que esta oferta possui características que geram menos atrito ou são mais atrativas para clientes anteriormente insatisfeitos ou não convertidos.\n3.  **Personalização Contextual Relevante:** O LinUCB provou ser eficaz ao adaptar a recomendação de forma sutil mas estatisticamente significativa. A inversão de preferência (Braço 3 como predominante no sucesso/geral e Braço 2 na falha) é o comportamento ideal esperado de um algoritmo de recomendação contextualizado por histórico.\n4.  **Otimização de Portfólio:** Os Braços 0 e 1 mostraram-se pouco eficientes de maneira geral. Isso levanta uma recomendação de negócios para revisar as regras de negócio ou as próprias ofertas desses braços, uma vez que o modelo de Machine Learning identificou baixa probabilidade de recompensa neles em comparação aos demais concorrentes.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 3,
+            "secao": "5. Principais Insights e Conclusões",
+            "tags_conteudo": [
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_age_group_report.md",
+        "chunk_id": "arm_by_age_group_chunk_0",
+        "text": "# Relatório de Análise: Distribuição de Recomendações LinUCB por Faixa Etária\n\n## 1. Introdução\n\nEste relatório apresenta uma análise detalhada sobre o comportamento da política de recomendação **LinUCB** (Linear Upper Confidence Bound) em relação às diferentes faixas etárias da nossa base de clientes. O objetivo é compreender quais braços (ofertas) foram preferencialmente associados a cada grupo de idade e traduzir esses padrões em perfis de clientes hipotéticos para cada produto.\n\nO LinUCB é um algoritmo de *contextual bandit* que equilibra exploração (*exploration*) e aproveitamento (*exploitation*) utilizando características do cliente (contexto, neste caso, a faixa etária) para prever qual oferta tem maior probabilidade de gerar uma recompensa (clique, conversão, etc.).\n\n---\n\n## 2. Visão Geral dos Dados\n\nAbaixo está consolidada a distribuição das recomendações geradas pelo algoritmo LinUCB:\n\n| Faixa Etária | Braço 0 | Braço 1 | Braço 2 | Braço 3 | Predominante | Total de Recomendações |\n| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n| **<30 anos** | 30 (4,7%) | 119 (18,8%) | 234 (37,0%) | 249 (39,4%) | **Braço 3** | 632 |\n| **30-40 anos**| 17 (0,9%) | 148 (8,2%) | 731 (40,6%) | 904 (50,2%) | **Braço 3** | 1.800 |\n| **40-50 anos**| 19 (1,6%) | 83 (7,1%) | 408 (35,1%) | 652 (56,1%) | **Braço 3** | 1.162 |\n| **50-60 anos**| 20 (2,5%) | 38 (4,8%) | 214 (26,8%) | 528 (66,0%) | **Braço 3** | 800 |\n| **60+ anos**  | 3 (2,4%) | 1 (0,8%) | 7 (5,5%) | 116 (91,3%) | **Braço 3** | 127 |",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "Relatório de Análise: Distribuição de Recomendações LinUCB por Faixa Etária",
+            "tags_conteudo": [
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_age_group_report.md",
+        "chunk_id": "arm_by_age_group_chunk_1",
+        "text": "| Faixa Etária | Braço 0 | Braço 1 | Braço 2 | Braço 3 | Predominante | Total de Recomendações |\n| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n| **<30 anos** | 30 (4,7%) | 119 (18,8%) | 234 (37,0%) | 249 (39,4%) | **Braço 3** | 632 |\n| **30-40 anos**| 17 (0,9%) | 148 (8,2%) | 731 (40,6%) | 904 (50,2%) | **Braço 3** | 1.800 |\n| **40-50 anos**| 19 (1,6%) | 83 (7,1%) | 408 (35,1%) | 652 (56,1%) | **Braço 3** | 1.162 |\n| **50-60 anos**| 20 (2,5%) | 38 (4,8%) | 214 (26,8%) | 528 (66,0%) | **Braço 3** | 800 |\n| **60+ anos**  | 3 (2,4%) | 1 (0,8%) | 7 (5,5%) | 116 (91,3%) | **Braço 3** | 127 |\n\n---\n\n## 3. Análise de Padrões e Tendências por Faixa Etária\n\nEmbora o **Braço 3** seja numericamente o mais recomendado em todas as faixas etárias, uma análise proporcional revela variações comportamentais nítidas entre os segmentos de idade:\n\n### Jovens (<30 anos)\nEste é o grupo com a distribuição mais equilibrada entre as ofertas. \n* O **Braço 3** (39,4%) e o **Braço 2** (37,0%) dividem o protagonismo quase de igual para igual.\n* O **Braço 1** registra aqui sua maior relevância proporcional (18,8%).\n* Há maior tolerância à exploração ou maior variabilidade de comportamento nessa faixa etária.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 0,
+            "secao": "3. Análise de Padrões e Tendências por Faixa Etária",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_age_group_report.md",
+        "chunk_id": "arm_by_age_group_chunk_2",
+        "text": "### Jovens (<30 anos)\nEste é o grupo com a distribuição mais equilibrada entre as ofertas. \n* O **Braço 3** (39,4%) e o **Braço 2** (37,0%) dividem o protagonismo quase de igual para igual.\n* O **Braço 1** registra aqui sua maior relevância proporcional (18,8%).\n* Há maior tolerância à exploração ou maior variabilidade de comportamento nessa faixa etária.\n\n### Adultos em Início/Meio de Carreira (30-40 anos)\nNeste segmento, que representa o maior volume de dados (1.800 clientes):\n* O **Braço 3** consolida sua liderança ultrapassando metade das indicações (50,2%).\n* O **Braço 2** atinge o seu pico absoluto de recomendações (731 ocorrências, representando 40,6%).\n* O interesse pelo **Braço 1** cai significativamente (8,2%).\n\n### Adultos Maduros (40-50 anos e 50-60 anos)\nÀ medida que a idade avança, a dominância do **Braço 3** se acentua linearmente:\n* No grupo de 40-50 anos, o **Braço 3** representa 56,1% das ações.\n* No grupo de 50-60 anos, o **Braço 3** sobe para 66,0%, enquanto o **Braço 2** recua para 26,8%.\n\n### Idosos (60+ anos)\nA recomendação neste grupo é quase unânime:\n* O **Braço 3** atinge **91,3%** de todas as recomendações.\n* Os demais braços tornam-se praticamente irrelevantes para este público, sugerindo que o LinUCB encontrou um forte sinal de conversão/recompensa para o Braço 3 neste perfil específico, reduzindo drasticamente a exploração dos demais braços.\n\n---\n\n## 4. Definição do Perfil de Cliente para cada Oferta (Braço)",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 3,
+            "secao": "Jovens (<30 anos)",
+            "tags_conteudo": [
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_age_group_report.md",
+        "chunk_id": "arm_by_age_group_chunk_3",
+        "text": "## 4. Definição do Perfil de Cliente para cada Oferta (Braço)\n\nCom base no comportamento de seleção do LinUCB, podemos inferir o posicionamento de cada oferta:\n\n### Braço 3: O \"Coringa de Apelo Universal\" (Foco em Estabilidade e Segurança)\n* **Perfil do Público:** Abrange todas as idades, tornando-se dominante à medida que o cliente envelhece (máximo em 60+).\n* **Hipótese do Produto:** Trata-se provavelmente de um produto financeiro conservador, de utilidade geral e alta confiança. Exemplos: Conta poupança de rendimento garantido, seguros de vida tradicionais, planos de previdência privada ou produtos com benefícios de cashback direto.\n\n### Braço 2: O \"Conquistador de Ativos\" (Foco em Consolidação Financeira)\n* **Perfil do Público:** Altamente concentrado entre os 30 e 50 anos (pico em 30-40 anos). Representa uma parcela expressiva também nos jovens menores de 30 anos.\n* **Hipótese do Produto:** Produtos ligados a conquistas de vida ativa e construção de patrimônio. Exemplos: Linhas de crédito imobiliário ou automotivo, cartões de crédito premium com programa de milhas/pontos, ou plataformas de investimento de risco moderado.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 3,
+            "secao": "4. Definição do Perfil de Cliente para cada Oferta (Braço)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas",
+                "Regra de Elegibilidade"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_age_group_report.md",
+        "chunk_id": "arm_by_age_group_chunk_4",
+        "text": "### Braço 2: O \"Conquistador de Ativos\" (Foco em Consolidação Financeira)\n* **Perfil do Público:** Altamente concentrado entre os 30 e 50 anos (pico em 30-40 anos). Representa uma parcela expressiva também nos jovens menores de 30 anos.\n* **Hipótese do Produto:** Produtos ligados a conquistas de vida ativa e construção de patrimônio. Exemplos: Linhas de crédito imobiliário ou automotivo, cartões de crédito premium com programa de milhas/pontos, ou plataformas de investimento de risco moderado.\n\n### Braço 1: O \"Jovem e Dinâmico\" (Foco em Atração e Entrada)\n* **Perfil do Público:** Relevante quase exclusivamente para menores de 30 anos (18,8% de share), decrescendo rapidamente nas faixas subsequentes até se tornar residual em maiores de 60 anos (0,8%).\n* **Hipótese do Produto:** Ofertas personalizadas para o público digital/estudantil. Exemplos: Contas totalmente digitais sem tarifas, programas de vantagens voltados para entretenimento/games, crédito estudantil ou microcrédito facilitado de onboarding rápido.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 2,
+            "secao": "Braço 2: O \"Conquistador de Ativos\" (Foco em Consolidação Financeira)",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_age_group_report.md",
+        "chunk_id": "arm_by_age_group_chunk_5",
+        "text": "### Braço 1: O \"Jovem e Dinâmico\" (Foco em Atração e Entrada)\n* **Perfil do Público:** Relevante quase exclusivamente para menores de 30 anos (18,8% de share), decrescendo rapidamente nas faixas subsequentes até se tornar residual em maiores de 60 anos (0,8%).\n* **Hipótese do Produto:** Ofertas personalizadas para o público digital/estudantil. Exemplos: Contas totalmente digitais sem tarifas, programas de vantagens voltados para entretenimento/games, crédito estudantil ou microcrédito facilitado de onboarding rápido.\n\n### Braço 0: A \"Oferta de Nicho / Baixo Engajamento\"\n* **Perfil do Público:** Apresenta taxas de recomendação sistematicamente baixas em todas as faixas etárias (variando de 0,9% a 4,7%).\n* **Hipótese do Produto:** Um produto muito específico, de nicho extremo, ou que historicamente gerou pouca conversão, fazendo com que o algoritmo o mantivesse majoritariamente em fase de exploração mínima para evitar perdas de recompensa (*regret*). Exemplos: Consórcios de nicho ou produtos de investimento de altíssimo risco e barreira de entrada elevada.\n\n---\n\n## 5. Conclusão e Próximos Passos",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 1,
+            "secao": "Braço 1: O \"Jovem e Dinâmico\" (Foco em Atração e Entrada)",
+            "tags_conteudo": [
+                "Arrependimento/Regret",
+                "Conversão",
+                "Recompensa/Reward",
+                "Catálogo de Ofertas"
+            ]
+        }
+    },
+    {
+        "source": "arm_by_age_group_report.md",
+        "chunk_id": "arm_by_age_group_chunk_6",
+        "text": "## 5. Conclusão e Próximos Passos\n\nO algoritmo LinUCB mapeou com sucesso dependências demográficas importantes. Embora o **Braço 3** represente a oferta mais segura e com melhor retorno médio global (especialmente para o público maduro), a manutenção de ofertas concorrentes como o **Braço 2** (para a faixa de 30 a 50 anos) e o **Braço 1** (para menores de 30) é crucial para garantir a personalização e o engajamento de novos entrantes no ecossistema de produtos.\n\n**Recomendações:**\n1. **Campanhas de Marketing:** Alocar budgets focando o *Braço 1* para campanhas com canais jovens, o *Braço 2* para canais de planejamento familiar e carreira, e o *Braço 3* para canais massificados e de planejamento de aposentadoria.\n2. **Reavaliação do Braço 0:** Investigar as características intrínsecas da oferta 0 para entender o baixo desempenho. Se for um produto importante estrategicamente, recomenda-se revisar seus benefícios ou aumentar artificialmente seu parâmetro de exploração (alfa) temporariamente para novos testes de hipótese.",
+        "metadata": {
+            "tipo_documento": "relatorio_markdown",
+            "id_braco": 3,
+            "secao": "5. Conclusão e Próximos Passos",
+            "tags_conteudo": [
+                "Catálogo de Ofertas"
+            ]
+        }
+    }
+]

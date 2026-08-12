@@ -124,6 +124,22 @@ def llm_run(
     """
     cli.ask_llm(prompt=prompt)
 
+@app.command(name="start-api")
+def start_api():
+    """
+    Sobe a API Flask (/health, /predict, /ask-llm).
+    """
+    typer.echo("Iniciando a API Flask...")
+    cli.start_api()
+
+@app.command(name="start-mlflow-ui")
+def start_mlflow_ui():
+    """
+    Sobe a UI do MLflow (dashboard de experimentos), em processo separado da API.
+    """
+    typer.echo("Iniciando a UI do MLflow...")
+    cli.start_mlflow_ui()
+
 def main():
     app(prog_name="project")
 
