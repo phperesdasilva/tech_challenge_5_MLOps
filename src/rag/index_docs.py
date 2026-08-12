@@ -22,6 +22,14 @@ METADATA_PATH = Path(
 )
 
 MD_FILES = [
+    # Policies
+    paths.FAQ_OFERTAS_PATH,
+    paths.GOVERNANCA_DADOS_PATH,
+    paths.POLITICA_COMUNICACAO_PATH,
+    paths.POLITICA_ELEGIBILIDADE_PATH,
+    paths.POLITICA_SUITABILITY_PATH,
+    # Golden set
+    paths.GOLDEN_SET_PATH,
     # Thompson Sampling
     paths.TS_METRICS_REPORT_PATH,
     paths.ARM_COUNTS_REPORT_BL_PATH,
