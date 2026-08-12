@@ -5,20 +5,26 @@ Converte um dicionário de cliente em um vetor numérico fixo para ser usado
 como contexto pela política LinUCB.
 
 Estrutura do vetor (ordem):
-    [age_z, balance_z, pdays_z, previous_z, pdays_was_contacted, housing_bin, loan_bin,
-     job_ohe..., marital_ohe..., education_ohe..., poutcome_ohe...,
+    [age_z, balance_z, housing_bin, loan_bin,
+     job_ohe..., marital_ohe..., education_ohe...,
      bias=1.0]
 
 As estatísticas (média, std) e vocabulários são calculados uma única vez
 a partir do DataFrame de treino (dataset completo) no __init__.
+
+Colunas de histórico de campanhas anteriores (pdays, previous, poutcome) foram
+propositalmente deixadas de fora: no ambiente sintético, a conversão de cada
+oferta é um valor fixo por oferta (não depende do contexto do cliente), então
+essas colunas não carregavam sinal real — e são justamente as menos disponíveis
+para um cliente novo, o que dificultava acionar a rota contextual da API.
 """
 
 import numpy as np
 import pandas as pd
 
-NUMERIC_COLS = ["age", "balance", "pdays", "previous"]
+NUMERIC_COLS = ["age", "balance"]
 BINARY_COLS = ["housing", "loan"]
-CATEGORICAL_COLS = ["job", "marital", "education", "poutcome"]
+CATEGORICAL_COLS = ["job", "marital", "education"]
 
 
 class BankContextEncoder:
@@ -46,10 +52,6 @@ class BankContextEncoder:
             val = float(client.get(col, 0.0))
             parts.append((val - self._means[col]) / self._stds[col])
 
-        # Flag: cliente já foi contactado antes (pdays == -1 significa nunca)
-        pdays_val = float(client.get("pdays", -1))
-        parts.append(1.0 if pdays_val >= 0 else 0.0)
-
         # Binárias yes/no
         for col in BINARY_COLS:
             parts.append(1.0 if client.get(col) == "yes" else 0.0)
@@ -68,17 +70,15 @@ class BankContextEncoder:
     @property
     def dim(self) -> int:
         """Dimensão do vetor de contexto."""
-        n_numeric = len(NUMERIC_COLS)  # age, balance, pdays, previous
-        n_pdays_flag = 1
+        n_numeric = len(NUMERIC_COLS)  # age, balance
         n_binary = len(BINARY_COLS)  # housing, loan
         n_ohe = sum(len(v) for v in self._vocabs.values())
         n_bias = 1
-        return n_numeric + n_pdays_flag + n_binary + n_ohe + n_bias
+        return n_numeric + n_binary + n_ohe + n_bias
 
     def feature_names(self) -> list[str]:
         """Nomes de cada posição do vetor (útil para debug e notebook)."""
         names = [f"{c}_z" for c in NUMERIC_COLS]
-        names.append("pdays_was_contacted")
         names += [f"{c}_bin" for c in BINARY_COLS]
         for col in CATEGORICAL_COLS:
             names += [f"{col}_{cat}" for cat in self._vocabs[col]]
